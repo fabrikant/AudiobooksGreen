@@ -13,25 +13,8 @@ class MenuMain extends WatchUi.Menu2 {
       :theme => Style.getMenuTheme(),
     });
 
-    // Порядок пунктов меню меняется в зависимости от того
-    // были ли введены логин пароль и папка для синхронизации
-    // если нет, показываем их сверху
-   
     var folderAdded = false;
-    var login = Application.Properties.getValue(LOGIN);
-    var password = Application.Properties.getValue(PASSWORD);
     var folder = Application.Storage.getValue(BOOKS_FOLDER);
-
-    // Имя пользователя и пароль
-    if (
-      login == null or
-      login.equals("") or
-      password == null or
-      password.equals("")
-    ) {
-      addAuthItems();
-    }
-
 
     // Папка на сервере
     if (folder == null or folder.equals("")) {
@@ -51,7 +34,6 @@ class MenuMain extends WatchUi.Menu2 {
     addItem(new CommandtemMenuColors());
     addItem(new CommandtemMenuComplications());
     addItem(new CommandtemMenuAuthorisation());
-   
 
     // О программе
     addItem(new CommandtemShowAboutView());
@@ -76,26 +58,5 @@ class MenuMain extends WatchUi.Menu2 {
     );
   }
 
-  function addAuthItems() {
-    var onChangeCallback = new Lang.Method(
-      BooksExtraModule,
-      :removeAuthorization
-    );
-    addItem(
-      new PickerItem(
-        Rez.Strings.login,
-        Application.Properties.getValue(LOGIN),
-        LOGIN,
-        onChangeCallback
-      )
-    );
-    addItem(
-      new PickerItem(
-        Rez.Strings.password,
-        Application.Properties.getValue(PASSWORD),
-        PASSWORD,
-        onChangeCallback
-      )
-    );
-  }
+  
 }

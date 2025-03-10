@@ -2,6 +2,7 @@
 
 	<property id="login" type="string"></property>
 	<property id="password" type="string"></property>
+	<property id="server" type="string"></property>
 
 
 	<property id="translitComplications" type="boolean">true</property>

@@ -19,6 +19,7 @@ enum {
   // пользователя и пароль
   LOGIN = "login",
   PASSWORD = "password",
+  SERVER = "server",
   LENGHT_COMPLICATIONS = "lenghtComplications",
 
   URL = "url",

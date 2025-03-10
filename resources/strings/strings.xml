@@ -3,6 +3,7 @@
     <string id="settings">Settings</string>
     <string id="login">login</string>
     <string id="password">password</string>
+    <string id="server">server</string>
     <string id="booksFolder">Folder</string>
     <string id="notSelected">Not selected</string>
     <string id="noFoldersFound">No folders found on server</string>

@@ -29,7 +29,15 @@ class MenuAuthorization extends WatchUi.Menu2 {
         onChangeCallback
       )
     );
+    addItem(
+      new PickerItem(
+        Rez.Strings.server,
+        Application.Properties.getValue(SERVER),
+        PASSWORD,
+        onChangeCallback
+      )
+    );
 
-    addItem(new CommandtemLogout());
+    
   }
 }
