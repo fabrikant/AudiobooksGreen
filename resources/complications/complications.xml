@@ -1,0 +1,14 @@
+<complications>
+    <complication id="0" access="public" longLabel="@Strings.titleLongLabel" shortLabel="@Strings.titleShortLabel" icon="@Drawables.logoComplications" glancePreview="true">
+        <faceIt defaultText="@Strings.titleDefaultText" />
+    </complication>
+
+    <complication id="1" access="public" longLabel="@Strings.authorLongLabel" shortLabel="@Strings.authorShortLabel" icon="@Drawables.logoComplications" glancePreview="false">
+        <faceIt defaultText="@Strings.authorDefaultText" />
+
+    </complication>
+
+    <complication id="2" access="public" longLabel="@Strings.chapterLongLabel" shortLabel="@Strings.chapterShortLabel" icon="@Drawables.logoComplications" glancePreview="false">
+        <faceIt defaultText="@Strings.chapterDefaultText" />
+    </complication>
+</complications>

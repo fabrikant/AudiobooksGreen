@@ -1,0 +1,138 @@
+import Toybox.Communications;
+import Toybox.Lang;
+import Toybox.System;
+import Toybox.Media;
+import Toybox.Time;
+
+class AbooksSyncDelegate extends Communications.SyncDelegate {
+  enum {
+    // По этому ключу в Storage пишется
+    // текущее состояние синхронизации
+    // это массив [ЗавершеноБулево, UnixTimeМоментаПоследнихДанных]
+    SYNC_STATUS = "sync_stat",
+  }
+
+  // **************************************************************************
+  function initialize() {
+    SyncDelegate.initialize();
+  }
+
+  // **************************************************************************
+  //Старт синхронизации
+  function onStartSync() as Void {
+    registerSyncStatus(false);
+    var folderId = null;
+    var folderInfo = Application.Storage.getValue(BOOKS_FOLDER);
+    if (folderInfo != null) {
+      folderId = folderInfo[BOOKS_FOLDER_ID];
+    }
+    if (folderId == null) {
+      logger.error(Rez.Strings.syncFolderNotSelected);
+      Communications.cancelAllRequests();
+      Communications.notifySyncComplete(
+        Application.loadResource(Rez.Strings.syncFolderNotSelected)
+      );
+      registerSyncStatus(true);
+      return;
+    }
+
+    var folderGetter = new BooksFolderAPI(
+      self.method(:onGettingFolder),
+      folderId
+    );
+    folderGetter.start();
+  }
+
+  // **************************************************************************
+  function registerSyncStatus(complete) {
+    var now = Time.now();
+    Application.Storage.setValue(SYNC_STATUS, [complete, now.value()]);
+  }
+
+  // **************************************************************************
+  //Получили список книг в папке на сайте
+  //определяем что нужно грузить
+  function onGettingFolder(booksList) {
+    // На устройстве могут быть полнстью и частично загруженные книги
+    // 1. Нужно определить, какие книги из тех, что есть на устройстве
+    // удалены на сервере и удалить их на устройстве
+    // 2. Добавить в список новые книги с сервера
+    // 3. Пройтись по каждой книге и загрузить обложки
+    // 4. Пройтись по каждой книге и получить список файлов
+    // 5. Записать новые списки файлов
+    // 6. Пройти по всем спискам файлов и определить ЕДИНЫЙ список файлов к загрузке
+    // 7. Скачать файлы
+
+    var booksStorage = new BooksStore();
+    booksStorage.addNewBooks(booksList);
+    booksStorage.removeOldBooks(booksList);
+
+    // Старт загрузки обложек
+    var coverDownloader = new BookCoversDownloaderAPI(
+      self.method(:onCoversDownload),
+      booksStorage
+    );
+    coverDownloader.start();
+  }
+
+  // **************************************************************************
+  // После загрузкт обложек, синхронизируем закладки
+  function onCoversDownload(booksStorage) {
+    var bookmarksDownloader = new BookmarksAPI(
+      self.method(:onBookmarksDownload),
+      booksStorage
+    );
+    bookmarksDownloader.start();
+  }
+
+  // **************************************************************************
+  // После синхронизации закладок, скачиваем контент
+  function onBookmarksDownload(booksStorage) {
+    var idsToDownload = booksStorage.getIdsToDownload();
+    startLoadingFileList(booksStorage, idsToDownload, 0);
+  }
+
+  // **************************************************************************
+  // Начинаем грузить очередную книгу
+  // Получаем информацию о файлах
+  function startLoadingFileList(booksStorage, idsToDownload, index) {
+    if (index < idsToDownload.size()) {
+      var finalCallback = self.method(:onLoadFileList);
+      var bookLoader = new BookFileListAPI(
+        finalCallback,
+        booksStorage,
+        idsToDownload,
+        index
+      );
+      bookLoader.start();
+    } else {
+      logger.debug("Получены списки файлов по всем книгам");
+      var filesToDownload = booksStorage.getFilesToDownload();
+      var downloader = new BookFilesDownloaderAPI(
+        booksStorage,
+        filesToDownload
+      );
+      downloader.start();
+    }
+  }
+
+  // **************************************************************************
+  // Получили информацию о книге
+  function onLoadFileList(booksStorage, idsToDownload, index) {
+    index += 1;
+    startLoadingFileList(booksStorage, idsToDownload, index);
+  }
+
+  // **************************************************************************
+  // Called by the system to determine if the app needs to be synced.
+  function isSyncNeeded() as Boolean {
+    return true;
+  }
+
+  // Called when the user chooses to cancel an active sync.
+  function onStopSync() as Void {
+    Communications.cancelAllRequests();
+    Communications.notifySyncComplete(null);
+    registerSyncStatus(true);
+  }
+}

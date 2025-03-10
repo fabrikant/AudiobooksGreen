@@ -1,0 +1,91 @@
+<strings>
+
+    <string id="settings">Settings</string>
+    <string id="login">login</string>
+    <string id="password">password</string>
+    <string id="booksFolder">Folder</string>
+    <string id="notSelected">Not selected</string>
+    <string id="noFoldersFound">No folders found on server</string>
+
+    <string id="selectListMenuTitle">Select folder of books</string>
+    <string id="setLoginAndPassword">Please, set the loging and the password</string>
+
+    <string id="playlist">Playlist</string>
+    <string id="content">Fylly downloaded books</string>
+    <string id="allBooks">Books on the server</string>
+    <string id="fileList">List of files</string>
+    <string id="syncFolderNotSelected">Sync folder\nnot selected</string>
+
+
+    <string id="noContentsTitle">\nNothing</string>
+    <string id="noContentsAuthor">to show</string>
+
+    <string id="addToPlaylist">Add to playlist</string>
+    <string id="removeFromPlaylist">Remove from playlist</string>
+    <string id="startSync">Full sync</string>
+    <string id="startBookmarksSync">Sync playback progress</string>
+    <string id="editMetadata">Set metadata from book description</string>
+    <string id="editMetadataConfirmationMessage">Set metadata from book description?\nIt's
+        irreversible</string>
+    <string id="about">About</string>
+
+    <string id="menuCommandsTitle">Commands</string>
+    <string id="play">Play from the beginning</string>
+    <string id="resumePlayingThisBook">Continue playing</string>
+    <string id="resumePlayingCurrentBook">Continue playing</string>
+    <string id="showFiles">Show files</string>
+    <string id="logout">Drop session id</string>
+    <string id="authorisation">Authorization</string>
+
+
+    <string id="hours">h</string>
+    <string id="minutes">m</string>
+    <string id="seconds">s</string>
+
+
+    <string id="syncMessage">waiting for litres sync</string>
+    <string id="progressMessageWhileOpenFolders">Processing...</string>
+    <string id="progressMessageSyncBookmarks">Sync the progress</string>
+
+    <string id="cacheSize">Cache size</string>
+    <string id="removeCacheQuestion">Remove all books?\nIt's irreversible</string>
+    <string id="playFileQuestion">Start listening from this file?</string>
+
+
+    <!-- Properties -->
+    <string id="translitComplications">Translit complications</string>
+    <string id="lenghtComplications">Complications max lenght</string>
+    <string id="defaultPlayerColors">System colors of the player</string>
+
+    <!-- Licence -->
+    <string id="notAvailableMessage">Not available in free version</string>
+    <string id="regKeyInvalid">Reg key is invalid</string>
+
+    <!-- Цвета -->
+    <string id="style">Style</string>
+    <string id="resetColors">Set default colors</string>
+
+    <string id="backgroundColor">Background Color</string>
+    <string id="highlightFillColor">Highlight fill color</string>
+    <string id="foregroundColor">Foreground color</string>
+    <string id="highlightBorderColor">Highlight border color</string>
+    <string id="progressBarBackgroundColor">Progressbar background color</string>
+    <string id="progressBarForegroundColor">Pogressbar foreground color</string>
+
+    <string id="textColor">text color</string>
+    <string id="menuItemBackgroundColor">Book bckground color</string>
+    <string id="menuBackgroundColor">Books background color</string>
+
+    <string id="MENU_THEME">Menu theme</string>
+    <string id="MENU_THEME_DEFAULT">Default</string>
+    <string id="MENU_THEME_BLUE">Blue</string>
+    <string id="MENU_THEME_CYAN">Cyan</string>
+    <string id="MENU_THEME_GREEN">Green</string>
+    <string id="MENU_THEME_YELLOW">Yellow</string>
+    <string id="MENU_THEME_ORANGE">Orange</string>
+    <string id="MENU_THEME_RED">Red</string>
+    <string id="MENU_THEME_PINK">Pink</string>
+    <string id="MENU_THEME_PURPLE">Purple</string>
+    <string id="MENU_THEME_GREEN_YELLOW">Yellow</string>
+
+</strings>

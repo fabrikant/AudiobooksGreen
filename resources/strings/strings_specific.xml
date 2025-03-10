@@ -1,0 +1,19 @@
+<strings>
+    <string id="AppName">Audiobooks Green</string>
+
+
+    <!-- Complications -->
+    <!-- Эти строки не нужно локализовывать -->
+    <string id="complications">Complications</string>
+    <string id="titleLongLabel">Title</string>
+    <string id="titleShortLabel">title</string>
+    <string id="titleDefaultText">Book title</string>
+
+    <string id="authorLongLabel">Author</string>
+    <string id="authorShortLabel">auth</string>
+    <string id="authorDefaultText">Book author</string>
+
+    <string id="chapterLongLabel">Chapter</string>
+    <string id="chapterShortLabel">chap.</string>
+    <string id="chapterDefaultText">Сhapter of the book</string>
+</strings>

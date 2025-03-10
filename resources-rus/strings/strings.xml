@@ -1,0 +1,90 @@
+<strings>
+
+    <string id="settings">Настройки</string>
+    <string id="login">Логин</string>
+    <string id="password">Пароль</string>
+    <string id="booksFolder">Каталог на сервере</string>
+    <string id="notSelected">Не выбран</string>
+    <string id="noFoldersFound">Не найдены папки на сервере</string>
+
+    <string id="selectListMenuTitle">Выбор каталога книг</string>
+    <string id="setLoginAndPassword">Укажите логин и пароль</string>
+
+    <string id="playlist">Плейлист</string>
+    <string id="content">Скачанные книги</string>
+    <string id="allBooks">Книги на сервере</string>
+    <string id="fileList">Список файлов</string>
+    <string id="syncFolderNotSelected">Каталог для синхр.\nне выбран</string>
+
+
+    <string id="noContentsTitle">\nНичего</string>
+    <string id="noContentsAuthor">нет</string>
+
+    <string id="addToPlaylist">Добавить в плейлист</string>
+    <string id="removeFromPlaylist">Удалить из плейлиста</string>
+    <string id="startSync">Синхронизация</string>
+    <string id="startBookmarksSync">Синхр. прогресса</string>
+    <string id="editMetadata">Переписать метаданные</string>
+    <string id="editMetadataConfirmationMessage">Установить из описания книги? Действие необратимо</string>
+    <string id="about">О программе</string>
+
+    <string id="menuCommandsTitle">Команды</string>
+    <string id="play">Воспроизвести с начала</string>
+    <string id="resumePlayingThisBook">Продолжить</string>
+    <string id="resumePlayingCurrentBook">Продолжить</string>
+    <string id="showFiles">Показать файлы</string>
+    <string id="logout">Сброс id сессии</string>
+    <string id="authorisation">Авторизация</string>
+
+
+    <string id="hours">ч</string>
+    <string id="minutes">м</string>
+    <string id="seconds">с</string>
+
+
+    <string id="syncMessage">Синхронизация с litres</string>
+    <string id="progressMessageWhileOpenFolders">Обработка...</string>
+    <string id="progressMessageSyncBookmarks">Синхронизация прогресса\nвоспроизведения</string>
+
+    <string id="cacheSize">Размер кэша</string>
+    <string id="removeCacheQuestion">Удалить все книги\nс устройства?</string>
+    <string id="playFileQuestion">Начать воспроизведение с этого файла?</string>
+
+
+    <!-- Properties -->
+    <string id="translitComplications">Транслит. complications</string>
+    <string id="lenghtComplications">Макс. длина сomplications</string>
+    <string id="defaultPlayerColors">Системные цвета плеера</string>
+
+    <!-- Licence -->
+    <string id="notAvailableMessage">Недоступно в бесплатной версии</string>
+    <string id="regKeyInvalid">Неверный регистрационный номер</string>
+
+    <!-- Цвета -->
+    <string id="style">Внешний вид</string>
+    <string id="resetColors">Уст. цвета по умолчанию</string>
+
+    <string id="backgroundColor">Background Color</string>
+    <string id="highlightFillColor">Highlight fill color</string>
+    <string id="foregroundColor">Foreground color</string>
+    <string id="highlightBorderColor">Highlight border color</string>
+    <string id="progressBarBackgroundColor">Progressbar background color</string>
+    <string id="progressBarForegroundColor">Pogressbar foreground color</string>
+    
+    <string id="textColor">Цвет текста</string>
+    <string id="menuItemBackgroundColor">Книга цвет фона</string>
+    <string id="menuBackgroundColor">Книги цвет фона</string>
+
+    <string id="MENU_THEME">Тема меню</string>
+    <string id="MENU_THEME_DEFAULT">По умолчанию</string>
+    <string id="MENU_THEME_BLUE">Синяя</string>
+    <string id="MENU_THEME_CYAN">Циан</string>
+    <string id="MENU_THEME_GREEN">Зеленая</string>
+    <string id="MENU_THEME_YELLOW">Желтая</string>
+    <string id="MENU_THEME_ORANGE">Оранжевая</string>
+    <string id="MENU_THEME_RED">Красная</string>
+    <string id="MENU_THEME_PINK">Розовая</string>
+    <string id="MENU_THEME_PURPLE">Пурпурная</string>
+    <string id="MENU_THEME_GREEN_YELLOW">Желтая</string>
+
+</strings>

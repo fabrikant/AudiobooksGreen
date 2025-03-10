@@ -1,0 +1,24 @@
+<properties>
+
+	<property id="login" type="string"></property>
+	<property id="password" type="string"></property>
+
+
+	<property id="translitComplications" type="boolean">true</property>
+	<property id="lenghtComplications" type="number">20</property>
+	<property id="defaultPlayerColors" type="boolean">false</property>
+
+
+	<property id="backgroundColor" type="number">0x000000</property>
+	<property id="highlightFillColor" type="number">0x00AA00</property>
+	<property id="textColor" type="number">0xFFFFFF</property>
+	<property id="foregroundColor" type="number">0x00AA00</property>
+	<property id="highlightBorderColor" type="number">0x00AA00</property>
+	<property id="progressBarBackgroundColor" type="number">0xFFFFFF</property>
+	<property id="progressBarForegroundColor" type="number">0xFFFFFF</property>
+	<property id="menuItemBackgroundColor" type="number">0x000000</property>
+	<property id="menuBackgroundColor" type="number">0x000000</property>
+
+	<property id="MENU_THEME" type="number">3</property>
+
+</properties>
