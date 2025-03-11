@@ -8,17 +8,12 @@ class MenuAuthorization extends WatchUi.Menu2 {
       :theme => Style.getMenuTheme(),
     });
 
-    var onChangeCallback = new Lang.Method(
-      BooksExtraModule,
-      :removeAuthorization
-    );
-
     addItem(
       new PickerItem(
         Rez.Strings.login,
         Application.Properties.getValue(LOGIN),
         LOGIN,
-        onChangeCallback
+        null
       )
     );
     addItem(
@@ -26,7 +21,7 @@ class MenuAuthorization extends WatchUi.Menu2 {
         Rez.Strings.password,
         Application.Properties.getValue(PASSWORD),
         PASSWORD,
-        onChangeCallback
+        null
       )
     );
     addItem(
@@ -34,10 +29,8 @@ class MenuAuthorization extends WatchUi.Menu2 {
         Rez.Strings.server,
         Application.Properties.getValue(SERVER),
         PASSWORD,
-        onChangeCallback
+        null
       )
     );
-
-    
   }
 }

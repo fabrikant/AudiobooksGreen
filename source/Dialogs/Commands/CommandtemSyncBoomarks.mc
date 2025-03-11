@@ -15,6 +15,6 @@ class CommandtemSyncBoomarks extends CommandtemAbstract {
   }
 
   function command() {
-    BookmarksGUI.startSync();
+    // BookmarksGUI.startSync();
   }
 }

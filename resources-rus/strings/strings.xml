@@ -4,6 +4,7 @@
     <string id="login">Логин</string>
     <string id="password">Пароль</string>
     <string id="server">Сервер</string>
+    <string id="token">ключ API</string>
     <string id="booksFolder">Каталог на сервере</string>
     <string id="notSelected">Не выбран</string>
     <string id="noFoldersFound">Не найдены папки на сервере</string>

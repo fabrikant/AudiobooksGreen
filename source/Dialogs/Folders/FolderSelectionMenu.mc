@@ -31,8 +31,7 @@ class FolderSelectionMenu extends WatchUi.Menu2 {
         WatchUi.SLIDE_IMMEDIATE
       );
     } else {
-      var getter = new BooksFoldersAPI(self.method(:onGetBooksFolders));
-
+      var getter = new BooksPlaylistsAPI(self.method(:onGetBooksFolders));
       getter.start();
     }
   }

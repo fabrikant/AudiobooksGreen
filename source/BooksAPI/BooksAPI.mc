@@ -4,13 +4,6 @@ import Toybox.Application;
 import Toybox.Lang;
 
 enum {
-  // Ключи хранения идентификатора сессии
-  // и времени последенего обновления идентификатора
-  // и времени последеней авторизации
-  SID = "sid",
-  SID_TIME = "sid_time",
-  AUTHORISATION_TIME = "auth_time",
-
   BOOKS_FOLDER = "folder",
   BOOKS_FOLDER_ID = "folder_id",
   BOOKS_FOLDER_NAME = "folder_name",
@@ -20,25 +13,37 @@ enum {
   LOGIN = "login",
   PASSWORD = "password",
   SERVER = "server",
+  TOKEN = "token",
   LENGHT_COMPLICATIONS = "lenghtComplications",
 
   URL = "url",
-  CONTINUE_METHOD = "continue_method",
-  ERROR_METHOD = "error_metod",
-  FILES_LIST = "files_list",
   FILE_INDEX = "file_index",
-  CODE = "code",
-  DATA = "data",
-  CONTEXT = "context",
 }
 
 //*****************************************************************************
 //Общий функционал
 class BooksAPI {
-  const api_url = "https://api.litres.ru";
+  var server_url = null;
+  var api_url = null;
   // const books_proxy_url = "https://fv.n-drive.cf";
   const books_proxy_url = "https://cdn.nextdriver.ru";
-  const website_url = "https://www.litres.ru";
+
+  function initialize() {
+    server_url = Application.Properties.getValue(SERVER);
+    api_url = server_url;
+    var lastSymb = server_url.substring(
+      server_url.length() - 1,
+      server_url.length()
+    );
+    if (lastSymb.equals("/")) {
+      api_url += "api";
+      server_url = server_url.substring(0,server_url.length() - 1);
+    } else {
+      api_url += "/api";
+    }
+    logger.debug(server_url);
+    logger.debug(api_url);
+  }
 
   // **************************************************************************
   function arrayToStringArray(arr) {
@@ -65,29 +70,12 @@ class BooksAPI {
       return arr;
     }
   }
+
   // **************************************************************************
   // Обработка ошибок
   function onError(msgArray) {
     logger.error("onError: " + msgArray);
     WatchUi.pushView(new InfoView(msgArray), null, WatchUi.SLIDE_IMMEDIATE);
-  }
-
-  // **************************************************************************
-  // Формирование заголовков запроса
-  function commonHeaders(sid) {
-    var headers = {
-      "Content-Type" => Communications.REQUEST_CONTENT_TYPE_JSON,
-      "User-Agent"
-      =>
-      "Mozilla/5.0 (X11; Linux x86_64; rv:134.0) Gecko/20100101 Firefox/134.0",
-      "app-id" => "115",
-      "client-host" => "www.litres.ru",
-    };
-    if (sid != null) {
-      headers["Session-Id"] = sid;
-      headers["Cookie"] = "SID=" + sid;
-    }
-    return headers;
   }
 
   // **************************************************************************
