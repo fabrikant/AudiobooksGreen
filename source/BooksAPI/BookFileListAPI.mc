@@ -62,7 +62,7 @@ class BookFileListAPI extends BooksAPI {
       var filesList = [];
       for (var i = 0; i < files.size(); i++) {
         var fileObj = {
-          BooksStore.FILE_ID => files[i]["metadata"]["path"],
+          BooksStore.FILE_ID => files[i]["ino"],
           BooksStore.FILE_NAME => files[i]["metadata"]["filename"],
           BooksStore.DURATION => files[i]["duration"].toNumber(),
         };
@@ -128,7 +128,7 @@ class BookFileListAPI extends BooksAPI {
     if (files instanceof Lang.Array) {
       for (var i = 0; i < files.size(); i++) {
         var fileObj = {
-          BooksStore.FILE_ID => files[i]["url"],
+          BooksStore.FILE_ID => files[i]["id"],
           BooksStore.FILE_NAME => files[i]["filename"],
           BooksStore.DURATION => files[i]["duration"].toNumber(),
         };

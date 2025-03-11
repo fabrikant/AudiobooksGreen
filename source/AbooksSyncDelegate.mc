@@ -99,12 +99,12 @@ class AbooksSyncDelegate extends Communications.SyncDelegate {
       bookLoader.start();
     } else {
       logger.debug("Получены списки файлов по всем книгам");
-      // var filesToDownload = booksStorage.getFilesToDownload();
-      // var downloader = new BookFilesDownloaderAPI(
-      //   booksStorage,
-      //   filesToDownload
-      // );
-      // downloader.start();
+      var filesToDownload = booksStorage.getFilesToDownload();
+      var downloader = new BookFilesDownloaderAPI(
+        booksStorage,
+        filesToDownload
+      );
+      downloader.start();
     }
   }
 
