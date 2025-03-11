@@ -4,6 +4,7 @@ import Toybox.Lang;
 class WebRequestWrapper {
   hidden var finalCallback; // function always takes 3 arguments
   hidden var context; // this is the 3rd argument
+  hidden var url;
 
   function initialize(context) {
     self.context = context;
@@ -11,6 +12,8 @@ class WebRequestWrapper {
 
   function start(url, params, options, callback) {
     self.finalCallback = callback;
+    self.url = url;
+    logger.debug("start url: " + url);
     Communications.makeWebRequest(
       url,
       params,
@@ -20,6 +23,7 @@ class WebRequestWrapper {
   }
 
   function onWebResponse(code, data) {
+    logger.debug("code: " + code + " url: " + url);
     if (finalCallback instanceof Lang.Method) {
       finalCallback.invoke(code, data, context);
     }

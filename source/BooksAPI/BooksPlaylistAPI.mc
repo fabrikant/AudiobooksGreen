@@ -1,17 +1,19 @@
 import Toybox.Communications;
 import Toybox.Application;
 
-class BooksPlaylistsAPI extends BooksAPI {
+class BooksPlaylistAPI extends BooksAPI {
   var finalCallback = null;
   var token = null;
+  var playlistId = null;
 
   //***************************************************************************
-  function initialize(callback) {
+  function initialize(callback, playlistId) {
     if (callback == null) {
       finalCallback = self.method(:doNothing);
     } else {
       self.finalCallback = callback;
     }
+    self.playlistId = playlistId;
     BooksAPI.initialize();
   }
 
@@ -34,9 +36,9 @@ class BooksPlaylistsAPI extends BooksAPI {
       return;
     }
 
-    // Пробуем получить список плейлистов без прокси
-    var url = api_url + "/playlists";
-    var callback = self.method(:onNativePlaylists);
+    // Пробуем получить список книг без прокси
+    var url = api_url + "/playlists/" + playlistId;
+    var callback = self.method(:onNativePlaylist);
     var headers = {
       "Authorization" => "Bearer " + token,
     };
@@ -51,24 +53,36 @@ class BooksPlaylistsAPI extends BooksAPI {
   }
 
   //***************************************************************************
-  function onNativePlaylists(code, data, context) {
+  function onNativePlaylist(code, data, context) {
     if (code == 200) {
       var result = [];
-      var playlists = data["playlists"];
-      for (var i = 0; i < playlists.size(); i++) {
+      var books = data["items"];
+      for (var i = 0; i < books.size(); i++) {
+        var bookObj = books[i]["libraryItem"];
+        logger.debug(bookObj);
         result.add({
-          BOOKS_FOLDER_ID => playlists[i]["id"],
-          BOOKS_FOLDER_NAME => playlists[i]["name"],
+          BooksStore.BOOK_ID => bookObj["id"],
+          BooksStore.BOOK_TITLE => bookObj["media"]["metadata"]["title"],
+          BooksStore.BOOK_AUTHOR => bookObj["media"]["metadata"]["authors"][0][
+            "name"
+          ],
+          BooksStore.BOOK_COVER_URL => bookObj["media"]["coverPath"],
         });
       }
+
+      logger.debug(result);
       finalCallback.invoke(result);
       return;
     } else if (code == -402) {
       //слишком большой ответ нужен запрос через прокси
 
-      var url = books_proxy_url+"/audiobookshelf/playlists";
-      var callback = self.method(:onProxyPlaylists);
-      var params = { "server" => server_url, "token" => token };
+      var url = books_proxy_url + "/audiobookshelf/playlist";
+      var callback = self.method(:onProxyPlaylist);
+      var params = {
+        "server" => server_url,
+        "token" => token,
+        "playlist_id" => playlistId,
+      };
       var headers = {
         "Content-Type" => Communications.REQUEST_CONTENT_TYPE_URL_ENCODED,
       };
@@ -96,14 +110,17 @@ class BooksPlaylistsAPI extends BooksAPI {
   }
 
   //***************************************************************************
-  function onProxyPlaylists(code, data, context) {
+  function onProxyPlaylist(code, data, context) {
     var result = [];
     if (code == 200) {
-      var playlists = data;
-      for (var i = 0; i < playlists.size(); i++) {
+      var books = data;
+      for (var i = 0; i < books.size(); i++) {
+        var bookObj = books[i];
         result.add({
-          BOOKS_FOLDER_ID => playlists[i]["id"],
-          BOOKS_FOLDER_NAME => playlists[i]["name"],
+          BooksStore.BOOK_ID => bookObj["id"],
+          BooksStore.BOOK_TITLE => bookObj["title"],
+          BooksStore.BOOK_AUTHOR => bookObj["author"],
+          BooksStore.BOOK_COVER_URL => bookObj["cover"],
         });
       }
     } else if (code < 0) {
