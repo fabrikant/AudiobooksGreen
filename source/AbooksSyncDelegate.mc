@@ -68,18 +68,8 @@ class AbooksSyncDelegate extends Communications.SyncDelegate {
   }
 
   // **************************************************************************
-  // После загрузки обложек, синхронизируем закладки
+  // После загрузки обложек, загружаем список файлов
   function onCoversDownload(booksStorage) {
-    var progress = new ProgressAPI(
-      self.method(:onProgressSync),
-      booksStorage
-    );
-    progress.start();
-  }
-
-  // **************************************************************************
-  // После синхронизации закладок, скачиваем контент
-  function onProgressSync(booksStorage) {
     var idsToDownload = booksStorage.getIdsToDownload();
     startLoadingFileList(booksStorage, idsToDownload, 0);
   }
@@ -99,12 +89,12 @@ class AbooksSyncDelegate extends Communications.SyncDelegate {
       bookLoader.start();
     } else {
       logger.debug("Получены списки файлов по всем книгам");
-      var filesToDownload = booksStorage.getFilesToDownload();
-      var downloader = new BookFilesDownloaderAPI(
-        booksStorage,
-        filesToDownload
+      // Загружаем закладки
+      var progress = new ProgressAPI(
+        self.method(:onProgressSync),
+        booksStorage
       );
-      downloader.start();
+      progress.start();
     }
   }
 
@@ -113,6 +103,14 @@ class AbooksSyncDelegate extends Communications.SyncDelegate {
   function onLoadFileList(booksStorage, idsToDownload, index) {
     index += 1;
     startLoadingFileList(booksStorage, idsToDownload, index);
+  }
+
+  // **************************************************************************
+  // После синхронизации закладок, скачиваем контент
+  function onProgressSync(booksStorage) {
+    var filesToDownload = booksStorage.getFilesToDownload();
+    var downloader = new BookFilesDownloaderAPI(booksStorage, filesToDownload);
+    downloader.start();
   }
 
   // **************************************************************************
