@@ -3,7 +3,6 @@ import Toybox.Communications;
 import Toybox.Application;
 
 class CommandtemSyncBoomarks extends CommandtemAbstract {
-  
   function initialize() {
     CommandtemAbstract.initialize(
       Rez.Strings.startBookmarksSync,
@@ -15,6 +14,24 @@ class CommandtemSyncBoomarks extends CommandtemAbstract {
   }
 
   function command() {
-    // BookmarksGUI.startSync();
+    // Показываем прогрессбар, чтобы пользователю было
+    // не так скучно ждать авторизацию и получение папок
+    WatchUi.pushView(
+      new WatchUi.ProgressBar(
+        Application.loadResource(Rez.Strings.progressMessageSyncBookmarks),
+        null
+      ),
+      null,
+      WatchUi.SLIDE_IMMEDIATE
+    );
+
+    var booksStorage = new BooksStore();
+    var syncAgent = new ProgressAPI(self.method(:onSync), booksStorage);
+    syncAgent.start();
+  }
+
+  function onSync(booksStorage) {
+    //Закрываем прогрессбар
+    WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
   }
 }
