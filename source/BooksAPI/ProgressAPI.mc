@@ -6,7 +6,7 @@ class ProgressAPI extends BooksAPI {
   var booksStorage = null;
   var bookKeys = null;
   var token = null;
-  var serverProgress = null;
+  var serverBookmarks = null;
 
   //***************************************************************************
   function initialize(finalCallback, booksStorage) {
@@ -30,12 +30,14 @@ class ProgressAPI extends BooksAPI {
     authorisationProcessor.start();
   }
 
+  //***************************************************************************
   function onAuthorisation(token) {
     self.token = token;
-    serverProgress = [];
+    serverBookmarks = {};
     getBookProgressFromServer(0);
   }
 
+  //***************************************************************************
   function getBookProgressFromServer(keyIndex) {
     if (keyIndex < bookKeys.size()) {
       var bookId = bookKeys[keyIndex];
@@ -56,260 +58,176 @@ class ProgressAPI extends BooksAPI {
       );
     } else {
       logger.debug("Прогресс по всем книгам получен");
-      finalCallback.invoke(booksStorage);
+      bookmarksProcessing();
     }
   }
 
+  //***************************************************************************
   function onGetBookProgressFromServer(code, data, keyIndex) {
     if (code == 200) {
-      // logger.debug(data);
       var bookId = bookKeys[keyIndex];
       var currentProgress = data["currentTime"].toLong();
       var progressTime = data["lastUpdate"].toLong();
-      var serverBookmark = ContentProcessor.createBookmarkArrayForBook(
+      var serverBookmark = ContentProcessor.bookmarkFromAbsolutePosition(
         bookId,
         currentProgress,
         progressTime
       );
-      
-      logger.debug("bookId: " + bookId + " progress " + serverBookmark);
-      if (serverBookmark instanceof Lang.Array){}
+
+      if (serverBookmark instanceof Lang.Array) {
+        logger.debug(
+          "Получена закладка bookId: " + bookId + " progress " + serverBookmark
+        );
+        serverBookmarks[bookId] = serverBookmark;
+      }
     }
     keyIndex += 1;
     getBookProgressFromServer(keyIndex);
   }
+
+  //***************************************************************************
+  function bookmarksProcessing() {
+    // Работаем с закладками на устройстве и полученными с сервера
+    // готовим данные для передачи на сервер
+
+    var webBooksId = [];
+    var bookmarksToUpload = [];
+    var serverBookmarksKeys = serverBookmarks.keys();
+
+    // Перебираем полученные с сервера закладки
+    // определяем какие нужно записать на устройство
+    // формируем первоначальный список закладок для
+    // выгрузки на сервер
+    for (var i = 0; i < serverBookmarksKeys.size(); i++) {
+      var bookId = serverBookmarksKeys[i];
+      var serverBookmark = serverBookmarksKeys[bookId];
+      webBooksId.add(bookId);
+
+      var deviceBookmark = booksStorage.getBookmark(bookId);
+
+      if (deviceBookmark == null) {
+        // Записываем закладку на устройство
+        booksStorage.saveBookmark(bookId, serverBookmark);
+      } else {
+        var needToSave = false;
+        var needToUpload = false;
+
+        if (deviceBookmark[0] > serverBookmark[0]) {
+          //На часах слушаем более поздний файл
+          needToUpload = true;
+        } else if (deviceBookmark[0] < serverBookmark[0]) {
+          //На сервере слушаем более поздний файл
+          needToSave = true;
+        } else {
+          // Слушаем один и тот же файл. Сравниваем позицию
+          if (deviceBookmark[1] > serverBookmark[1]) {
+            needToUpload = true;
+          } else if (deviceBookmark[1] < serverBookmark[1]) {
+            needToSave = true;
+          }
+        }
+
+        if (needToUpload) {
+          //добавляем закладку к выгружаемым
+          bookmarksToUpload.add(
+            createBookmarkUploadItem(
+              bookId,
+              deviceBookmark[0],
+              deviceBookmark[1]
+            )
+          );
+          logger.debug(
+            "Закладка для отправки на сервер: " + bookId + " " + deviceBookmark
+          );
+        }
+        if (needToSave) {
+          // Записываем закладку на устройство
+          booksStorage.saveBookmark(bookId, serverBookmark);
+        }
+      }
+    }
+
+    // Перебираем все закладки на устройстве и если их нет в списке
+    // webBooksId, будем отправлять на сервер
+    for (var i = 0; i < bookKeys.size(); i++) {
+      var bookId = bookKeys[i];
+      if (webBooksId.indexOf(bookId) < 0) {
+        var deviceBookmark = booksStorage.getBookmark(bookId);
+        if (deviceBookmark != null) {
+          bookmarksToUpload.add(
+            createBookmarkUploadItem(
+              bookId,
+              deviceBookmark[0],
+              deviceBookmark[1]
+            )
+          );
+          logger.debug(
+            "Закладка для отправки на сервер: " + bookId + " " + deviceBookmark
+          );
+        }
+      }
+    }
+
+    if (bookmarksToUpload.size() > 0) {
+      sendBookmarks(bookmarksToUpload);
+    } else {
+      logger.debug("Нет закладок для выгрузки на сервер");
+      finalCallback.invoke(booksStorage);
+      return;
+    }
+  }
+
+  //***************************************************************************
+  function sendBookmarks(bookmarksToUpload) {
+    var url = api_url + "/audiobookshelf/set_progress";
+
+    var data = {
+      "server" => server_url,
+      "token" => token,
+      "items" => bookmarksToUpload,
+    };
+
+    var options = {
+      :method => Communications.HTTP_REQUEST_METHOD_POST,
+      :headers => {
+        "Content-Type" => Communications.REQUEST_CONTENT_TYPE_JSON,
+      },
+      :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON,
+    };
+    WebRequest.makeWebRequest(
+      url,
+      data,
+      options,
+      self.method(:onSendBookmarks)
+    );
+
+    finalCallback.invoke(booksStorage);
+    return;
+  }
+
+  // **************************************************************************
+  function onSendBookmarks(code, data, context) {
+    logger.debug("Результат выгрузки закладок. code: " + code + " data" + data);
+  }
+
+  // **************************************************************************
+  function createBookmarkUploadItem(bookId, fileIndex, position) {
+    var percent = ContentProcessor.calculateProcentOfProgress(
+      bookId,
+      fileIndex,
+      position
+    );
+
+    var absolutePosition = ContentProcessor.absolutePositionFromBookmark(
+      bookId,
+      fileIndex,
+      position
+    );
+
+    return {
+      "libraryItemId" => bookId.toString(),
+      "currentTime" => absolutePosition,
+      "progress" => percent.toFloat() / 100,
+    };
+  }
 }
-
-// // **************************************************************************
-//   function start() {
-//     if (License.isFullVersion()) {
-//       var authentificator = new BooksAuthentificationAPI(
-//         self.method(:onAutorisation)
-//       );
-//       authentificator.start();
-//     } else {
-//       logger.debug("Пропущена синхронизация закладок в бесплатной версии");
-//       finalCallback.invoke(booksStorage);
-//     }
-//   }
-
-//   // **************************************************************************
-//   function onAutorisation() {
-//     sid = Application.Storage.getValue(SID);
-//     bookKeys = booksStorage.booksOnDevice.keys();
-//     if (bookKeys.size() == 0) {
-//       logger.debug("Нет книг на устройстве. Пропуск синхронизации закладок");
-//       finalCallback.invoke(booksStorage);
-//       return;
-//     }
-
-//     var url = books_proxy_url + "/litres_get_bookmarks/";
-//     var context = { URL => url };
-//     var data = {
-//       "sid" => sid,
-//       "arts" => arrayToStringArray(bookKeys),
-//     };
-//     logger.debug("Запрос закладок: " + data);
-//     Communications.makeWebRequest(
-//       url,
-//       data,
-//       createOptions(sid, context),
-//       self.method(:onGettingBookmarks)
-//     );
-//   }
-
-//   // **************************************************************************
-//   //   {
-//   //   "success": true,
-//   //   "arts": [
-//   //     {
-//   //       "68859369": [
-//   //         "9",
-//   //         "65",
-//   //         1740412521
-//   //       ]
-//   //     },
-//   //     {
-//   //       "69465952": [
-//   //         "0",
-//   //         "120",
-//   //         1740470208
-//   //       ]
-//   //     }
-//   //   ]
-//   // }
-//   function onGettingBookmarks(code, data, context) {
-//     if (code == 200) {
-//       // Успешно пытаемся распарсить ответ
-//       if (data["success"] == null or data["success"] != true) {
-//         logger.error(
-//           "Ошбка при получении закладок: " +
-//             data["code"] +
-//             " " +
-//             data["message"]
-//         );
-//         finalCallback.invoke(booksStorage);
-//         return;
-//       }
-
-//       logger.debug("Получены закладки: " + data);
-
-//       var webBooksId = [];
-//       var bookmarksToUpload = [];
-
-//       // Перебираем полученные с сервера закладки
-//       // определяем какие нужно записать на устройство
-//       // формироуем первоначальный список закладок для
-//       // выгрузки на сервер
-//       for (var i = 0; i < data["arts"].size(); i++) {
-//         var bookmarkObj = data["arts"][i];
-
-//         var bookId = bookmarkObj.keys()[0];
-//         var serverBookmark = arrayToNumberArray(bookmarkObj[bookId]);
-//         bookId = bookId.toNumber();
-//         webBooksId.add(bookId);
-
-//         var deviceBookmark = booksStorage.getBookmark(bookId);
-
-//         if (deviceBookmark == null) {
-//           // Записываем закладку на устройство
-//           booksStorage.saveBookmark(bookId, serverBookmark);
-//         } else {
-//           //Нужно сравнить время. Кто позднее, тот актуальнее
-//           logger.debug(
-//             "Время закладок server: " +
-//               serverBookmark[2] +
-//               " device: " +
-//               deviceBookmark[2]
-//           );
-
-//           if (deviceBookmark[2] > serverBookmark[2]) {
-//             //добавляем закладку к выгружаемым
-
-//             bookmarksToUpload.add(
-//               createBookmarkUploadItem(
-//                 bookId,
-//                 deviceBookmark[0],
-//                 deviceBookmark[1]
-//               )
-//             );
-//             logger.debug(
-//               "Закладка для отправки на сервер: " +
-//                 bookId +
-//                 " " +
-//                 deviceBookmark
-//             );
-//           } else if (deviceBookmark[2] < serverBookmark[2]) {
-//             // Записываем закладку на устройство
-//             booksStorage.saveBookmark(bookId, serverBookmark);
-//           }
-//         }
-//       }
-
-//       // Перебираем все закладки на устройстве и если их нет в списке
-//       // webBooksId, будем отправлять на сервер
-//       for (var i = 0; i < bookKeys.size(); i++) {
-//         var bookId = bookKeys[i];
-//         if (webBooksId.indexOf(bookId) < 0) {
-//           var deviceBookmark = booksStorage.getBookmark(bookId);
-//           if (deviceBookmark != null) {
-//             bookmarksToUpload.add(
-//               createBookmarkUploadItem(
-//                 bookId,
-//                 deviceBookmark[0],
-//                 deviceBookmark[1]
-//               )
-//             );
-//             logger.debug(
-//               "Закладка для отправки на сервер: " +
-//                 bookId +
-//                 " " +
-//                 deviceBookmark
-//             );
-//           }
-//         }
-//       }
-
-//       if (bookmarksToUpload.size() > 0) {
-//         sendBookmarks(bookmarksToUpload);
-//       } else {
-//         logger.debug("Нет закладок для выгрузки на сервер");
-//         finalCallback.invoke(booksStorage);
-//         return;
-//       }
-//     } else {
-//       logger.error("Код: " + code + " url: " + context[URL]);
-//       finalCallback.invoke(booksStorage);
-//       return;
-//     }
-//   }
-
-//   // **************************************************************************
-//   // Отправляем закладки на сервер
-//   // В принципе нам не нужен ответ. Успех или неуспех ничего не меняет
-//   // получаем ответ только для логов
-//   // {
-//   //   "sid": "string",
-//   //   "arts": [
-//   //     {
-//   //       "art": "string",
-//   //       "file": "string",
-//   //       "time_start": "string",
-//   //       "percent": "string"
-//   //     }
-//   //   ]
-//   // }
-//   function sendBookmarks(bookmarksToUpload) {
-//     var url = books_proxy_url + "/litres_set_bookmarks/";
-//     var context = { URL => url };
-//     var data = {
-//       "sid" => sid,
-//       "arts" => bookmarksToUpload,
-//     };
-//     Communications.makeWebRequest(
-//       url,
-//       data,
-//       createOptions(sid, context),
-//       self.method(:onSettingBookmark)
-//     );
-
-//     finalCallback.invoke(booksStorage);
-//     return;
-//   }
-
-//   // **************************************************************************
-//   function onSettingBookmark(code, data, context) {
-//     if (code == 200) {
-//       logger.debug("Результат " + context[URL] + " " + data);
-//     } else {
-//       logger.error("code: " + code + " url " + context[URL]);
-//     }
-//   }
-
-//   // **************************************************************************
-//   function createBookmarkUploadItem(bookId, fileIndex, position) {
-//     var percent = ContentProcessor.calculateProcentOfProgress(
-//       bookId,
-//       fileIndex,
-//       position
-//     );
-
-//     return {
-//       "art" => bookId.toString(),
-//       "file" => fileIndex.toString(),
-//       "time_start" => position.toString(),
-//       "percent" => percent.toString(),
-//     };
-//   }
-
-//   // **************************************************************************
-//   function createOptions(sid, context) {
-//     return {
-//       :method => Communications.HTTP_REQUEST_METHOD_POST,
-//       :headers => {
-//         "Content-Type" => Communications.REQUEST_CONTENT_TYPE_JSON,
-//       },
-//       :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON,
-//       :context => context,
-//     };
-//   }

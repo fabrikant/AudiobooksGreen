@@ -7,7 +7,9 @@ import Toybox.Time.Gregorian;
 import Toybox.StringUtil;
 
 module ContentProcessor {
-  function createBookmarkArrayForBook(
+  
+  // **************************************************************************
+  function bookmarkFromAbsolutePosition(
     bookId,
     progressInSeconds,
     progresUpdatedUnixTime
@@ -33,6 +35,20 @@ module ContentProcessor {
     return result;
   }
 
+  // **************************************************************************
+  function absolutePositionFromBookmark(bookId, fileIndex, position) {
+    var result = position;
+    var files = BooksStore.getFileList(bookId);
+    if (files instanceof Lang.Array and files.size() < fileIndex) {
+      for (var i = 0; i < fileIndex; i++) {
+        var fileDuration = files[i][BooksStore.DURATION];
+        result += fileDuration;
+      }
+    }
+    return result;
+  }
+
+  // **************************************************************************
   function calculateProcentOfProgress(bookId, fileIndex, position) {
     var files = BooksStore.getFileList(bookId);
 
@@ -55,6 +71,7 @@ module ContentProcessor {
     return percent;
   }
 
+  // **************************************************************************
   // Начало установки метаданных из описания книги
   function setMetadataFromBookDescription(bookId) {
     var callback = new Lang.Method(
@@ -76,6 +93,7 @@ module ContentProcessor {
     );
   }
 
+  // **************************************************************************
   // Продолжение после подтвереждение установки
   // метаданных из описания книги
   function continueSetMetadataAfterConfirmation(bookId) {
@@ -109,6 +127,7 @@ module ContentProcessor {
     }
   }
 
+  // **************************************************************************
   function removeAllBooks() {
     var booksStorage = new BooksStore();
     var keys = booksStorage.booksOnDevice.keys();
@@ -119,6 +138,7 @@ module ContentProcessor {
     Media.resetContentCache();
   }
 
+  // **************************************************************************
   // В зависимости от того, насколько давно
   // книга была поставлена на паузу, сдвигаем
   // позицию назад на разное время,
@@ -152,6 +172,7 @@ module ContentProcessor {
     return result;
   }
 
+  // **************************************************************************
   function translitText(text) {
     var array = text.toCharArray();
     var maxLenght = Application.Properties.getValue(LENGHT_COMPLICATIONS);
