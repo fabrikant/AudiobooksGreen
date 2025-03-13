@@ -54,12 +54,13 @@ class BookCoversDownloaderAPI extends BooksAPI {
   function startLoadingCovers() {
     if (keyIndex < bookKeys.size()) {
       var bookInfo = booksStorage.booksOnDevice[bookKeys[keyIndex]];
-      // var url =
-      //   api_url + "/items/" + bookKeys[keyIndex] + "/cover?token=" + token;
-       var url = "https://books.n-drive.cf/audiobookshelf/api/items/7f077eaa-13c3-4154-a3de-af8251209164/cover?ts=1741435639220";
-      logger.debug("start: " + url);
+      var responseCallback = self.method(:onGettingImage);
+
+      var url =
+        api_url + "/items/" + bookKeys[keyIndex] + "/cover?token=" + token;
       var params = {
-        "token" => token,
+        "width" => coverMaxSize,
+        "format" => "jpeg",
       };
       var options = {
         :maxWidth => coverMaxSize,
@@ -69,7 +70,7 @@ class BookCoversDownloaderAPI extends BooksAPI {
       };
       Communications.makeImageRequest(
         url,
-        {},
+        params,
         options,
         self.method(:onGettingImage)
       );
@@ -81,8 +82,8 @@ class BookCoversDownloaderAPI extends BooksAPI {
 
   // **************************************************************************
   function onGettingImage(code, data) {
+    var bookInfo = booksStorage.booksOnDevice[bookKeys[keyIndex]];
     if (code == 200) {
-      var bookInfo = booksStorage.booksOnDevice[bookKeys[keyIndex]];
       logger.info("Загружена обложка: " + bookInfo[BooksStore.BOOK_TITLE]);
       //Записываем данные обложки
       Application.Storage.setValue(
@@ -91,10 +92,8 @@ class BookCoversDownloaderAPI extends BooksAPI {
       );
     } else {
       logger.error("Код: " + code);
-      var bookInfo = booksStorage.booksOnDevice[bookKeys[keyIndex]];
       logger.debug(bookInfo[BooksStore.BOOK_COVER_URL]);
     }
-
     // Запускаем загрузку следующего файла
     keyIndex += 1;
     startLoadingCovers();

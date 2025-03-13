@@ -69,6 +69,7 @@ class BooksPlaylistsAPI extends BooksAPI {
       var url = books_proxy_url+"/audiobookshelf/playlists";
       var callback = self.method(:onProxyPlaylists);
       var params = { "server" => server_url, "token" => token };
+      logger.debug(params);
       var headers = {
         "Content-Type" => Communications.REQUEST_CONTENT_TYPE_URL_ENCODED,
       };

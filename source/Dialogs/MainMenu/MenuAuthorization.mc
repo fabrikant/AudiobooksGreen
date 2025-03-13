@@ -28,7 +28,7 @@ class MenuAuthorization extends WatchUi.Menu2 {
       new PickerItem(
         Rez.Strings.server,
         Application.Properties.getValue(SERVER),
-        PASSWORD,
+        SERVER,
         null
       )
     );
