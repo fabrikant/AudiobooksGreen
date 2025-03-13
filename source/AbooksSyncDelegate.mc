@@ -68,18 +68,18 @@ class AbooksSyncDelegate extends Communications.SyncDelegate {
   }
 
   // **************************************************************************
-  // После загрузкт обложек, синхронизируем закладки
+  // После загрузки обложек, синхронизируем закладки
   function onCoversDownload(booksStorage) {
-    var bookmarksDownloader = new ProgressAPI(
-      self.method(:onBookmarksDownload),
+    var progress = new ProgressAPI(
+      self.method(:onProgressSync),
       booksStorage
     );
-    bookmarksDownloader.start();
+    progress.start();
   }
 
   // **************************************************************************
   // После синхронизации закладок, скачиваем контент
-  function onBookmarksDownload(booksStorage) {
+  function onProgressSync(booksStorage) {
     var idsToDownload = booksStorage.getIdsToDownload();
     startLoadingFileList(booksStorage, idsToDownload, 0);
   }

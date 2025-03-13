@@ -7,6 +7,32 @@ import Toybox.Time.Gregorian;
 import Toybox.StringUtil;
 
 module ContentProcessor {
+  function createBookmarkArrayForBook(
+    bookId,
+    progressInSeconds,
+    progresUpdatedUnixTime
+  ) {
+    var result = null;
+    var files = BooksStore.getFileList(bookId);
+    if (files instanceof Lang.Array) {
+      var remain = progressInSeconds;
+      for (var i = 0; i < files.size(); i++) {
+        var fileDuration = files[i][BooksStore.DURATION];
+        if (remain < fileDuration) {
+          var unixTime = Time.now().value();
+          if (progresUpdatedUnixTime != null) {
+            unixTime = progresUpdatedUnixTime;
+          }
+          result = [i, remain, unixTime];
+          break;
+        } else {
+          remain -= fileDuration;
+        }
+      }
+    }
+    return result;
+  }
+
   function calculateProcentOfProgress(bookId, fileIndex, position) {
     var files = BooksStore.getFileList(bookId);
 

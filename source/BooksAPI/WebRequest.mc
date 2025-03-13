@@ -2,8 +2,8 @@ import Toybox.Communications;
 import Toybox.Lang;
 
 class WebRequestWrapper {
-  hidden var finalCallback; // function always takes 3 arguments
-  hidden var context; // this is the 3rd argument
+  hidden var finalCallback; 
+  hidden var context; 
   hidden var url;
 
   function initialize(context) {
@@ -33,6 +33,8 @@ class WebRequestWrapper {
 module WebRequest {
   function makeWebRequest(url, params, options, callback) {
     var context = null;
+    // создаем новые опции, чтобы не испортить старые
+    // возможно они будут использованы повторно
     var newOptions = {};
     var keys = options.keys();
     for (var i = 0; i < keys.size(); i++) {
