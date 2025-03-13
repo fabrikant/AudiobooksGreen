@@ -2,6 +2,7 @@ import Toybox.System;
 import Toybox.Communications;
 import Toybox.Application;
 import Toybox.Lang;
+import Toybox.Media;
 
 //*****************************************************************************
 // Получение информации о книге
@@ -80,7 +81,7 @@ class BookFilesDownloaderAPI extends BooksAPI {
       :method => Communications.HTTP_REQUEST_METHOD_GET,
       :headers => headers,
       :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_AUDIO,
-      :mediaEncoding => Toybox.Media.ENCODING_MP3,
+      :mediaEncoding => getEncoding(fileIndex),
       :context => context,
       :fileDownloadProgressCallback => self.method(:notifySyncProgress),
     };
@@ -117,6 +118,28 @@ class BookFilesDownloaderAPI extends BooksAPI {
       booksStorage.checkBooksDownloadComplete();
       Communications.notifySyncComplete(null);
     }
+  }
+
+  // **************************************************************************
+  function getEncoding(fileIndex) {
+    // По умолчанию думаем, что это mp3
+    var encoding = Toybox.Media.ENCODING_MP3;
+    var filename = filesList[fileIndex][BooksStore.FILE_NAME];
+    var filnameLenght = filename.length();
+    var fileExtension = filename.substring(filnameLenght-3,filnameLenght);
+    fileExtension = fileExtension.toLower();
+
+    if (fileExtension.equals("mp3")) {
+      encoding = Media.ENCODING_MP3;
+    } else if (fileExtension.equals("m4a")) {
+      encoding = Media.ENCODING_M4A;
+    } else if (fileExtension.equals("wav")) {
+      encoding = Media.ENCODING_WAV;
+    } else if (fileExtension.equals("adts")) {
+      encoding = Media.ENCODING_ADTS;
+    }
+
+    return encoding;
   }
 
   // **************************************************************************
