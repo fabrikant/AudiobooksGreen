@@ -41,8 +41,6 @@ class BooksAPI {
     } else {
       api_url += "/api";
     }
-    logger.debug(server_url);
-    logger.debug(api_url);
   }
 
   // **************************************************************************
