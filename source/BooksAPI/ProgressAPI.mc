@@ -1,5 +1,6 @@
 import Toybox.Lang;
 import Toybox.Communications;
+import Toybox.Time;
 
 class ProgressAPI extends BooksAPI {
   var finalCallback = null;
@@ -67,7 +68,7 @@ class ProgressAPI extends BooksAPI {
     if (code == 200) {
       var bookId = bookKeys[keyIndex];
       var currentProgress = data["currentTime"].toLong();
-      var progressTime = data["lastUpdate"].toLong();
+      var progressTime = data["lastUpdate"].toLong() / 1000;
       var serverBookmark = ContentProcessor.bookmarkFromAbsolutePosition(
         bookId,
         currentProgress,
@@ -100,7 +101,7 @@ class ProgressAPI extends BooksAPI {
     // выгрузки на сервер
     for (var i = 0; i < serverBookmarksKeys.size(); i++) {
       var bookId = serverBookmarksKeys[i];
-      var serverBookmark = serverBookmarksKeys[bookId];
+      var serverBookmark = serverBookmarks[bookId];
       webBooksId.add(bookId);
 
       var deviceBookmark = booksStorage.getBookmark(bookId);
@@ -109,25 +110,9 @@ class ProgressAPI extends BooksAPI {
         // Записываем закладку на устройство
         booksStorage.saveBookmark(bookId, serverBookmark);
       } else {
-        var needToSave = false;
-        var needToUpload = false;
-
-        if (deviceBookmark[0] > serverBookmark[0]) {
-          //На часах слушаем более поздний файл
-          needToUpload = true;
-        } else if (deviceBookmark[0] < serverBookmark[0]) {
-          //На сервере слушаем более поздний файл
-          needToSave = true;
-        } else {
-          // Слушаем один и тот же файл. Сравниваем позицию
-          if (deviceBookmark[1] > serverBookmark[1]) {
-            needToUpload = true;
-          } else if (deviceBookmark[1] < serverBookmark[1]) {
-            needToSave = true;
-          }
-        }
-
-        if (needToUpload) {
+        var momentDevice = new Time.Moment(deviceBookmark[2]);
+        var momentServer = new Time.Moment(serverBookmark[2]);
+        if (momentDevice.greaterThan(momentServer)) {
           //добавляем закладку к выгружаемым
           bookmarksToUpload.add(
             createBookmarkUploadItem(
@@ -139,8 +124,7 @@ class ProgressAPI extends BooksAPI {
           logger.debug(
             "Закладка для отправки на сервер: " + bookId + " " + deviceBookmark
           );
-        }
-        if (needToSave) {
+        } else if (momentServer.greaterThan(momentDevice)) {
           // Записываем закладку на устройство
           booksStorage.saveBookmark(bookId, serverBookmark);
         }
@@ -177,9 +161,10 @@ class ProgressAPI extends BooksAPI {
     }
   }
 
+
   //***************************************************************************
   function sendBookmarks(bookmarksToUpload) {
-    var url = api_url + "/audiobookshelf/set_progress";
+    var url = books_proxy_url + "/audiobookshelf/set_progress";
 
     var data = {
       "server" => server_url,
@@ -192,7 +177,7 @@ class ProgressAPI extends BooksAPI {
       :headers => {
         "Content-Type" => Communications.REQUEST_CONTENT_TYPE_JSON,
       },
-      :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON,
+      :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_TEXT_PLAIN,
     };
     WebRequest.makeWebRequest(
       url,

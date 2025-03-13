@@ -53,9 +53,6 @@ class BookCoversDownloaderAPI extends BooksAPI {
   // **************************************************************************
   function startLoadingCovers() {
     if (keyIndex < bookKeys.size()) {
-      var bookInfo = booksStorage.booksOnDevice[bookKeys[keyIndex]];
-      var responseCallback = self.method(:onGettingImage);
-
       var url =
         api_url + "/items/" + bookKeys[keyIndex] + "/cover?token=" + token;
       var params = {
