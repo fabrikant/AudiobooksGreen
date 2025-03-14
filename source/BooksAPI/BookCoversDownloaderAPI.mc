@@ -12,14 +12,12 @@ class BookCoversDownloaderAPI extends BooksAPI {
   var booksStorage = null;
   var bookKeys = null;
   var keyIndex = null;
-  var token = null;
-
+ 
   // **************************************************************************
   function initialize(finalCallback, booksStorage) {
     self.booksStorage = booksStorage;
     self.finalCallback = finalCallback;
     self.coverMaxSize = Style.coverSize();
-    self.token = Application.Properties.getValue(TOKEN);
     BooksAPI.initialize();
   }
 
@@ -30,20 +28,10 @@ class BookCoversDownloaderAPI extends BooksAPI {
     var keys = booksStorage.booksOnDevice.keys();
     bookKeys = [];
     for (var i = 0; i < keys.size(); i++) {
-      var bookInfo = booksStorage.booksOnDevice[keys[i]];
-      if (
-        bookInfo[BooksStore.BOOK_COVER_URL] != null and
-        !bookInfo[BooksStore.BOOK_COVER_URL].equals("")
-      ) {
-        if (
-          Application.Storage.getValue(booksStorage.getCoverKey(keys[i])) ==
-          null
-        ) {
-          logger.debug(
-            "Добавлен идентификатор: " + keys[i] + " для загрузки обложки"
-          );
-          bookKeys.add(keys[i]);
-        }
+      var coverKey = booksStorage.getCoverKey(keys[i]);
+      if (Application.Storage.getValue(coverKey) == null) {
+        logger.debug("Добавлена книга: " + keys[i] + " для загрузки обложки");
+        bookKeys.add(keys[i]);
       }
     }
     keyIndex = 0;
@@ -54,7 +42,7 @@ class BookCoversDownloaderAPI extends BooksAPI {
   function startLoadingCovers() {
     if (keyIndex < bookKeys.size()) {
       var url =
-        api_url + "/items/" + bookKeys[keyIndex] + "/cover?token=" + token;
+        api_url + "/items/" + bookKeys[keyIndex] + "/cover";
       var params = {
         "width" => coverMaxSize,
         "format" => "jpeg",
@@ -88,8 +76,7 @@ class BookCoversDownloaderAPI extends BooksAPI {
         data
       );
     } else {
-      logger.error("Код: " + code);
-      logger.debug(bookInfo[BooksStore.BOOK_COVER_URL]);
+      logger.error("Не удалось загрузить обложку книги: " + bookInfo);
     }
     // Запускаем загрузку следующего файла
     keyIndex += 1;

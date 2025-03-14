@@ -22,6 +22,7 @@ class BooksPlaylistAPI extends BooksAPI {
 
   //***************************************************************************
   function start() {
+    logger.debug("Начало получения списка книг плейлиста: " + playlistId);
     var authorisationProcessor = new BooksAuthorisationAPI(
       self.method(:onAuthorisation)
     );
@@ -31,11 +32,17 @@ class BooksPlaylistAPI extends BooksAPI {
   //***************************************************************************
   function onAuthorisation(token) {
     self.token = token;
-    if (token == null) {
+    if (token == null or token.equals("")) {
+      var message =
+        Application.loadResource(Rez.Strings.notSet) +
+        " " +
+        Application.loadResource(Rez.Strings.token);
+      logger.error(message + ". Получение списка книг пропущено");
       finalCallback.invoke([]);
       return;
     }
 
+    logger.debug("Получение списка книг для плейлиста: " + playlistId);
     // Пробуем получить список книг без прокси
     var url = api_url + "/playlists/" + playlistId;
     var callback = self.method(:onNativePlaylist);
@@ -59,23 +66,20 @@ class BooksPlaylistAPI extends BooksAPI {
       var books = data["items"];
       for (var i = 0; i < books.size(); i++) {
         var bookObj = books[i]["libraryItem"];
-        logger.debug(bookObj);
         result.add({
           BooksStore.BOOK_ID => bookObj["id"],
           BooksStore.BOOK_TITLE => bookObj["media"]["metadata"]["title"],
           BooksStore.BOOK_AUTHOR => bookObj["media"]["metadata"]["authors"][0][
             "name"
           ],
-          BooksStore.BOOK_COVER_URL => bookObj["media"]["coverPath"],
         });
       }
 
-      logger.debug(result);
       finalCallback.invoke(result);
       return;
     } else if (code == -402) {
       //слишком большой ответ нужен запрос через прокси
-
+      logger.debug("Слишком большой ответ. Получаем список книг через прокси.");
       var url = books_proxy_url + "/audiobookshelf/playlist";
       var callback = self.method(:onProxyPlaylist);
       var params = {
@@ -120,7 +124,6 @@ class BooksPlaylistAPI extends BooksAPI {
           BooksStore.BOOK_ID => bookObj["id"],
           BooksStore.BOOK_TITLE => bookObj["title"],
           BooksStore.BOOK_AUTHOR => bookObj["author"],
-          BooksStore.BOOK_COVER_URL => bookObj["cover"],
         });
       }
     } else if (code < 0) {

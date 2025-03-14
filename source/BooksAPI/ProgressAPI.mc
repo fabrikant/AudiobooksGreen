@@ -18,6 +18,7 @@ class ProgressAPI extends BooksAPI {
 
   //***************************************************************************
   function start() {
+    logger.debug("Начало синхронизации прогресса");
     bookKeys = booksStorage.booksOnDevice.keys();
     if (bookKeys.size() == 0) {
       logger.debug("Нет книг на устройстве. Пропуск синхронизации закладок");
@@ -33,6 +34,15 @@ class ProgressAPI extends BooksAPI {
 
   //***************************************************************************
   function onAuthorisation(token) {
+    if (token == null or token.equals("")) {
+      var message =
+        Application.loadResource(Rez.Strings.notSet) +
+        " " +
+        Application.loadResource(Rez.Strings.token);
+      logger.error(message + ". Пропущена синхронизация прогресса");
+      finalCallback.invoke(booksStorage);
+      return;
+    }
     self.token = token;
     serverBookmarks = {};
     getBookProgressFromServer(0);
@@ -42,6 +52,7 @@ class ProgressAPI extends BooksAPI {
   function getBookProgressFromServer(keyIndex) {
     if (keyIndex < bookKeys.size()) {
       var bookId = bookKeys[keyIndex];
+      logger.debug("Запрос прогресса для книги: " + bookId);
       var url = api_url + "/me/progress/" + bookId;
       WebRequest.makeWebRequest(
         url,
@@ -58,15 +69,15 @@ class ProgressAPI extends BooksAPI {
         self.method(:onGetBookProgressFromServer)
       );
     } else {
-      logger.debug("Прогресс по всем книгам получен");
+      logger.debug("Заверешено получение прогресса с сервера");
       bookmarksProcessing();
     }
   }
 
   //***************************************************************************
   function onGetBookProgressFromServer(code, data, keyIndex) {
+    var bookId = bookKeys[keyIndex];
     if (code == 200) {
-      var bookId = bookKeys[keyIndex];
       var currentProgress = data["currentTime"].toLong();
       var progressTime = data["lastUpdate"].toLong() / 1000;
       var serverBookmark = ContentProcessor.bookmarkFromAbsolutePosition(
@@ -77,10 +88,15 @@ class ProgressAPI extends BooksAPI {
 
       if (serverBookmark instanceof Lang.Array) {
         logger.debug(
-          "Получена закладка bookId: " + bookId + " progress " + serverBookmark
+          "Получен прогресс для книги: " +
+            bookId +
+            " progress " +
+            serverBookmark
         );
         serverBookmarks[bookId] = serverBookmark;
       }
+    } else {
+      logger.debug("Не удалось получить прогресс для книги: " + bookId);
     }
     keyIndex += 1;
     getBookProgressFromServer(keyIndex);
@@ -122,7 +138,10 @@ class ProgressAPI extends BooksAPI {
             )
           );
           logger.debug(
-            "Закладка для отправки на сервер: " + bookId + " " + deviceBookmark
+            "Добавлен прогресс по книге для выгрузки на сервер: " +
+              bookId +
+              " " +
+              deviceBookmark
           );
         } else if (momentServer.greaterThan(momentDevice)) {
           // Записываем закладку на устройство
@@ -146,7 +165,10 @@ class ProgressAPI extends BooksAPI {
             )
           );
           logger.debug(
-            "Закладка для отправки на сервер: " + bookId + " " + deviceBookmark
+            "Добавлен прогресс по книге для выгрузки на сервер: " +
+              bookId +
+              " " +
+              deviceBookmark
           );
         }
       }
@@ -155,15 +177,15 @@ class ProgressAPI extends BooksAPI {
     if (bookmarksToUpload.size() > 0) {
       sendBookmarks(bookmarksToUpload);
     } else {
-      logger.debug("Нет закладок для выгрузки на сервер");
+      logger.debug("Нет данных о прогрессе для выгрузки на сервер");
       finalCallback.invoke(booksStorage);
       return;
     }
   }
 
-
   //***************************************************************************
   function sendBookmarks(bookmarksToUpload) {
+    logger.debug("Начало выгрузки прогресса по книгам на сервер");
     var url = books_proxy_url + "/audiobookshelf/set_progress";
 
     var data = {
@@ -192,7 +214,9 @@ class ProgressAPI extends BooksAPI {
 
   // **************************************************************************
   function onSendBookmarks(code, data, context) {
-    logger.debug("Результат выгрузки закладок. code: " + code + " data" + data);
+    logger.debug(
+      "Результат выгрузки прогресса. code: " + code + " data" + data
+    );
   }
 
   // **************************************************************************

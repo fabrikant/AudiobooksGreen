@@ -90,6 +90,9 @@ class BookFileListAPI extends BooksAPI {
       // непосредственно с сайта, возможно список слишком
       // большой. Пробуем запросить через прокси. Там не будет
       // лишних данных
+      logger.debug(
+        "Не удалось получить список файлов напрямую. Начало получения через прокси"
+      );
 
       var url = books_proxy_url + "/audiobookshelf/book";
       var callback = self.method(:onGetProxy);
@@ -120,7 +123,7 @@ class BookFileListAPI extends BooksAPI {
       return;
     }
 
-    logger.info("Получен список файлов");
+    logger.info("Получен список файлов:");
 
     var filesList = [];
 
@@ -153,5 +156,4 @@ class BookFileListAPI extends BooksAPI {
       finalCallback.invoke(booksStorage, arrayBooksId, currenIndexBooks);
     }
   }
-
 }

@@ -62,7 +62,25 @@ class BookFilesDownloaderAPI extends BooksAPI {
 
   // **************************************************************************
   function start() {
-    token = Application.Storage.getValue(TOKEN);
+    logger.debug("Начало загрузки файлов");
+    var authorisationProcessor = new BooksAuthorisationAPI(
+      self.method(:onAuthorisation)
+    );
+    authorisationProcessor.start();
+  }
+
+  // **************************************************************************
+  function onAuthorisation(token) {
+    self.token = token;
+    if (token == null or token.equals("")) {
+      var message =
+        Application.loadResource(Rez.Strings.notSet) +
+        " " +
+        Application.loadResource(Rez.Strings.token);
+      Communications.notifySyncComplete(message);
+      return;
+    }
+
     if (filesList.size() > 0) {
       downloadedNumbers = 0;
       startLoadingFile(0);
@@ -126,7 +144,7 @@ class BookFilesDownloaderAPI extends BooksAPI {
     var encoding = Toybox.Media.ENCODING_MP3;
     var filename = filesList[fileIndex][BooksStore.FILE_NAME];
     var filnameLenght = filename.length();
-    var fileExtension = filename.substring(filnameLenght-3,filnameLenght);
+    var fileExtension = filename.substring(filnameLenght - 3, filnameLenght);
     fileExtension = fileExtension.toLower();
 
     if (fileExtension.equals("mp3")) {

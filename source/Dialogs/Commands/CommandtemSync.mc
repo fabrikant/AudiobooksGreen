@@ -3,7 +3,6 @@ import Toybox.Communications;
 import Toybox.Application;
 
 class CommandtemSync extends CommandtemAbstract {
- 
   function initialize() {
     CommandtemAbstract.initialize(
       Rez.Strings.startSync,
@@ -17,7 +16,7 @@ class CommandtemSync extends CommandtemAbstract {
   function command() {
     if (Communications has :startSync2) {
       Communications.startSync2({
-        :message => Application.loadResource(Rez.Strings.syncMessage),
+        :message => Application.Properties.getValue(SERVER),
       });
     } else {
       Communications.startSync();

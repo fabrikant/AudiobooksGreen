@@ -4,19 +4,20 @@
     <string id="login">login</string>
     <string id="password">password</string>
     <string id="server">server</string>
-    <string id="token">API key</string>
-    <string id="booksFolder">Folder</string>
+    <string id="notSet">Not set</string>
+    <string id="token">API token</string>
+    <string id="booksFolder">Servers playlist</string>
     <string id="notSelected">Not selected</string>
     <string id="noFoldersFound">No folders found on server</string>
 
-    <string id="selectListMenuTitle">Select folder of books</string>
+    <string id="selectListMenuTitle">Select playlist of books</string>
     <string id="setLoginAndPassword">Please, set the loging and the password</string>
 
     <string id="playlist">Playlist</string>
     <string id="content">Fylly downloaded books</string>
     <string id="allBooks">Books on the server</string>
     <string id="fileList">List of files</string>
-    <string id="syncFolderNotSelected">Sync folder\nnot selected</string>
+    <string id="syncFolderNotSelected">Sync playlist\nnot selected</string>
 
 
     <string id="noContentsTitle">\nNothing</string>
@@ -45,7 +46,6 @@
     <string id="seconds">s</string>
 
 
-    <string id="syncMessage">waiting for litres sync</string>
     <string id="progressMessageWhileOpenFolders">Processing...</string>
     <string id="progressMessageSyncBookmarks">Sync the progress</string>
 

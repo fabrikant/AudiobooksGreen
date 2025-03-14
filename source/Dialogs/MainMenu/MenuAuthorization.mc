@@ -32,5 +32,13 @@ class MenuAuthorization extends WatchUi.Menu2 {
         null
       )
     );
+    addItem(
+      new PickerItem(
+        Rez.Strings.token,
+        Application.Properties.getValue(TOKEN),
+        TOKEN,
+        null
+      )
+    );
   }
 }

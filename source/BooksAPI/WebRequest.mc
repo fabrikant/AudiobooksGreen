@@ -2,8 +2,8 @@ import Toybox.Communications;
 import Toybox.Lang;
 
 class WebRequestWrapper {
-  hidden var finalCallback; 
-  hidden var context; 
+  hidden var finalCallback;
+  hidden var context;
   hidden var url;
 
   function initialize(context) {
@@ -13,7 +13,7 @@ class WebRequestWrapper {
   function start(url, params, options, callback) {
     self.finalCallback = callback;
     self.url = url;
-    logger.debug("start url: " + url);
+    logger.debug(httpMethodString(options) + " url: " + url);
     Communications.makeWebRequest(
       url,
       params,
@@ -23,10 +23,23 @@ class WebRequestWrapper {
   }
 
   function onWebResponse(code, data) {
-    logger.debug("code: " + code + " url: " + url);
+    logger.debug("response code: " + code + " url: " + url);
     if (finalCallback instanceof Lang.Method) {
       finalCallback.invoke(code, data, context);
     }
+  }
+
+  function httpMethodString(options) {
+    var result = "GET";
+    if (options[:method] == Communications.HTTP_REQUEST_METHOD_POST) {
+      result = "POST";
+    } else if (options[:method] == Communications.HTTP_REQUEST_METHOD_DELETE) {
+      result = "DELETE";
+    }
+    if (options[:method] == Communications.HTTP_REQUEST_METHOD_PUT) {
+      result = "PUT";
+    }
+    return result;
   }
 }
 

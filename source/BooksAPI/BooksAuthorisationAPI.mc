@@ -16,8 +16,10 @@ class BooksAuthorisationAPI extends BooksAPI {
   function doNothing(params) {}
 
   function start() {
+    logger.debug("Начало авторизации");
     var token = Application.Properties.getValue(TOKEN);
     if (token.equals("")) {
+      logger.debug("Токен не задан. Требуется авторизация на сервере");
       var login = Application.Properties.getValue(LOGIN);
       var password = Application.Properties.getValue(PASSWORD);
 
@@ -36,8 +38,6 @@ class BooksAuthorisationAPI extends BooksAPI {
       var callback = self.method(:onNativeLogin);
       var params = { "username" => login, "password" => password };
 
-      logger.debug("url: " + url);
-      logger.debug(params);
       var headers = {
         "Content-Type" => Communications.REQUEST_CONTENT_TYPE_JSON,
       };
@@ -50,6 +50,7 @@ class BooksAuthorisationAPI extends BooksAPI {
       };
       WebRequest.makeWebRequest(url, params, options, callback);
     } else {
+      logger.debug("Пропущена авторизация. Сохраненный токен: " + token);
       finalCallback.invoke(token);
       return;
     }

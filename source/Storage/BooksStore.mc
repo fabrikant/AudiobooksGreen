@@ -12,7 +12,6 @@ class BooksStore {
     BOOK_TITLE = "title",
     BOOK_AUTHOR = "author",
     BOOK_DOWNLOADED = "downloaded",
-    BOOK_COVER_URL = "cover_url",
     BOOK_COVER_CONTENT_ID = "cover",
     FILE_NAME = "filename",
     FILE_ID = "fileId",
@@ -54,6 +53,7 @@ class BooksStore {
   // **************************************************************************
   // Возвращает массив словарей c id книг, и ФАЙЛОВ которые нужно грузить
   function getFilesToDownload() {
+    logger.debug("Начало формирования списка файлов для загрузки");
     var result = [];
     var bookIds = getIdsToDownload();
     for (var i = 0; i < bookIds.size(); i++) {
@@ -74,7 +74,7 @@ class BooksStore {
               URL_SUBSCRIPTION => subscr,
             };
             result.add(item);
-            logger.debug("Добавлен файл для загрузки: " + item);
+            logger.debug("Файл для загрузки: " + item);
           }
         }
       }

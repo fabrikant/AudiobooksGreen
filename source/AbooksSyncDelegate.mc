@@ -3,6 +3,7 @@ import Toybox.Lang;
 import Toybox.System;
 import Toybox.Media;
 import Toybox.Time;
+import Toybox.Application;
 
 class AbooksSyncDelegate extends Communications.SyncDelegate {
   enum {
@@ -26,11 +27,10 @@ class AbooksSyncDelegate extends Communications.SyncDelegate {
       folderId = folderInfo[BOOKS_FOLDER_ID];
     }
     if (folderId == null) {
-      logger.error(Rez.Strings.syncFolderNotSelected);
+      var message = Application.loadResource(Rez.Strings.syncFolderNotSelected);
+      logger.error(message);
       Communications.cancelAllRequests();
-      Communications.notifySyncComplete(
-        Application.loadResource(Rez.Strings.syncFolderNotSelected)
-      );
+      Communications.notifySyncComplete(message);
       return;
     }
 

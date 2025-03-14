@@ -20,6 +20,7 @@ class BooksPlaylistsAPI extends BooksAPI {
 
   //***************************************************************************
   function start() {
+    logger.debug("Начало получения списка плейлистов");
     var authorisationProcessor = new BooksAuthorisationAPI(
       self.method(:onAuthorisation)
     );
@@ -29,7 +30,12 @@ class BooksPlaylistsAPI extends BooksAPI {
   //***************************************************************************
   function onAuthorisation(token) {
     self.token = token;
-    if (token == null) {
+    if (token == null or token.equals("")) {
+      var message =
+        Application.loadResource(Rez.Strings.notSet) +
+        " " +
+        Application.loadResource(Rez.Strings.token);
+      logger.error(message+". Получение списка плейлистов пропущено");
       finalCallback.invoke([]);
       return;
     }
@@ -65,11 +71,10 @@ class BooksPlaylistsAPI extends BooksAPI {
       return;
     } else if (code == -402) {
       //слишком большой ответ нужен запрос через прокси
-
+      logger.debug("Слишком большой ответ. Получаем список плейлистов через прокси.");
       var url = books_proxy_url+"/audiobookshelf/playlists";
       var callback = self.method(:onProxyPlaylists);
       var params = { "server" => server_url, "token" => token };
-      logger.debug(params);
       var headers = {
         "Content-Type" => Communications.REQUEST_CONTENT_TYPE_URL_ENCODED,
       };
