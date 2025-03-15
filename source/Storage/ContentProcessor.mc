@@ -7,7 +7,6 @@ import Toybox.Time.Gregorian;
 import Toybox.StringUtil;
 
 module ContentProcessor {
-  
   // **************************************************************************
   function bookmarkFromAbsolutePosition(
     bookId,
@@ -39,7 +38,7 @@ module ContentProcessor {
   function absolutePositionFromBookmark(bookId, fileIndex, position) {
     var result = position;
     var files = BooksStore.getFileList(bookId);
-    if (files instanceof Lang.Array and files.size() < fileIndex) {
+    if (files instanceof Lang.Array and files.size() > fileIndex) {
       for (var i = 0; i < fileIndex; i++) {
         var fileDuration = files[i][BooksStore.DURATION];
         result += fileDuration;
