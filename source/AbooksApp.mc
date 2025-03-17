@@ -8,7 +8,7 @@ import Toybox.System;
 
 class AbooksApp extends Application.AudioContentProviderApp {
   
-  const version = "2025.03.15.01";
+  const version = "2025.03.17.01";
   
   var SyncWasStartedOnThisChargeCycle = false;
 

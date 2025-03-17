@@ -13,6 +13,7 @@ class BookFileListAPI extends BooksAPI {
 
   var token;
   var bookId;
+  var filesList;
 
   // **************************************************************************
   function initialize(
@@ -28,18 +29,27 @@ class BookFileListAPI extends BooksAPI {
     self.bookInfo = booksStorage.booksOnDevice[bookId];
     self.currenIndexBooks = currenIndexBooks;
     self.token = Application.Properties.getValue(TOKEN);
+    self.filesList = [];
     BooksAPI.initialize();
   }
 
   // **************************************************************************
   // Сначала пробуем получить список файлов непосредственно
   function start() {
+    // Проверяем. Возможно списко файлов по данной книге уже загружен
+
+    var storeFileList = Application.Storage.getValue(bookId);
+    if (storeFileList instanceof Lang.Array){
+      logger.debug("Список файлов по книге: "+bookId+" загружен ранее");
+      finalCallback.invoke(booksStorage, arrayBooksId, currenIndexBooks);
+      return;
+    }
+
     logger.info(
       "Начало получения списка файлов книги: " + bookInfo[BooksStore.BOOK_TITLE]
     );
 
     var url = api_url + "/items/" + bookId;
-
     var callback = self.method(:onGetNative);
     var headers = {
       "Authorization" => "Bearer " + token,
@@ -59,7 +69,7 @@ class BookFileListAPI extends BooksAPI {
   function onGetNative(code, data, context) {
     if (code == 200) {
       var files = data["media"]["audioFiles"];
-      var filesList = [];
+     
       for (var i = 0; i < files.size(); i++) {
         var fileObj = {
           BooksStore.FILE_ID => files[i]["ino"],
@@ -94,38 +104,56 @@ class BookFileListAPI extends BooksAPI {
         "Не удалось получить список файлов напрямую. Начало получения через прокси"
       );
 
-      var url = books_proxy_url + "/audiobookshelf/book";
-      var callback = self.method(:onGetProxy);
-      var headers = {
-        "Authorization" => "Bearer " + token,
-      };
-      var params = {
-        "server" => server_url,
-        "book_id" => bookId,
-        "token" => token,
-      };
-
-      var options = {
-        :method => Communications.HTTP_REQUEST_METHOD_GET,
-        :headers => headers,
-        :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON,
-        :context => { URL => url },
-      };
-
-      WebRequest.makeWebRequest(url, params, options, callback);
+      startProxyRequest(0);
     }
   }
 
   // **************************************************************************
+  // Запрашиваем порцию файлов черех прокси
+  function startProxyRequest(skip) {
+    var limit = 30;
+    var url = books_proxy_url + "/audiobookshelf/book";
+    var callback = self.method(:onGetProxy);
+    var headers = {
+      "Authorization" => "Bearer " + token,
+    };
+    var params = {
+      "server" => server_url,
+      "book_id" => bookId,
+      "token" => token,
+      "skip" => skip,
+      "limit" => limit,
+    };
+
+    var options = {
+      :method => Communications.HTTP_REQUEST_METHOD_GET,
+      :headers => headers,
+      :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON,
+      :context => { URL => url },
+    };
+
+    logger.debug(
+      "Старт получения порции файлов. skip=" + skip + ", limit=" + limit
+    );
+    WebRequest.makeWebRequest(url, params, options, callback);
+  }
+
+  // **************************************************************************
+  // Получена порция файлов через прокси
   function onGetProxy(code, data, context) {
     if (code != 200) {
       onError(getErrorMessage(code, data, "Получение списка файлов"));
       return;
     }
 
-    logger.info("Получен список файлов:");
-
-    var filesList = [];
+    logger.info(
+      "Получен список файлов. skip=" +
+        data["skip"] +
+        ", limit=" +
+        data["limit"] +
+        ", total=" +
+        data["total"]
+    );
 
     var files = data["files"];
     if (files instanceof Lang.Array) {
@@ -151,9 +179,15 @@ class BookFileListAPI extends BooksAPI {
         return;
       }
 
-      // Получен список файлов. Добавляем информацию о нем в хранилище
-      booksStorage.addFilesList(bookId, filesList);
-      finalCallback.invoke(booksStorage, arrayBooksId, currenIndexBooks);
+      //Проверяем нужно ли запускать получение следующей порции данных
+      var total_got = data["skip"] + data["limit"];
+      if (data["total"] > total_got) {
+        startProxyRequest(total_got);
+      } else {
+        // Полученs все файлы книги. Добавляем информацию в хранилище
+        booksStorage.addFilesList(bookId, filesList);
+        finalCallback.invoke(booksStorage, arrayBooksId, currenIndexBooks);
+      }
     }
   }
 }

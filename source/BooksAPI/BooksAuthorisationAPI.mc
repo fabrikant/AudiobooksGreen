@@ -70,9 +70,46 @@ class BooksAuthorisationAPI extends BooksAPI {
           " url: " +
           context[URL]
       );
+      logger.debug(
+        "Слишком большой ответ. Пробуем авторизоваться через прокси"
+      );
+      var url = books_proxy_url + "/audiobookshelf/login";
+      var callback = self.method(:onProxyLogin);
+      var login = Application.Properties.getValue(LOGIN);
+      var password = Application.Properties.getValue(PASSWORD);
+      var params = {
+        "server" => server_url,
+        "login" => login,
+        "password" => password,
+      };
+
+      var headers = {
+        "Content-Type" => Communications.REQUEST_CONTENT_TYPE_URL_ENCODED,
+      };
+
+      var options = {
+        :method => Communications.HTTP_REQUEST_METHOD_GET,
+        :headers => headers,
+        :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON,
+        :context => { URL => url },
+      };
+      WebRequest.makeWebRequest(url, params, options, callback);
     } else {
       logger.error("Код: " + code + " url: " + context[URL]);
       finalCallback.invoke(null);
     }
+  }
+
+  function onProxyLogin(code, data, context) {
+    var token = null;
+    if (code == 200) {
+      if (data instanceof Lang.Dictionary) {
+        token = data["token"];
+        Application.Properties.setValue(TOKEN, token);
+      }
+    } else {
+      logger.debug("Не удалось авторизавться на сервере");
+    }
+    finalCallback.invoke(token);
   }
 }
