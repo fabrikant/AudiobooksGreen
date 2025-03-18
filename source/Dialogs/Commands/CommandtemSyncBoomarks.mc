@@ -14,6 +14,12 @@ class CommandtemSyncBoomarks extends CommandtemAbstract {
   }
 
   function command() {
+    var error = getAuthorizationProprtiesError();
+    if (error != null) {
+      WatchUi.pushView(new InfoView(error), null, WatchUi.SLIDE_IMMEDIATE);
+      return;
+    }
+
     // Показываем прогрессбар, чтобы пользователю было
     // не так скучно ждать авторизацию и получение папок
     WatchUi.pushView(

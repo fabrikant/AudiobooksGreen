@@ -20,6 +20,30 @@ enum {
   FILE_INDEX = "file_index",
 }
 
+// **************************************************************************
+function getAuthorizationProprtiesError() {
+  var result = null;
+  var serverUrl = Application.Properties.getValue(SERVER);
+  var serverCheckString = "https://";
+  if (
+    !serverUrl
+      .substring(0, serverCheckString.length())
+      .equals(serverCheckString)
+  ) {
+    logger.error(Application.loadResource(Rez.Strings.checkServerAdress));
+    return Application.loadResource(Rez.Strings.checkServerAdress);
+  }
+
+  var login = Application.Properties.getValue(LOGIN);
+  var password = Application.Properties.getValue(PASSWORD);
+  var token = Application.Properties.getValue(TOKEN);
+  if (token.equals("") and (login.equals("") or password.equals(""))) {
+    logger.error(Application.loadResource(Rez.Strings.setLoginAndPassword));
+    return Application.loadResource(Rez.Strings.setLoginAndPassword);
+  }
+  return result;
+}
+
 //*****************************************************************************
 //Общий функционал
 class BooksAPI {
@@ -37,7 +61,7 @@ class BooksAPI {
     );
     if (lastSymb.equals("/")) {
       api_url += "api";
-      server_url = server_url.substring(0,server_url.length() - 1);
+      server_url = server_url.substring(0, server_url.length() - 1);
     } else {
       api_url += "/api";
     }

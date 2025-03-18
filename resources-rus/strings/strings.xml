@@ -12,6 +12,7 @@
 
     <string id="selectListMenuTitle">Плейлисты</string>
     <string id="setLoginAndPassword">Укажите логин и пароль или ключ API</string>
+    <string id="checkServerAdress">Проверьте адрес сервера. Он должен начинаться с https://</string>
 
     <string id="playlist">Плейлист</string>
     <string id="content">Скачанные книги</string>

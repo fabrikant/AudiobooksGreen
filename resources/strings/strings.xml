@@ -12,6 +12,7 @@
 
     <string id="selectListMenuTitle">Select playlist of books</string>
     <string id="setLoginAndPassword">Please, set the loging and the password or API key</string>
+    <string id="checkServerAdress">Check the server address. It should start with https://</string>
 
     <string id="playlist">Playlist</string>
     <string id="content">Fylly downloaded books</string>

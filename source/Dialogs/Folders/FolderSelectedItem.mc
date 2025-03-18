@@ -21,18 +21,9 @@ class FolderSelectedItem extends WatchUi.IconMenuItem {
   }
 
   function onSelectItem() {
-    // Проверяем, чтобы были заполнены логин и пароль и пробуем
-    // получить перечень списков с книгами
-    var login = Application.Properties.getValue(LOGIN);
-    var password = Application.Properties.getValue(PASSWORD);
-    var token = Application.Properties.getValue(TOKEN);
-    if (token.equals("") and (login.equals("") or password.equals(""))) {
-      logger.error("Не заданы имя пользователя и пароль");
-      WatchUi.pushView(
-        new InfoView(Application.loadResource(Rez.Strings.setLoginAndPassword)),
-        null,
-        WatchUi.SLIDE_IMMEDIATE
-      );
+    var error = getAuthorizationProprtiesError();
+    if (error != null) {
+      WatchUi.pushView(new InfoView(error), null, WatchUi.SLIDE_IMMEDIATE);
       return;
     }
 

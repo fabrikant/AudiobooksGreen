@@ -14,6 +14,12 @@ class CommandtemSync extends CommandtemAbstract {
   }
 
   function command() {
+    var error = getAuthorizationProprtiesError();
+    if (error != null) {
+      WatchUi.pushView(new InfoView(error), null, WatchUi.SLIDE_IMMEDIATE);
+      return;
+    }
+
     if (Communications has :startSync2) {
       Communications.startSync2({
         :message => Application.Properties.getValue(SERVER),
