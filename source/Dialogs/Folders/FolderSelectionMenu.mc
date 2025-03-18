@@ -13,27 +13,8 @@ class FolderSelectionMenu extends WatchUi.Menu2 {
       :theme => Style.getMenuTheme(),
     });
 
-    // Проверяем, чтобы были заполнены логин и пароль и пробуем
-    // получить перечень списков с книгами
-    var login = Application.Properties.getValue(LOGIN);
-    var password = Application.Properties.getValue(PASSWORD);
-
-    if (
-      login == null or
-      login.equals("") or
-      password == null or
-      password.equals("")
-    ) {
-      logger.error("Не заданы имя пользователя и пароль");
-      WatchUi.pushView(
-        new InfoView(Rez.Strings.setLoginAndPassword),
-        null,
-        WatchUi.SLIDE_IMMEDIATE
-      );
-    } else {
-      var getter = new BooksPlaylistsAPI(self.method(:onGetBooksFolders));
-      getter.start();
-    }
+    var getter = new BooksPlaylistsAPI(self.method(:onGetBooksFolders));
+    getter.start();
   }
 
   function onGetBooksFolders(folderList) {

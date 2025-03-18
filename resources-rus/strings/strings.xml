@@ -11,7 +11,7 @@
     <string id="noFoldersFound">Не найдены папки на сервере</string>
 
     <string id="selectListMenuTitle">Плейлисты</string>
-    <string id="setLoginAndPassword">Укажите логин и пароль</string>
+    <string id="setLoginAndPassword">Укажите логин и пароль или ключ API</string>
 
     <string id="playlist">Плейлист</string>
     <string id="content">Скачанные книги</string>
