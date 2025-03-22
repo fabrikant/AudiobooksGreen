@@ -11,4 +11,8 @@
     <complication id="2" access="public" longLabel="@Strings.chapterLongLabel" shortLabel="@Strings.chapterShortLabel" icon="@Drawables.logoComplications" glancePreview="false">
         <faceIt defaultText="@Strings.chapterDefaultText" />
     </complication>
+
+    <complication id="3" access="public" longLabel="@Strings.chapterTitleLongLabel" shortLabel="@Strings.chapterTitleShortLabel" icon="@Drawables.logoComplications" glancePreview="false">
+        <faceIt defaultText="@Strings.chapterTitleDefaultText" />
+    </complication>
 </complications>

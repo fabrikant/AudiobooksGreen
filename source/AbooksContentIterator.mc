@@ -183,6 +183,7 @@ class AbooksContentIterator extends Media.ContentIterator {
       var title = metadata.album;
       var author = metadata.artist;
       var chapter = metadata.title;
+
       if (title.equals("")) {
         title = bookInfo[BooksStore.BOOK_TITLE];
       }
@@ -194,23 +195,29 @@ class AbooksContentIterator extends Media.ContentIterator {
         chapter = filename.substring(0, filename.length() - 4);
       }
 
+      var maxLenght = Application.Properties.getValue(LENGHT_COMPLICATIONS);
       if (Application.Properties.getValue("translitComplications")) {
         title = ContentProcessor.translitText(title);
         author = ContentProcessor.translitText(author);
         chapter = ContentProcessor.translitText(chapter);
       } else {
         // Сократим длину при необходимости
-        var maxLenght = Application.Properties.getValue(LENGHT_COMPLICATIONS);
         if (maxLenght > 0) {
           title = title.substring(0, maxLenght);
           author = author.substring(0, maxLenght);
           chapter = chapter.substring(0, maxLenght);
         }
       }
+      var chapterTitle = chapter + " " + title;
+      if (maxLenght > 0) {
+        chapterTitle = chapterTitle.substring(0, maxLenght);
+      }
+
       try {
         Complications.updateComplication(0, { :value => title });
         Complications.updateComplication(1, { :value => author });
         Complications.updateComplication(2, { :value => chapter });
+        Complications.updateComplication(3, { :value => chapterTitle });
       } catch (ex) {
         logger.warning("1. " + ex.getErrorMessage());
       }
@@ -220,6 +227,7 @@ class AbooksContentIterator extends Media.ContentIterator {
         Complications.updateComplication(0, { :value => null });
         Complications.updateComplication(1, { :value => null });
         Complications.updateComplication(2, { :value => null });
+        Complications.updateComplication(3, { :value => null });
       } catch (ex) {
         logger.warning("2. " + ex.getErrorMessage());
       }

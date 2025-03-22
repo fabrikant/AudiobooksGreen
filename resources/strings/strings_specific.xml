@@ -16,4 +16,8 @@
     <string id="chapterLongLabel">Chapter</string>
     <string id="chapterShortLabel">chap.</string>
     <string id="chapterDefaultText">Сhapter of the book</string>
+
+    <string id="chapterTitleLongLabel">Chapter+tittle</string>
+    <string id="chapterTitleShortLabel">ch.+title</string>
+    <string id="chapterTitleDefaultText">Сhapter + title of the book</string>
 </strings>
