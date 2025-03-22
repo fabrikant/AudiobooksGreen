@@ -69,7 +69,10 @@ class AbooksContentIterator extends Media.ContentIterator {
     // книги или нет, сдвигаем текущий индекс на первый
     // файл книги
     for (var i = 0; i < files.size(); i++) {
-      if (files[i][BooksStore.BOOK_ID] == bookIdForResume) {
+      if (
+        files[i][BooksStore.BOOK_ID] == bookIdForResume or
+        files[i][BooksStore.BOOK_ID].equals(bookIdForResume)
+      ) {
         currenInd = i;
         logger.debug(
           "Установлен текущий индекс: " +

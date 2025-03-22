@@ -104,8 +104,7 @@ class BookFilesDownloaderAPI extends BooksAPI {
       :fileDownloadProgressCallback => self.method(:notifySyncProgress),
     };
 
-    logger.debug("start: " + url);
-    Communications.makeWebRequest(
+    WebRequest.makeWebRequest(
       url,
       {},
       options,
