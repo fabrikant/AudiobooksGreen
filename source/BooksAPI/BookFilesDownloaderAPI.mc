@@ -148,7 +148,7 @@ class BookFilesDownloaderAPI extends BooksAPI {
 
     if (fileExtension.equals("mp3")) {
       encoding = Media.ENCODING_MP3;
-    } else if (fileExtension.equals("m4a")) {
+    } else if (fileExtension.equals("m4a") or fileExtension.equals("m4b")) {
       encoding = Media.ENCODING_M4A;
     } else if (fileExtension.equals("wav")) {
       encoding = Media.ENCODING_WAV;
