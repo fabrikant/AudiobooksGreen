@@ -24,8 +24,10 @@ class AbooksPlaybackProfile extends Media.PlaybackProfile {
       playerColors = new AbooksColors();
     }
     requirePlaybackNotification = true;
-    skipBackwardTimeDelta = 30;
-    skipForwardTimeDelta = 30;
-    skipPreviousThreshold = 5;
+    if (Media.PlaybackProfile has :skipBackwardTimeDelta) {
+      skipBackwardTimeDelta = 30;
+      skipForwardTimeDelta = 30;
+      skipPreviousThreshold = 5;
+    }
   }
 }

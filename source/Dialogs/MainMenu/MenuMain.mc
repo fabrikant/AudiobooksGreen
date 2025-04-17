@@ -3,7 +3,6 @@ import Toybox.WatchUi;
 
 // **************************************************************************
 class MenuMain extends WatchUi.Menu2 {
-  
   function initialize() {
     //Пересканируем книги. Отметим полностью скачанные
     var booksStorage = new BooksStore();
@@ -31,8 +30,12 @@ class MenuMain extends WatchUi.Menu2 {
     }
 
     // Прочие настройки
-    addItem(new CommandtemMenuColors());
-    addItem(new CommandtemMenuComplications());
+    if (Toybox.Graphics has :createBufferedBitmap) {
+      addItem(new CommandtemMenuColors());
+    }
+    if (Toybox has :Complications) {
+      addItem(new CommandtemMenuComplications());
+    }
     addItem(new CommandtemMenuAuthorisation());
 
     // О программе
@@ -57,6 +60,4 @@ class MenuMain extends WatchUi.Menu2 {
       )
     );
   }
-
-  
 }

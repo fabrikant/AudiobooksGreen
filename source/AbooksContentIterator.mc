@@ -168,6 +168,9 @@ class AbooksContentIterator extends Media.ContentIterator {
   // **************************************************************************
   // Обновляем информацию о воспроизведении для других приложений
   function updateComplications(isPlaying) {
+    if (!(Toybox has :Complications)) {
+      return;
+    }
     if (isPlaying) {
       var bookId = files[currenInd][BooksStore.BOOK_ID];
       var bookInfo = books[bookId];
