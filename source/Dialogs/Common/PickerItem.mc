@@ -17,12 +17,14 @@ class PickerItem extends WatchUi.MenuItem {
   }
 
   function onSelectItem() {
-    var propValue = Application.Properties.getValue(getId());
-    WatchUi.pushView(
-      new WatchUi.TextPicker(propValue),
-      new TextDelegate(self.weak()),
-      WatchUi.SLIDE_IMMEDIATE
-    );
+    if (WatchUi has :TextPicker) {
+      var propValue = Application.Properties.getValue(getId());
+      WatchUi.pushView(
+        new WatchUi.TextPicker(propValue),
+        new TextDelegate(self.weak()),
+        WatchUi.SLIDE_IMMEDIATE
+      );
+    }
   }
 
   function onSetText(value) {
