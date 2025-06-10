@@ -66,12 +66,15 @@ class BooksPlaylistAPI extends BooksAPI {
       var books = data["items"];
       for (var i = 0; i < books.size(); i++) {
         var bookObj = books[i]["libraryItem"];
+        var authorName = "";
+        var authorsArray = bookObj["media"]["metadata"]["authors"];
+        if (authorsArray instanceof Toybox.Lang.Array and authorsArray.size()>0){
+          authorName = authorsArray[0]["name"];
+        }
         result.add({
           BooksStore.BOOK_ID => bookObj["id"],
           BooksStore.BOOK_TITLE => bookObj["media"]["metadata"]["title"],
-          BooksStore.BOOK_AUTHOR => bookObj["media"]["metadata"]["authors"][0][
-            "name"
-          ],
+          BooksStore.BOOK_AUTHOR => authorName,
         });
       }
 

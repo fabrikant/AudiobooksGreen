@@ -239,6 +239,9 @@ class AbooksContentIterator extends Media.ContentIterator {
 
   // **************************************************************************
   function createPlayerBookmark(playbackPosition) {
+    if (currenInd == null or currenInd >= files.size()){
+      return;
+    }
     // Фиксируем закладку
     BooksStore.createPlayerBookmark(files[currenInd], playbackPosition);
     // Фиксируем id текущей воспроизводимой книги, чтобы

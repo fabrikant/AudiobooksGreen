@@ -15,7 +15,7 @@
     <string id="checkServerAdress">Check the server address. It should start with https://</string>
 
     <string id="playlist">Playlist</string>
-    <string id="content">Fylly downloaded books</string>
+    <string id="content">Fully downloaded books</string>
     <string id="allBooks">Books on the server</string>
     <string id="fileList">List of files</string>
     <string id="syncFolderNotSelected">Sync playlist\nnot selected</string>
