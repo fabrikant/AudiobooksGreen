@@ -14,10 +14,10 @@ If you do not agree with this, do not use this application.
 Getting started:
 
 1. On your audiobookshelf server, you need to create a playlist and fill it with books.
-
-2. On your Garmin device (or connect IQ), enter the server address in the authorization menu (the address must begin with https://)
-3. On your Garmin device (or connect IQ), select one of the following options:
+2. On your Garmin device (or Сonnect IQ), enter the server address in the authorization menu (the address must begin with https://)
+3. On your Garmin device (or Сonnect IQ), select one of the following options:
 3.1. Enter your username and password, then the API token will be received from the server automatically.
 3.2. Enter the API token directly in the application (only via Connect IQ). In this case, you do not need to enter your username and password. The API token can be seen in the user settings on the audiobookshelf server
-4. Perform a full synchronization
-5. Add books to the playlist on your Garmin device and start listening
+4. On your Garmin device, use the "Servers playlist" menu item to select the playlist you created in step 1.
+5. Perform a full synchronization
+6. Add books to the playlist on your Garmin device and start listening
