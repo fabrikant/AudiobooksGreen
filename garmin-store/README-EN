@@ -3,11 +3,11 @@ Audiobooks Green (for audiobookshelf)
 The application is free.
 
 This is a client for your own audiobookshelf audiobook server (https://www.audiobookshelf.org/)
-The audiobookshelf server must be accessible via the Internet on port 443 and have a valid certificate. The application does not work within a local network because it uses an intermediate server that sends requests to your audiobookshelf server.
-The intermediate server is required because:
+The audiobookshelf server must be accessible via the Internet on port 443 and have a valid certificate. The application does not work within a local network because it uses an intermediate (proxy) server that sends requests to your audiobookshelf server.
+The intermediate (proxy) server is required because:
 1. The functionality of the network stack on Garmin devices is extremely limited. It is impossible to implement some functions, such as synchronization of listening progress.
-2. The audiobookshelf API returns data packets that are too large to be processed on the watch. The intermediate server removes unnecessary information and, if necessary, splits the response into fragments.
-I do not save any information about users, devices and servers using the intermediate server. Some technical information may be stored in logs, which are automatically cleared as new information accumulates.
+2. The audiobookshelf API returns data packets that are too large to be processed on the watch. The intermediate (proxy) server removes unnecessary information and, if necessary, splits the response into fragments.
+I do not save any information about users, devices and servers using the intermediate (proxy) server. Some technical information may be stored in logs, which are automatically cleared as new information accumulates.
 
 If you do not agree with this, do not use this application.
 
