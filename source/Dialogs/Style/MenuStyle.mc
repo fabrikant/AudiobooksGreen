@@ -18,7 +18,7 @@ class MenuStyle extends WatchUi.Menu2 {
 
     var devSettings = System.getDeviceSettings();
     if (devSettings.requiresBurnInProtection){
-      addItem(new CommandtemMenuTheme());  
+      addItem(new CommandItemMenuTheme());  
     }
 
     addItem(new ItemPropertyColor("textColor", Rez.Strings.textColor));
@@ -66,6 +66,6 @@ class MenuStyle extends WatchUi.Menu2 {
       )
     );
 
-    addItem(new CommandtemSetDefaultColors());
+    addItem(new CommandItemSetDefaultColors());
   }
 }

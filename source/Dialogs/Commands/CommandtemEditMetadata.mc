@@ -2,9 +2,9 @@ import Toybox.WatchUi;
 import Toybox.Communications;
 import Toybox.Application;
 
-class CommandtemEditMetadata extends CommandtemAbstract {
+class CommandItemEditMetadata extends CommandItemAbstract {
   function initialize(ownerItemWeak) {
-    CommandtemAbstract.initialize(
+    CommandItemAbstract.initialize(
       Rez.Strings.editMetadata,
       null,
       null,

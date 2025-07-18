@@ -13,8 +13,7 @@
         </palette>
     </bitmap>
 
-    <bitmap id="logoAboutBig" filename="audiobooks.svg" scaleX="30%" scaleY="30%"
-        scaleRelativeTo="screen">
+    <bitmap id="logoAboutBig" filename="audiobooks.svg" scaleX="30%" scaleY="30%" scaleRelativeTo="screen">
         <palette disableTransparency="false">
             <color>00AA00</color>
         </palette>
@@ -30,162 +29,146 @@
 
     <!-- Главное меню -->
 
-    <bitmap id="logoAbout" filename="audiobooks.svg" scaleX="16%" scaleY="16%"
-        scaleRelativeTo="screen">
+    <bitmap id="logoAbout" filename="audiobooks.svg" scaleX="16%" scaleY="16%" scaleRelativeTo="screen">
         <palette disableTransparency="false">
             <color>00AA00</color>
         </palette>
     </bitmap>
 
-    <bitmap id="resume" filename="./google-svg/resume.svg" scaleX="16%" scaleY="16%"
-        scaleRelativeTo="screen">
+    <bitmap id="resume" filename="./google-svg/resume.svg" scaleX="16%" scaleY="16%" scaleRelativeTo="screen">
         <palette disableTransparency="false">
             <color>00AA00</color>
         </palette>
     </bitmap>
 
-    <bitmap id="play" filename="./google-svg/play.svg" scaleX="16%" scaleY="16%"
-        scaleRelativeTo="screen">
+    <bitmap id="play" filename="./google-svg/play.svg" scaleX="16%" scaleY="16%" scaleRelativeTo="screen">
         <palette disableTransparency="false">
             <color>00AA00</color>
         </palette>
     </bitmap>
 
-    <bitmap id="syncWifi" filename="./google-svg/wifi.svg" scaleX="16%" scaleY="16%"
-        scaleRelativeTo="screen">
-        <palette disableTransparency="false">
-            <color>00AA00</color>
-        </palette>
-    </bitmap>
-
-
-    <bitmap id="syncBluetooth" filename="./google-svg/bluetooth.svg" scaleX="16%" scaleY="16%"
-        scaleRelativeTo="screen">
-        <palette disableTransparency="false">
-            <color>00AA00</color>
-        </palette>
-    </bitmap>
-
-    <bitmap id="playlist" filename="./google-svg/playlist_play.svg" scaleX="16%" scaleY="16%"
-        scaleRelativeTo="screen">
-        <palette disableTransparency="false">
-            <color>00AA00</color>
-        </palette>
-    </bitmap>
-
-    <bitmap id="deviceBooks" filename="./google-svg/download_done.svg" scaleX="16%" scaleY="16%"
-        scaleRelativeTo="screen">
-        <palette disableTransparency="false">
-            <color>00AA00</color>
-        </palette>
-    </bitmap>
-
-    <bitmap id="serverBooks" filename="./google-svg/cloud.svg" scaleX="16%" scaleY="16%"
-        scaleRelativeTo="screen">
+    <bitmap id="syncWifi" filename="./google-svg/wifi.svg" scaleX="16%" scaleY="16%" scaleRelativeTo="screen">
         <palette disableTransparency="false">
             <color>00AA00</color>
         </palette>
     </bitmap>
 
 
-    <bitmap id="folder" filename="./google-svg/folder.svg" scaleX="16%" scaleY="16%"
-        scaleRelativeTo="screen">
+    <bitmap id="syncBluetooth" filename="./google-svg/bluetooth.svg" scaleX="16%" scaleY="16%" scaleRelativeTo="screen">
+        <palette disableTransparency="false">
+            <color>00AA00</color>
+        </palette>
+    </bitmap>
+
+    <bitmap id="playlist" filename="./google-svg/playlist_play.svg" scaleX="16%" scaleY="16%" scaleRelativeTo="screen">
+        <palette disableTransparency="false">
+            <color>00AA00</color>
+        </palette>
+    </bitmap>
+
+    <bitmap id="deviceBooks" filename="./google-svg/download_done.svg" scaleX="16%" scaleY="16%" scaleRelativeTo="screen">
+        <palette disableTransparency="false">
+            <color>00AA00</color>
+        </palette>
+    </bitmap>
+
+    <bitmap id="serverBooks" filename="./google-svg/cloud.svg" scaleX="16%" scaleY="16%" scaleRelativeTo="screen">
         <palette disableTransparency="false">
             <color>00AA00</color>
         </palette>
     </bitmap>
 
 
-    <bitmap id="emptyBookMenu" filename="./google-svg/books_music.svg" scaleX="16%" scaleY="16%"
-        scaleRelativeTo="screen">
+    <bitmap id="folder" filename="./google-svg/folder.svg" scaleX="16%" scaleY="16%" scaleRelativeTo="screen">
         <palette disableTransparency="false">
             <color>00AA00</color>
         </palette>
     </bitmap>
 
-    <bitmap id="palette" filename="./google-svg/palette.svg" scaleX="16%" scaleY="16%"
-        scaleRelativeTo="screen">
+
+    <bitmap id="emptyBookMenu" filename="./google-svg/books_music.svg" scaleX="16%" scaleY="16%" scaleRelativeTo="screen">
         <palette disableTransparency="false">
             <color>00AA00</color>
         </palette>
     </bitmap>
 
-    <bitmap id="resetColors" filename="./google-svg/colors_reset.svg" scaleX="16%" scaleY="16%"
-        scaleRelativeTo="screen">
+    <bitmap id="palette" filename="./google-svg/palette.svg" scaleX="16%" scaleY="16%" scaleRelativeTo="screen">
         <palette disableTransparency="false">
             <color>00AA00</color>
         </palette>
     </bitmap>
 
-    <bitmap id="watch" filename="./google-svg/watch.svg" scaleX="16%" scaleY="16%"
-        scaleRelativeTo="screen">
+    <bitmap id="resetColors" filename="./google-svg/colors_reset.svg" scaleX="16%" scaleY="16%" scaleRelativeTo="screen">
         <palette disableTransparency="false">
             <color>00AA00</color>
         </palette>
     </bitmap>
 
-    <bitmap id="list" filename="./google-svg/list.svg" scaleX="16%" scaleY="16%"
-        scaleRelativeTo="screen">
+    <bitmap id="watch" filename="./google-svg/watch.svg" scaleX="16%" scaleY="16%" scaleRelativeTo="screen">
         <palette disableTransparency="false">
             <color>00AA00</color>
         </palette>
     </bitmap>
 
-    <bitmap id="logout" filename="./google-svg/logout.svg" scaleX="16%" scaleY="16%"
-        scaleRelativeTo="screen">
+    <bitmap id="list" filename="./google-svg/list.svg" scaleX="16%" scaleY="16%" scaleRelativeTo="screen">
         <palette disableTransparency="false">
             <color>00AA00</color>
         </palette>
     </bitmap>
 
-    <bitmap id="login" filename="./google-svg/login.svg" scaleX="16%" scaleY="16%"
-        scaleRelativeTo="screen">
+    <bitmap id="logout" filename="./google-svg/logout.svg" scaleX="16%" scaleY="16%" scaleRelativeTo="screen">
+        <palette disableTransparency="false">
+            <color>00AA00</color>
+        </palette>
+    </bitmap>
+
+    <bitmap id="login" filename="./google-svg/login.svg" scaleX="16%" scaleY="16%" scaleRelativeTo="screen">
+        <palette disableTransparency="false">
+            <color>00AA00</color>
+        </palette>
+    </bitmap>
+
+    <bitmap id="settings" filename="./google-svg/settings.svg" scaleX="16%" scaleY="16%" scaleRelativeTo="screen">
         <palette disableTransparency="false">
             <color>00AA00</color>
         </palette>
     </bitmap>
 
     <!-- файлы на сервере -->
-    <bitmap id="loaded_file" filename="./google-svg/loaded_track.svg" scaleX="16%" scaleY="16%"
-        scaleRelativeTo="screen">
+    <bitmap id="loaded_file" filename="./google-svg/loaded_track.svg" scaleX="16%" scaleY="16%" scaleRelativeTo="screen">
         <palette disableTransparency="false">
             <color>00AA00</color>
         </palette>
     </bitmap>
 
-    <bitmap id="not_loaded_file" filename="./google-svg/not_loaded_track.svg" scaleX="16%"
-        scaleY="16%" scaleRelativeTo="screen">
+    <bitmap id="not_loaded_file" filename="./google-svg/not_loaded_track.svg" scaleX="16%" scaleY="16%" scaleRelativeTo="screen">
         <palette disableTransparency="false">
             <color>00AA00</color>
         </palette>
     </bitmap>
 
     <!-- меню команд -->
-    <bitmap id="showFiles" filename="./google-svg/folder_eye.svg" scaleX="16%" scaleY="16%"
-        scaleRelativeTo="screen">
+    <bitmap id="showFiles" filename="./google-svg/folder_eye.svg" scaleX="16%" scaleY="16%" scaleRelativeTo="screen">
         <palette disableTransparency="false">
             <color>00AA00</color>
         </palette>
     </bitmap>
 
 
-    <bitmap id="addBook" filename="./google-svg/playlist_add.svg" scaleX="16%" scaleY="16%"
-        scaleRelativeTo="screen">
+    <bitmap id="addBook" filename="./google-svg/playlist_add.svg" scaleX="16%" scaleY="16%" scaleRelativeTo="screen">
         <palette disableTransparency="false">
             <color>00AA00</color>
         </palette>
     </bitmap>
 
 
-    <bitmap id="removeBook" filename="./google-svg/playlist_remove.svg" scaleX="16%" scaleY="16%"
-        scaleRelativeTo="screen">
+    <bitmap id="removeBook" filename="./google-svg/playlist_remove.svg" scaleX="16%" scaleY="16%" scaleRelativeTo="screen">
         <palette disableTransparency="false">
             <color>00AA00</color>
         </palette>
     </bitmap>
 
-    <bitmap id="editMetadata" filename="./google-svg/edit.svg" scaleX="16%" scaleY="16%"
-        scaleRelativeTo="screen">
+    <bitmap id="editMetadata" filename="./google-svg/edit.svg" scaleX="16%" scaleY="16%" scaleRelativeTo="screen">
         <palette disableTransparency="false">
             <color>00AA00</color>
         </palette>

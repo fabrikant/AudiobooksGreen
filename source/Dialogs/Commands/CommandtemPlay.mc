@@ -2,15 +2,10 @@ import Toybox.WatchUi;
 import Toybox.Communications;
 import Toybox.Application;
 
-class CommandtemPlay extends CommandtemAbstract {
+class CommandItemPlay extends CommandItemAbstract {
   function initialize(ownerItemWeak) {
-    CommandtemAbstract.initialize(
-      Rez.Strings.play,
-      null,
-      null,
-      Rez.Drawables.play,
-      ownerItemWeak
-    );
+    CommandItemAbstract.initialize(Rez.Strings.play, null, null,
+                                   Rez.Drawables.play, ownerItemWeak);
   }
 
   function command() {
@@ -26,7 +21,7 @@ class CommandtemPlay extends CommandtemAbstract {
       // Запуск книги сначала
       // Предварительно нужно добавить книгу в плейлист
       BooksStore.addToPlaylist(bookId);
-      Media.startPlayback([bookId, false]);
+      Media.startPlayback([ bookId, false ]);
     }
     WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
   }

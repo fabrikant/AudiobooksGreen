@@ -31,21 +31,24 @@ class MenuMain extends WatchUi.Menu2 {
 
     // Прочие настройки
     if (Toybox.Graphics has :createBufferedBitmap) {
-      addItem(new CommandtemMenuColors());
+      addItem(new CommandItemMenuColors());
     }
     if (Toybox has :Complications) {
-      addItem(new CommandtemMenuComplications());
+      addItem(new CommandItemMenuComplications());
     }
-    addItem(new CommandtemMenuAuthorisation());
+    addItem(new CommandItemMenuAuthorisation());
+
+    // Дополнительные функции
+    addItem(new CommandMenuExtraSettings());
 
     // О программе
-    addItem(new CommandtemShowAboutView());
+    addItem(new CommandItemShowAboutView());
   }
 
   function addBooksItems() {
-    addItem(new CommandtemResumeCurrentBook());
-    addItem(new CommandtemSync());
-    addItem(new CommandtemSyncBoomarks());
+    addItem(new CommandItemResumeCurrentBook());
+    addItem(new CommandItemSync());
+    addItem(new CommandItemSyncBoomarks());
     addItem(new ItemMainMenuPlaylist());
     addItem(new ItemMainMenuDownloaded());
     addItem(new ItemMainMenuAllBooks());

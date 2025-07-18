@@ -2,9 +2,9 @@ import Toybox.WatchUi;
 import Toybox.Communications;
 import Toybox.Application;
 
-class CommandtemRemoveFromPlaylist extends CommandtemAbstract {
+class CommandItemRemoveFromPlaylist extends CommandItemAbstract {
   function initialize(ownerItemWeak) {
-    CommandtemAbstract.initialize(
+    CommandItemAbstract.initialize(
       Rez.Strings.removeFromPlaylist,
       null,
       null,

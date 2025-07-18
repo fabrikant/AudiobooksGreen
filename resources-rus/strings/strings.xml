@@ -55,6 +55,8 @@
 
 
     <!-- Properties -->
+    <string id="extraSettings">Настройки</string>
+    <string id="autosyncProgress">Синхр. прогресс при паузе</string>
     <string id="translitComplications">Транслит. complications</string>
     <string id="lenghtComplications">Макс. длина сomplications</string>
     <string id="defaultPlayerColors">Системные цвета плеера</string>
@@ -73,7 +75,7 @@
     <string id="highlightBorderColor">Highlight border color</string>
     <string id="progressBarBackgroundColor">Progressbar background color</string>
     <string id="progressBarForegroundColor">Pogressbar foreground color</string>
-    
+
     <string id="textColor">Цвет текста</string>
     <string id="menuItemBackgroundColor">Книга цвет фона</string>
     <string id="menuBackgroundColor">Книги цвет фона</string>

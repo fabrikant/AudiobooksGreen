@@ -2,7 +2,7 @@ import Toybox.WatchUi;
 import Toybox.Communications;
 import Toybox.Application;
 
-class CommandtemAbstract extends WatchUi.IconMenuItem {
+class CommandItemAbstract extends WatchUi.IconMenuItem {
   var ownerItemWeak = null;
 
   //*****************************************************************************

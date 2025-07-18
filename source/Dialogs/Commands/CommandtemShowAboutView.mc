@@ -2,9 +2,9 @@ import Toybox.WatchUi;
 import Toybox.Communications;
 import Toybox.Application;
 
-class CommandtemShowAboutView extends CommandtemAbstract {
+class CommandItemShowAboutView extends CommandItemAbstract {
   function initialize() {
-    CommandtemAbstract.initialize(
+    CommandItemAbstract.initialize(
       Rez.Strings.about,
       null,
       null,

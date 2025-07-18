@@ -2,9 +2,9 @@ import Toybox.WatchUi;
 import Toybox.Communications;
 import Toybox.Application;
 
-class CommandtemResumeThisBook extends CommandtemAbstract {
+class CommandItemResumeThisBook extends CommandItemAbstract {
   function initialize(ownerItemWeak) {
-    CommandtemAbstract.initialize(
+    CommandItemAbstract.initialize(
       Rez.Strings.resumePlayingThisBook,
       null,
       null,

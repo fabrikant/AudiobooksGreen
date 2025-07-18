@@ -2,10 +2,10 @@ import Toybox.WatchUi;
 import Toybox.Communications;
 import Toybox.Application;
 
-class CommandtemResumeCurrentBook extends CommandtemAbstract {
+class CommandItemResumeCurrentBook extends CommandItemAbstract {
   
   function initialize() {
-    CommandtemAbstract.initialize(
+    CommandItemAbstract.initialize(
       Rez.Strings.resumePlayingCurrentBook,
       null,
       null,

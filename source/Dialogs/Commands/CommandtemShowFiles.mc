@@ -2,9 +2,9 @@ import Toybox.WatchUi;
 import Toybox.Communications;
 import Toybox.Application;
 
-class CommandtemShowFiles extends CommandtemAbstract {
+class CommandItemShowFiles extends CommandItemAbstract {
   function initialize(ownerItemWeak) {
-    CommandtemAbstract.initialize(
+    CommandItemAbstract.initialize(
       Rez.Strings.showFiles,
       null,
       null,

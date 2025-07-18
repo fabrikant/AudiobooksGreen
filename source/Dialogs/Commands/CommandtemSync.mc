@@ -2,9 +2,9 @@ import Toybox.WatchUi;
 import Toybox.Communications;
 import Toybox.Application;
 
-class CommandtemSync extends CommandtemAbstract {
+class CommandItemSync extends CommandItemAbstract {
   function initialize() {
-    CommandtemAbstract.initialize(
+    CommandItemAbstract.initialize(
       Rez.Strings.startSync,
       null,
       null,

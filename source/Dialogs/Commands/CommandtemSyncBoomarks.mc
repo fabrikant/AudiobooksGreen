@@ -2,9 +2,9 @@ import Toybox.WatchUi;
 import Toybox.Communications;
 import Toybox.Application;
 
-class CommandtemSyncBoomarks extends CommandtemAbstract {
+class CommandItemSyncBoomarks extends CommandItemAbstract {
   function initialize() {
-    CommandtemAbstract.initialize(
+    CommandItemAbstract.initialize(
       Rez.Strings.startBookmarksSync,
       null,
       null,

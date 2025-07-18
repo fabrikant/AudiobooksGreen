@@ -27,11 +27,11 @@ class BooksMenuDownloaded extends BooksMenuAbstract {
   // **************************************************************************
   function getAvailableСommands(ownerItemWeak) {
     return [
-      new CommandtemAddToPlayList(ownerItemWeak),
-      new CommandtemResumeThisBook(ownerItemWeak),
-      new CommandtemPlay(ownerItemWeak),
-      new CommandtemShowFiles(ownerItemWeak),
-      new CommandtemEditMetadata(ownerItemWeak),
+      new CommandItemAddToPlayList(ownerItemWeak),
+      new CommandItemResumeThisBook(ownerItemWeak),
+      new CommandItemPlay(ownerItemWeak),
+      new CommandItemShowFiles(ownerItemWeak),
+      new CommandItemEditMetadata(ownerItemWeak),
     ];
   }
 }

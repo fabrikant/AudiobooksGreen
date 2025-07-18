@@ -2,9 +2,9 @@ import Toybox.WatchUi;
 import Toybox.Communications;
 import Toybox.Application;
 
-class CommandtemMenuAuthorisation extends CommandtemAbstract {
+class CommandItemMenuAuthorisation extends CommandItemAbstract {
   function initialize() {
-    CommandtemAbstract.initialize(
+    CommandItemAbstract.initialize(
       Rez.Strings.authorisation,
       null,
       null,

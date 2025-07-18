@@ -2,12 +2,12 @@ import Toybox.WatchUi;
 import Toybox.Communications;
 import Toybox.Application;
 
-class CommandtemMenuTheme extends CommandtemAbstract {
+class CommandItemMenuTheme extends CommandItemAbstract {
   function initialize() {
     var value = Application.Properties.getValue("MENU_THEME");
     var sublabel = getSublabel(value);
 
-    CommandtemAbstract.initialize(
+    CommandItemAbstract.initialize(
       Rez.Strings.MENU_THEME,
       sublabel,
       null,

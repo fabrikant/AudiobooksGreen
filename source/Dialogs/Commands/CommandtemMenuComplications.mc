@@ -2,9 +2,9 @@ import Toybox.WatchUi;
 import Toybox.Communications;
 import Toybox.Application;
 
-class CommandtemMenuComplications extends CommandtemAbstract {
+class CommandItemMenuComplications extends CommandItemAbstract {
   function initialize() {
-    CommandtemAbstract.initialize(
+    CommandItemAbstract.initialize(
       Rez.Strings.complications,
       null,
       null,

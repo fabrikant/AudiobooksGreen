@@ -23,11 +23,11 @@ class BooksMenuPlaylist extends BooksMenuAbstract {
   // **************************************************************************
   function getAvailableСommands(ownerItemWeak) {
     return [
-      new CommandtemResumeThisBook(ownerItemWeak),
-      new CommandtemShowFiles(ownerItemWeak),
-      new CommandtemRemoveFromPlaylist(ownerItemWeak),
-      new CommandtemPlay(ownerItemWeak),
-      new CommandtemEditMetadata(ownerItemWeak),
+      new CommandItemResumeThisBook(ownerItemWeak),
+      new CommandItemShowFiles(ownerItemWeak),
+      new CommandItemRemoveFromPlaylist(ownerItemWeak),
+      new CommandItemPlay(ownerItemWeak),
+      new CommandItemEditMetadata(ownerItemWeak),
     ];
   }
 }
