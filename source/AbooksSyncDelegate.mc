@@ -34,6 +34,7 @@ class AbooksSyncDelegate extends Communications.SyncDelegate {
       return;
     }
 
+    JWTools.beforeAuthentication();
     var folderGetter = new BooksPlaylistAPI(
       self.method(:onGettingFolder),
       folderId

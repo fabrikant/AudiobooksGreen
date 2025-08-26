@@ -58,7 +58,11 @@ class BooksAuthorisationAPI extends BooksAPI {
 
   function onNativeLogin(code, data, context) {
     if (code == 200) {
-      var token = data["user"]["token"];
+      var token = data["user"]["accessToken"];
+      if (token == null or token.equals("")) {
+        logger.debug("В ответе отсутствуе ключ accessToken. Получаем ключ token");
+        token = data["user"]["token"];
+      }
       Application.Properties.setValue(TOKEN, token);
       finalCallback.invoke(token);
     } else if (code < 0) {
@@ -104,7 +108,11 @@ class BooksAuthorisationAPI extends BooksAPI {
     var token = null;
     if (code == 200) {
       if (data instanceof Lang.Dictionary) {
-        token = data["token"];
+        token = data["accessToken"];
+        if (token == null or token.equals("")) {
+          logger.debug("В ответе отсутствуе ключ accessToken. Получаем ключ token");
+          token = data["token"];
+        }
         Application.Properties.setValue(TOKEN, token);
       }
     } else {

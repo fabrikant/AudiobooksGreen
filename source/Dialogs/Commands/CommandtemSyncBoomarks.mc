@@ -32,6 +32,7 @@ class CommandItemSyncBoomarks extends CommandItemAbstract {
     );
 
     var booksStorage = new BooksStore();
+    JWTools.beforeAuthentication();
     var syncAgent = new ProgressAPI(self.method(:onSync), booksStorage);
     syncAgent.start();
   }

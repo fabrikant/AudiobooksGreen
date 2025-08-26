@@ -13,6 +13,7 @@ class FolderSelectionMenu extends WatchUi.Menu2 {
       :theme => Style.getMenuTheme(),
     });
 
+    JWTools.beforeAuthentication();
     var getter = new BooksPlaylistsAPI(self.method(:onGetBooksFolders));
     getter.start();
   }
