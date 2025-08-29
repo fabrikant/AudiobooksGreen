@@ -2,7 +2,7 @@ import Toybox.WatchUi;
 import Toybox.Lang;
 
 //*****************************************************************************
-//Пункт подменю - элемент списка выбора папок (списков в классификации литреса)
+//Пункт подменю - выбор плейлиста
 //
 class FolderToSelectItem extends WatchUi.MenuItem {
   var finalCallback = null;
