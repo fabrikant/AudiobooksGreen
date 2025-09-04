@@ -29,14 +29,29 @@ class ColorPicker extends WatchUi.View {
     dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
     dc.clear();
     dc.drawBitmap(zero_point[0], zero_point[1], bitmap.get());
+    var frame_color = farameColor();
 
     if (color != null) {
-      dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+      if (color == Graphics.COLOR_TRANSPARENT) {
+        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
+      } else {
+        dc.setColor(color, color);
+      }
+
+      dc.fillRectangle(
+        0,
+        0,
+        dc.getWidth(),
+        zero_point[1] - 1
+      );
+
       var font = Graphics.FONT_SMALL;
       var color_str = null;
       if (color == Graphics.COLOR_TRANSPARENT) {
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         color_str = color.toString();
       } else {
+        dc.setColor(frame_color, Graphics.COLOR_TRANSPARENT);
         color_str = "0x" + color.format("%06X");
       }
 
@@ -51,7 +66,7 @@ class ColorPicker extends WatchUi.View {
 
     var box = boxes[box_index][:box];
     dc.setPenWidth(3);
-    var frame_color = farameColor();
+
     dc.setColor(frame_color, frame_color);
     dc.drawRectangle(
       box[:x1] + zero_point[0],
