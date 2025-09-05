@@ -12,6 +12,14 @@
 
     <string id="selectListMenuTitle">Select playlist of books</string>
     <string id="setLoginAndPassword">Please, set the loging and the password or API key</string>
+    <string id="setLogin">Please, set the loging</string>
+    <string id="setPassword">Please, set the password</string>
+    <string id="filedLogin">Failed to log in to the server</string>
+
+    <string id="skipListBooks">Getting list of books skipped</string>
+    <string id="skipListPlaylists">Getting list of playlists skipped</string>
+
+
     <string id="checkServerAdress">Check the server address. It should start with https://</string>
 
     <string id="playlist">Playlist</string>

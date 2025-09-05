@@ -119,8 +119,6 @@ class BookFilesDownloaderAPI extends BooksAPI {
       var filename = filesList[fileIndex][BooksStore.FILE_NAME];
       logger.info("Загружен файл: " + filename);
       booksStorage.onFileDownload(filesList[fileIndex], data.getId());
-    } else {
-      logger.error("Код: " + code + " url: " + context[URL]);
     }
 
     downloadedNumbers += 1;

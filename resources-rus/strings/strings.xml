@@ -12,6 +12,13 @@
 
     <string id="selectListMenuTitle">Плейлисты</string>
     <string id="setLoginAndPassword">Укажите логин и пароль или ключ API</string>
+    <string id="setLogin">Укажите логин</string>
+    <string id="setPassword">Укажите пароль</string>
+    <string id="filedLogin">Не удалось авторизоваться на сервере</string>
+
+    <string id="skipListBooks">Получение списка книг пропущено</string>
+    <string id="skipListPlaylists">Получение списка плейлистов пропущено</string>
+
     <string id="checkServerAdress">Проверьте адрес сервера. Он должен начинаться с https://</string>
 
     <string id="playlist">Плейлист</string>

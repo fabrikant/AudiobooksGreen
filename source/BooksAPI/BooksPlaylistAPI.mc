@@ -33,11 +33,13 @@ class BooksPlaylistAPI extends BooksAPI {
   function onAuthorisation(token) {
     self.token = token;
     if (token == null or token.equals("")) {
-      var message =
+      logger.error(
         Application.loadResource(Rez.Strings.notSet) +
-        " " +
-        Application.loadResource(Rez.Strings.token);
-      logger.error(message + ". Получение списка книг пропущено");
+          " " +
+          Application.loadResource(Rez.Strings.token) +
+          "\n" +
+          Application.loadResource(Rez.Strings.skipListBooks)
+      );
       finalCallback.invoke([]);
       return;
     }
@@ -68,7 +70,10 @@ class BooksPlaylistAPI extends BooksAPI {
         var bookObj = books[i]["libraryItem"];
         var authorName = "";
         var authorsArray = bookObj["media"]["metadata"]["authors"];
-        if (authorsArray instanceof Toybox.Lang.Array and authorsArray.size()>0){
+        if (
+          authorsArray instanceof Toybox.Lang.Array and
+          authorsArray.size() > 0
+        ) {
           authorName = authorsArray[0]["name"];
         }
         result.add({
@@ -101,17 +106,6 @@ class BooksPlaylistAPI extends BooksAPI {
       };
       WebRequest.makeWebRequest(url, params, options, callback);
       return;
-    } else if (code < 0) {
-      logger.error(
-        "Код: " +
-          code +
-          " " +
-          getErrorDescription(code) +
-          " url: " +
-          context[URL]
-      );
-    } else {
-      logger.error("Код: " + code + " url: " + context[URL]);
     }
     finalCallback.invoke([]);
   }
@@ -129,17 +123,6 @@ class BooksPlaylistAPI extends BooksAPI {
           BooksStore.BOOK_AUTHOR => bookObj["author"],
         });
       }
-    } else if (code < 0) {
-      logger.error(
-        "Код: " +
-          code +
-          " " +
-          getErrorDescription(code) +
-          " url: " +
-          context[URL]
-      );
-    } else {
-      logger.error("Код: " + code + " url: " + context[URL]);
     }
     finalCallback.invoke(result);
   }

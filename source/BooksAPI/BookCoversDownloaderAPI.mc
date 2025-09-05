@@ -12,7 +12,7 @@ class BookCoversDownloaderAPI extends BooksAPI {
   var booksStorage = null;
   var bookKeys = null;
   var keyIndex = null;
- 
+
   // **************************************************************************
   function initialize(finalCallback, booksStorage) {
     self.booksStorage = booksStorage;
@@ -41,8 +41,7 @@ class BookCoversDownloaderAPI extends BooksAPI {
   // **************************************************************************
   function startLoadingCovers() {
     if (keyIndex < bookKeys.size()) {
-      var url =
-        api_url + "/items/" + bookKeys[keyIndex] + "/cover";
+      var url = api_url + "/items/" + bookKeys[keyIndex] + "/cover";
       var params = {
         "width" => coverMaxSize,
         "format" => "jpeg",
@@ -53,7 +52,8 @@ class BookCoversDownloaderAPI extends BooksAPI {
         :dithering => Communications.IMAGE_DITHERING_FLOYD_STEINBERG,
         :packingFormat => Communications.PACKING_FORMAT_JPG,
       };
-      Communications.makeImageRequest(
+
+      WebRequest.makeImageRequest(
         url,
         params,
         options,
@@ -69,14 +69,12 @@ class BookCoversDownloaderAPI extends BooksAPI {
   function onGettingImage(code, data) {
     var bookInfo = booksStorage.booksOnDevice[bookKeys[keyIndex]];
     if (code == 200) {
-      logger.info("Загружена обложка: " + bookInfo[BooksStore.BOOK_TITLE]);
       //Записываем данные обложки
       Application.Storage.setValue(
         booksStorage.getCoverKey(bookKeys[keyIndex]),
         data
       );
-    } else {
-      logger.error("Не удалось загрузить обложку книги: " + bookInfo);
+      logger.info("Записана обложка: " + bookInfo[BooksStore.BOOK_TITLE]);
     }
     // Запускаем загрузку следующего файла
     keyIndex += 1;

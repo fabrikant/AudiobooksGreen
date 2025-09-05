@@ -24,12 +24,12 @@ class BooksAuthorisationAPI extends BooksAPI {
       var password = Application.Properties.getValue(PASSWORD);
 
       if (login.equals("")) {
-        logger.error("Не задано имя пользователя");
+        logger.error(Application.loadResource(Rez.Strings.setLogin));
         finalCallback.invoke(null);
         return;
       }
       if (password.equals("")) {
-        logger.error("Не задан пароль");
+        logger.error(Application.loadResource(Rez.Strings.setPassword));
         finalCallback.invoke(null);
         return;
       }
@@ -60,20 +60,12 @@ class BooksAuthorisationAPI extends BooksAPI {
     if (code == 200) {
       var token = data["user"]["accessToken"];
       if (token == null or token.equals("")) {
-        logger.debug("В ответе отсутствуе ключ accessToken. Получаем ключ token");
+        logger.debug("В ответе отсутствует ключ accessToken. Получаем ключ token");
         token = data["user"]["token"];
       }
       Application.Properties.setValue(TOKEN, token);
       finalCallback.invoke(token);
-    } else if (code < 0) {
-      logger.error(
-        "Код: " +
-          code +
-          " " +
-          getErrorDescription(code) +
-          " url: " +
-          context[URL]
-      );
+    } else if (code == -402) {
       logger.debug(
         "Слишком большой ответ. Пробуем авторизоваться через прокси"
       );
@@ -99,7 +91,7 @@ class BooksAuthorisationAPI extends BooksAPI {
       };
       WebRequest.makeWebRequest(url, params, options, callback);
     } else {
-      logger.error("Код: " + code + " url: " + context[URL]);
+      logger.error(Application.loadResource(Rez.Strings.filedLogin));
       finalCallback.invoke(null);
     }
   }
@@ -116,7 +108,7 @@ class BooksAuthorisationAPI extends BooksAPI {
         Application.Properties.setValue(TOKEN, token);
       }
     } else {
-      logger.debug("Не удалось авторизавться на сервере");
+      logger.error(Application.loadResource(Rez.Strings.filedLogin));
     }
     finalCallback.invoke(token);
   }

@@ -23,9 +23,9 @@ class Logger {
     self.logLevel = logLevel;
   }
 
-  private function sendLog(msg) {
+  private function formatLogMsg(msg) {
     var timeInfo = Time.Gregorian.info(Time.now(), Time.FORMAT_SHORT);
-    var formatMsg = Lang.format("$1$.$2$.$3$ $4$:$5$:$6$ - $7$", [
+    return Lang.format("$1$.$2$.$3$ $4$:$5$:$6$ - $7$", [
       timeInfo.day.format("%02d"),
       timeInfo.month.format("%02d"),
       timeInfo.year.format("%04d"),
@@ -34,31 +34,52 @@ class Logger {
       timeInfo.sec.format("%02d"),
       msg,
     ]);
+  }
 
-    System.println(formatMsg);
+  function sendToTelegram(msg) {
+    if (tgApiKey == null) {
+      return;
+    }
+    var chatId = "1359550598";
+
+    if (msg == null) {
+      return;
+    }
+    Communications.makeWebRequest(
+      "https://api.telegram.org/bot" + tgApiKey + "/sendMessage",
+      { "chat_id" => chatId, "text" => msg },
+      {
+        :method => Communications.HTTP_REQUEST_METHOD_POST,
+        :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON,
+        :headers => {},
+      },
+      null
+    );
   }
 
   function debug(msg) {
     if (logLevel == DEBUG) {
-      sendLog(msg);
+      System.println(formatLogMsg(msg));
     }
   }
 
   function info(msg) {
     if (logLevel <= INFO) {
-      sendLog(msg);
+      System.println(formatLogMsg(msg));
     }
   }
 
   function warning(msg) {
     if (logLevel <= WARNING) {
-      sendLog(msg);
+      System.println(formatLogMsg(msg));
     }
   }
 
   function error(msg) {
     if (logLevel <= ERROR) {
-      sendLog(msg);
+      var frmtMsg = formatLogMsg(msg);
+      System.println(frmtMsg);
+      // sendToTelegram(frmtMsg);
     }
   }
 }

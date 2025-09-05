@@ -39,8 +39,8 @@ class BookFileListAPI extends BooksAPI {
     // Проверяем. Возможно списко файлов по данной книге уже загружен
 
     var storeFileList = Application.Storage.getValue(bookId);
-    if (storeFileList instanceof Lang.Array){
-      logger.debug("Список файлов по книге: "+bookId+" загружен ранее");
+    if (storeFileList instanceof Lang.Array) {
+      logger.debug("Список файлов по книге: " + bookId + " загружен ранее");
       finalCallback.invoke(booksStorage, arrayBooksId, currenIndexBooks);
       return;
     }
@@ -69,7 +69,7 @@ class BookFileListAPI extends BooksAPI {
   function onGetNative(code, data, context) {
     if (code == 200) {
       var files = data["media"]["audioFiles"];
-     
+
       for (var i = 0; i < files.size(); i++) {
         var fileObj = {
           BooksStore.FILE_ID => files[i]["ino"],

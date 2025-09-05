@@ -6,10 +6,13 @@ import Toybox.WatchUi;
 import Toybox.Time;
 import Toybox.System;
 
+var tgApiKey = null;
+
 class AbooksApp extends Application.AudioContentProviderApp {
   const version = "2025.09.04.01";
 
   var SyncWasStartedOnThisChargeCycle = false;
+  
 
   function initialize() { AudioContentProviderApp.initialize(); }
 

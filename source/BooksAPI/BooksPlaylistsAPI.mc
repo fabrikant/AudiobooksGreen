@@ -31,11 +31,13 @@ class BooksPlaylistsAPI extends BooksAPI {
   function onAuthorisation(token) {
     self.token = token;
     if (token == null or token.equals("")) {
-      var message =
+      logger.error(
         Application.loadResource(Rez.Strings.notSet) +
-        " " +
-        Application.loadResource(Rez.Strings.token);
-      logger.error(message+". Получение списка плейлистов пропущено");
+          " " +
+          Application.loadResource(Rez.Strings.token) +
+          "\n" +
+          Application.loadResource(Rez.Strings.skipListPlaylists)
+      );
       finalCallback.invoke([]);
       return;
     }
@@ -71,8 +73,10 @@ class BooksPlaylistsAPI extends BooksAPI {
       return;
     } else if (code == -402) {
       //слишком большой ответ нужен запрос через прокси
-      logger.debug("Слишком большой ответ. Получаем список плейлистов через прокси.");
-      var url = books_proxy_url+"/audiobookshelf/playlists";
+      logger.debug(
+        "Слишком большой ответ. Получаем список плейлистов через прокси."
+      );
+      var url = books_proxy_url + "/audiobookshelf/playlists";
       var callback = self.method(:onProxyPlaylists);
       var params = { "server" => server_url, "token" => token };
       var headers = {
@@ -86,17 +90,6 @@ class BooksPlaylistsAPI extends BooksAPI {
       };
       WebRequest.makeWebRequest(url, params, options, callback);
       return;
-    } else if (code < 0) {
-      logger.error(
-        "Код: " +
-          code +
-          " " +
-          getErrorDescription(code) +
-          " url: " +
-          context[URL]
-      );
-    } else {
-      logger.error("Код: " + code + " url: " + context[URL]);
     }
     finalCallback.invoke([]);
   }
@@ -112,17 +105,6 @@ class BooksPlaylistsAPI extends BooksAPI {
           BOOKS_FOLDER_NAME => playlists[i]["name"],
         });
       }
-    } else if (code < 0) {
-      logger.error(
-        "Код: " +
-          code +
-          " " +
-          getErrorDescription(code) +
-          " url: " +
-          context[URL]
-      );
-    } else {
-      logger.error("Код: " + code + " url: " + context[URL]);
     }
     finalCallback.invoke(result);
   }
