@@ -1,14 +1,12 @@
 import Toybox.System;
 import Toybox.Time;
 import Toybox.Lang;
+import Toybox.Application;
+import Toybox.Communications;
 
-(:debug)
-var logger = new Logger(Logger.DEBUG);
-
-(:release)
 var logger = new Logger(Logger.SILENCE);
 
-class Logger {
+class Logger extends Lang.Object {
   enum {
     DEBUG = 0,
     INFO,
@@ -17,37 +15,68 @@ class Logger {
     SILENCE,
   }
 
-  var logLevel = null;
+  private var chatId = "";
+  private var logLevel = null;
+  private var tgDebug = false;
+  private var tgMessages = "";
+  private var lastTgMessagesTime = 0;
 
   function initialize(logLevel) {
     self.logLevel = logLevel;
   }
 
-  private function formatLogMsg(msg) {
+  function reloadSettings(propName, propValue) {
+    self.logLevel = Application.Properties.getValue("logLevel");
+    self.tgDebug = Application.Properties.getValue("telegramDebug");
+    self.chatId = Application.Properties.getValue("telegramChatId");
+    if (
+      propName != null and
+      propValue != null and
+      propName.equals("telegramDebug") and
+      propValue
+    ) {
+      Communications.openWebPage(tgBotURL, null, null);
+    }
+  }
+
+  private function formatLogMsg(msg, msgLevel) {
     var timeInfo = Time.Gregorian.info(Time.now(), Time.FORMAT_SHORT);
-    return Lang.format("$1$.$2$.$3$ $4$:$5$:$6$ - $7$", [
+
+    var isWebRequest = false;
+    // Проверяем не пора ли отправить сообщения в телеграм:
+    // Отправляем не чаще чем 1 раз в 20 секунд
+    // Если последнее сообщение начинается с GET, DELETE, PUT или POST,
+    // не отправляем сообщение в телеграм. Часы плохо реагируют, если
+    // активны сразу 2 web запроса
+    if (
+      tgDebug and
+      msg instanceof Lang.String and
+      (msg.substring(0, 3).equals("GET") or
+        msg.substring(0, 4).equals("POST") or
+        msg.substring(0, 3).equals("PUT") or
+        msg.substring(0, 6).equals("DELETE"))
+    ) {
+      isWebRequest = true;
+    }
+
+    var frmtMsg = Lang.format("$1$.$2$.$3$ $4$:$5$:$6$ - $7$ - $8$", [
       timeInfo.day.format("%02d"),
       timeInfo.month.format("%02d"),
       timeInfo.year.format("%04d"),
       timeInfo.hour.format("%02d"),
       timeInfo.min.format("%02d"),
       timeInfo.sec.format("%02d"),
+      msgLevel,
       msg,
     ]);
+
+    return { :msg => frmtMsg, :isWebRequest => isWebRequest };
   }
 
-  function sendToTelegram(msg) {
-    if (tgApiKey == null) {
-      return;
-    }
-    var chatId = "1359550598";
-
-    if (msg == null) {
-      return;
-    }
+  private function sendToTelegram() {
     Communications.makeWebRequest(
       "https://api.telegram.org/bot" + tgApiKey + "/sendMessage",
-      { "chat_id" => chatId, "text" => msg },
+      { "chat_id" => chatId, "text" => tgMessages },
       {
         :method => Communications.HTTP_REQUEST_METHOD_POST,
         :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON,
@@ -55,31 +84,65 @@ class Logger {
       },
       null
     );
+    tgMessages = "";
+  }
+
+  private function processMessage(msgDict) {
+    System.println(msgDict[:msg]);
+
+    if (
+      tgDebug and
+      tgApiKey != null and
+      !tgApiKey.equals("") and
+      !chatId.equals("")
+    ) {
+      // Добавляем текущее сообщение к порции сообщений для отправки
+      tgMessages = tgMessages + "\n" + msgDict[:msg];
+
+      if (!msgDict[:isWebRequest]) {
+        var now = Time.now().value();
+        if (lastTgMessagesTime + 20 <= now) {
+          sendToTelegram();
+          lastTgMessagesTime = now;
+        }
+      }
+    }
+  }
+
+  function finalizeLogging() {
+    if (
+      tgDebug and
+      tgApiKey != null and
+      !tgApiKey.equals("") and
+      !chatId.equals("") and
+      !tgMessages.equals("")
+    ) {
+      sendToTelegram();
+    }
+    tgMessages = "";
   }
 
   function debug(msg) {
     if (logLevel == DEBUG) {
-      System.println(formatLogMsg(msg));
+      processMessage(formatLogMsg(msg, "DEBUG"));
     }
   }
 
   function info(msg) {
     if (logLevel <= INFO) {
-      System.println(formatLogMsg(msg));
+      processMessage(formatLogMsg(msg, "INFO"));
     }
   }
 
   function warning(msg) {
     if (logLevel <= WARNING) {
-      System.println(formatLogMsg(msg));
+      processMessage(formatLogMsg(msg, "WARNING"));
     }
   }
 
   function error(msg) {
     if (logLevel <= ERROR) {
-      var frmtMsg = formatLogMsg(msg);
-      System.println(frmtMsg);
-      // sendToTelegram(frmtMsg);
+      processMessage(formatLogMsg(msg, "ERROR"));
     }
   }
 }

@@ -40,5 +40,6 @@ class CommandItemSyncBoomarks extends CommandItemAbstract {
   function onSync(booksStorage) {
     //Закрываем прогрессбар
     WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
+    logger.finalizeLogging();
   }
 }

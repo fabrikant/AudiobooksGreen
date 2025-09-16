@@ -62,7 +62,7 @@ class BookFilesDownloaderAPI extends BooksAPI {
 
   // **************************************************************************
   function start() {
-    logger.debug("Начало загрузки файлов");
+    logger.debug("Start downloading media files");
     var authorisationProcessor = new BooksAuthorisationAPI(
       self.method(:onAuthorisation)
     );
@@ -77,6 +77,7 @@ class BookFilesDownloaderAPI extends BooksAPI {
         Application.loadResource(Rez.Strings.notSet) +
         " " +
         Application.loadResource(Rez.Strings.token);
+      logger.finalizeLogging();
       Communications.notifySyncComplete(message);
       return;
     }
@@ -86,6 +87,7 @@ class BookFilesDownloaderAPI extends BooksAPI {
       startLoadingFile(0);
     } else {
       booksStorage.checkBooksDownloadComplete();
+      logger.finalizeLogging();
       Communications.notifySyncComplete(null);
     }
   }
@@ -104,12 +106,7 @@ class BookFilesDownloaderAPI extends BooksAPI {
       :fileDownloadProgressCallback => self.method(:notifySyncProgress),
     };
 
-    WebRequest.makeWebRequest(
-      url,
-      {},
-      options,
-      self.method(:onGettingFile)
-    );
+    WebRequest.makeWebRequest(url, {}, options, self.method(:onGettingFile));
   }
 
   // **************************************************************************
@@ -117,7 +114,7 @@ class BookFilesDownloaderAPI extends BooksAPI {
     var fileIndex = context[FILE_INDEX];
     if (code == 200) {
       var filename = filesList[fileIndex][BooksStore.FILE_NAME];
-      logger.info("Загружен файл: " + filename);
+      logger.info("The file has been downloaded: " + filename);
       booksStorage.onFileDownload(filesList[fileIndex], data.getId());
     }
 
@@ -131,6 +128,7 @@ class BookFilesDownloaderAPI extends BooksAPI {
     } else {
       // Все файлы загружены
       booksStorage.checkBooksDownloadComplete();
+      logger.finalizeLogging();
       Communications.notifySyncComplete(null);
     }
   }

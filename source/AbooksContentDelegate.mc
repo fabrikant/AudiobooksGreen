@@ -18,7 +18,7 @@ class AbooksContentDelegate extends Media.ContentDelegate {
   // Returns an iterator that is used by the system to play songs.
   // A custom iterator can be created that extends Media.ContentIterator
   // to return only songs chosen in the sync configuration mode.
-  function getContentIterator() as ContentIterator ? {
+  function getContentIterator() as ContentIterator? {
     contenIterator = new AbooksContentIterator(startParams);
     return contenIterator;
   }
@@ -37,10 +37,20 @@ class AbooksContentDelegate extends Media.ContentDelegate {
 
   // Handles a notification from the system that an event has
   // been triggered for the given song
-  function onSong(contentRefId as Object, songEvent as SongEvent,
-                  playbackPosition as Number or PlaybackPosition) as Void {
-    logger.debug("onSong(contentRefId=" + contentRefId + ", songEvent=" +
-                 songEvent + ", playbackPosition=" + playbackPosition + ")");
+  function onSong(
+    contentRefId as Object,
+    songEvent as SongEvent,
+    playbackPosition as Number or PlaybackPosition
+  ) as Void {
+    logger.debug(
+      "onSong(contentRefId=" +
+        contentRefId +
+        ", songEvent=" +
+        songEvent +
+        ", playbackPosition=" +
+        playbackPosition +
+        ")"
+    );
 
     // Запоминаем позицию воспроизведения
     if (contenIterator instanceof AbooksContentIterator) {
@@ -48,9 +58,11 @@ class AbooksContentDelegate extends Media.ContentDelegate {
         contenIterator.createPlayerBookmark(playbackPosition);
       }
 
-      if (songEvent == SONG_EVENT_START or
-          songEvent == SONG_EVENT_PLAYBACK_NOTIFY or
-          songEvent == SONG_EVENT_RESUME) {
+      if (
+        songEvent == SONG_EVENT_START or
+        songEvent == SONG_EVENT_PLAYBACK_NOTIFY or
+        songEvent == SONG_EVENT_RESUME
+      ) {
         contenIterator.setAlbumArt();
         contenIterator.updateComplications(true);
       }
@@ -62,10 +74,10 @@ class AbooksContentDelegate extends Media.ContentDelegate {
         if (devSet.connectionAvailable) {
           if (Application.Properties.getValue("autosyncProgress")) {
             var booksStorage = new BooksStore();
-            var bookmarksDownloader =
-                new ProgressAPI(self.method(
-                                    : onBookmarksDownload),
-                                booksStorage);
+            var bookmarksDownloader = new ProgressAPI(
+              self.method(:onBookmarksDownload),
+              booksStorage
+            );
             bookmarksDownloader.start();
           }
         }
@@ -74,6 +86,6 @@ class AbooksContentDelegate extends Media.ContentDelegate {
   }
 
   function onBookmarksDownload(bookStorage) as Void {
-    logger.info("Завершена синхронизация прогресса");
+    logger.info("Progress synchronization completed");
   }
 }

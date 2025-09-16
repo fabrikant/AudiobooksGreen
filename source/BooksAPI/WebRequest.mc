@@ -13,7 +13,7 @@ class WebRequestWrapper {
   function start(url, params, options, callback) {
     self.finalCallback = callback;
     self.url = url;
-    logger.debug(httpMethodString(options) + " url: " + url);
+    logger.warning(httpMethodString(options) + " url: " + url);
     Communications.makeWebRequest(
       url,
       params,
@@ -37,7 +37,7 @@ class WebRequestWrapper {
     if (code < 200 or code > 299) {
       var errorMsg = "url: " + url + " response code: " + code;
       var codeDescription = WebRequest.getErrorDescription(code);
-      
+
       if (!codeDescription.equals("")) {
         errorMsg += " (" + codeDescription + ")";
       }
@@ -48,9 +48,13 @@ class WebRequestWrapper {
         errorMsg += "\n " + data.toString();
       }
 
-      logger.error(errorMsg);
+      if (code == -402) {
+        logger.warning(errorMsg);
+      } else {
+        logger.error(errorMsg);
+      }
     } else {
-      logger.debug("url: " + url + " response code: " + code);
+      logger.info("url: " + url + " response code: " + code);
     }
 
     if (finalCallback instanceof Lang.Method) {

@@ -53,7 +53,7 @@ class BooksStore {
   // **************************************************************************
   // Возвращает массив словарей c id книг, и ФАЙЛОВ которые нужно грузить
   function getFilesToDownload() {
-    logger.debug("Начало формирования списка файлов для загрузки");
+    logger.debug("Starting to create a list of files to upload");
     var result = [];
     var bookIds = getIdsToDownload();
     for (var i = 0; i < bookIds.size(); i++) {
@@ -74,7 +74,7 @@ class BooksStore {
               URL_SUBSCRIPTION => subscr,
             };
             result.add(item);
-            logger.debug("Файл для загрузки: " + item);
+            logger.debug("File added for download: " + item);
           }
         }
       }
@@ -93,7 +93,7 @@ class BooksStore {
         booksOnDevice[bookId][keys[i]] = bookInfo[keys[i]];
       }
       Application.Storage.setValue(BOOKS_ON_DEVICE, booksOnDevice);
-      logger.debug("Сохранена информация о книге: " + booksOnDevice[bookId]);
+      logger.debug("The book information saved: " + booksOnDevice[bookId]);
     }
   }
 
@@ -139,7 +139,7 @@ class BooksStore {
   // **************************************************************************
   // Удаляем книгу
   function removeBook(idToRemove) {
-    logger.debug("Начало удаления книги: " + booksOnDevice[idToRemove]);
+    logger.debug("Start deleting the book: " + booksOnDevice[idToRemove]);
 
     // Удаляем книгу из плейлиста
     removeFromPlaylist(idToRemove);
@@ -164,25 +164,25 @@ class BooksStore {
             Media.CONTENT_TYPE_AUDIO
           );
           Media.deleteCachedItem(contentRef);
-          logger.debug("Удален скачанный контент: " + files[j]);
+          logger.debug("Media content removed: " + files[j]);
         }
       }
 
       // Удяляем список файлов книги
       Application.Storage.deleteValue(idToRemove);
-      logger.debug("Удален список файлов: " + idToRemove);
+      logger.debug("File list removed: " + idToRemove);
     }
 
     // Удаляем обложку
     var coverKey = getCoverKey(idToRemove);
     Application.Storage.deleteValue(coverKey);
-    logger.debug("Удалена обложка: " + coverKey);
+    logger.debug("Cover removed: " + coverKey);
 
     // Удаляем из списка книг
     if (booksOnDevice[idToRemove] != null) {
       booksOnDevice.remove(idToRemove);
       Application.Storage.setValue(BOOKS_ON_DEVICE, booksOnDevice);
-      logger.debug("Удалена информация о книге: " + idToRemove);
+      logger.debug("Book information removed: " + idToRemove);
     }
   }
 
@@ -200,7 +200,7 @@ class BooksStore {
       while (ref != null) {
         var id = ref.getId();
         Media.deleteCachedItem(ref);
-        logger.debug("Удален поврежденный фрагмент id:" + id);
+        logger.debug("The damaged fragment has been removed. ID:" + id);
         ref = iterator.next();
       }
     }
@@ -279,7 +279,7 @@ class BooksStore {
       if (files[i][FILE_ID].equals(fileInfo[FILE_ID])) {
         files[i][FILE_CONTENT_ID] = contentId;
         Application.Storage.setValue(bookId, files);
-        logger.debug("Записана информация о скачаном файле: " + files[i]);
+        logger.debug("Information about the downloaded file has been recorded: " + files[i]);
         return;
       }
     }
@@ -287,7 +287,7 @@ class BooksStore {
 
   // **************************************************************************
   function checkBooksDownloadComplete() {
-    logger.debug("Начало проверки книг по окончанию загрузки файлов");
+    logger.debug("Start checking books after finishing downloading files");
     var keys = booksOnDevice.keys();
     for (var j = 0; j < keys.size(); j++) {
       var bookDuration = 0;
@@ -298,7 +298,7 @@ class BooksStore {
         bookInfo[BOOK_DOWNLOADED] == null or
         bookInfo[BOOK_DOWNLOADED] == false
       ) {
-        logger.debug("Проверка книги: " + bookDescr);
+        logger.debug("Start checking the book: " + bookDescr);
 
         var complete = true;
         var files = Application.Storage.getValue(bookId);
@@ -307,27 +307,28 @@ class BooksStore {
             bookDuration += files[i][DURATION];
             if (files[i][FILE_CONTENT_ID] == null) {
               logger.debug(
-                "Обнаружен не загруженный файл: " + files[i][FILE_NAME]
+                "An unloaded file was found: " + files[i][FILE_NAME]+". The book is not loaded."
               );
               complete = false;
               break;
             }
           }
         } else {
-          logger.debug("Нет сведений о файлах");
+          logger.debug("No file information available");
           complete = false;
         }
 
         if (complete) {
           booksOnDevice[bookId][BOOK_DOWNLOADED] = true;
           booksOnDevice[bookId][DURATION] = bookDuration;
-          logger.info("Книга помечена как загруженная: " + bookDescr);
+          logger.info("The book is marked as downloaded: " + bookDescr);
         }
       } else {
-        logger.debug("Книга загружена ранее: " + bookDescr);
+        logger.debug("The book has been uploaded earlier: " + bookDescr);
       }
     }
     Application.Storage.setValue(BOOKS_ON_DEVICE, booksOnDevice);
+    logger.finalizeLogging();
   }
 
   // **************************************************************************
@@ -335,11 +336,11 @@ class BooksStore {
     var playlist = Application.Storage.getValue(PLAYLIST);
     if (playlist == null) {
       playlist = [bookId];
-      logger.debug("Создан плейлист с книгой: " + bookId);
+      logger.debug("A playlist with the book has been created: " + bookId);
     } else {
       if (playlist.indexOf(bookId) < 0) {
         playlist.add(bookId);
-        logger.debug("В плейлист добавлена книга: " + bookId);
+        logger.debug("The book has been added to the playlist: " + bookId);
       }
     }
     Application.Storage.setValue(PLAYLIST, playlist);
@@ -350,7 +351,7 @@ class BooksStore {
     var playlist = Application.Storage.getValue(PLAYLIST);
     if (playlist instanceof Lang.Array) {
       playlist.removeAll(bookId);
-      logger.debug("Из плейлиста удалена книга: " + bookId);
+      logger.debug("The book has been removed from the playlist: " + bookId);
     }
     Application.Storage.setValue(PLAYLIST, playlist);
   }
@@ -426,7 +427,7 @@ class BooksStore {
     ) {
       // Записываем только при изменении
       logger.debug(
-        "Записана закладка bookId: " + bookId + " - " + bookmarkItem
+        "Saved the bookmark for the book: " + bookId + " - " + bookmarkItem
       );
       Application.Storage.setValue(storageId, bookmarkItem);
     }
@@ -460,7 +461,7 @@ class BooksStore {
   function updateCurrentBook(bookId) {
     var currentBookId = Application.Storage.getValue(CURRENT_BOOK);
     if (currentBookId != bookId) {
-      logger.debug("Установлена текущая книга: " + bookId);
+      logger.debug("The current book has been saved: " + bookId);
       Application.Storage.setValue(CURRENT_BOOK, bookId);
     }
   }

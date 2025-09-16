@@ -40,13 +40,16 @@ class BookFileListAPI extends BooksAPI {
 
     var storeFileList = Application.Storage.getValue(bookId);
     if (storeFileList instanceof Lang.Array) {
-      logger.debug("Список файлов по книге: " + bookId + " загружен ранее");
+      logger.debug(
+        "The list of files by book: " + bookId + " has already been downloaded"
+      );
       finalCallback.invoke(booksStorage, arrayBooksId, currenIndexBooks);
       return;
     }
 
     logger.info(
-      "Начало получения списка файлов книги: " + bookInfo[BooksStore.BOOK_TITLE]
+      "Start getting the list of files of the book: " +
+        bookInfo[BooksStore.BOOK_TITLE]
     );
 
     var url = api_url + "/items/" + bookId;
@@ -82,11 +85,11 @@ class BookFileListAPI extends BooksAPI {
 
       if (filesList.size() == 0) {
         logger.warning(
-          "Не найден контент для загрузки: " +
+          "No content found to load: " +
             bookInfo[BooksStore.BOOK_TITLE] +
-            " автор: " +
+            " author: " +
             bookInfo[BooksStore.BOOK_AUTHOR] +
-            " книга пропущена"
+            ". The book skipped"
         );
         finalCallback.invoke(booksStorage, arrayBooksId, currenIndexBooks);
         return;
@@ -100,8 +103,8 @@ class BookFileListAPI extends BooksAPI {
       // непосредственно с сайта, возможно список слишком
       // большой. Пробуем запросить через прокси. Там не будет
       // лишних данных
-      logger.debug(
-        "Не удалось получить список файлов напрямую. Начало получения через прокси"
+      logger.warning(
+        "Failed to get file list from server. Starting to get via proxy"
       );
 
       startProxyRequest(0);
@@ -133,7 +136,7 @@ class BookFileListAPI extends BooksAPI {
     };
 
     logger.debug(
-      "Старт получения порции файлов. skip=" + skip + ", limit=" + limit
+      "Start receiving part of the files. skip=" + skip + ", limit=" + limit
     );
     WebRequest.makeWebRequest(url, params, options, callback);
   }
@@ -142,12 +145,12 @@ class BookFileListAPI extends BooksAPI {
   // Получена порция файлов через прокси
   function onGetProxy(code, data, context) {
     if (code != 200) {
-      onError(getErrorMessage(code, data, "Получение списка файлов"));
+      onError(getErrorMessage(code, data, "Getting a list of files"));
       return;
     }
 
     logger.info(
-      "Получен список файлов. skip=" +
+      "The next batch of files has been received. skip=" +
         data["skip"] +
         ", limit=" +
         data["limit"] +
@@ -169,11 +172,11 @@ class BookFileListAPI extends BooksAPI {
 
       if (filesList.size() == 0) {
         logger.warning(
-          "Не найден контент для загрузки: " +
+          "No content found to load: " +
             bookInfo[BooksStore.BOOK_TITLE] +
-            " автор: " +
+            " author: " +
             bookInfo[BooksStore.BOOK_AUTHOR] +
-            " книга пропущена"
+            ". The book skipped"
         );
         finalCallback.invoke(booksStorage, arrayBooksId, currenIndexBooks);
         return;

@@ -96,7 +96,6 @@ module ContentProcessor {
   // Продолжение после подтвереждение установки
   // метаданных из описания книги
   function continueSetMetadataAfterConfirmation(bookId) {
-    logger.debug("continueSetMetadataAfterConfirmation");
     var booksStorage = new BooksStore();
     var bookInfo = booksStorage.booksOnDevice[bookId];
     var files = Application.Storage.getValue(bookId);
@@ -133,7 +132,7 @@ module ContentProcessor {
     for (var i = 0; i < keys.size(); i++) {
       booksStorage.removeBook(keys[i]);
     }
-    logger.debug("Системный сброс медиаконетна");
+    logger.warning("Start of complete removal of media content");
     Media.resetContentCache();
   }
 

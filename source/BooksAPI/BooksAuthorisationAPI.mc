@@ -16,10 +16,10 @@ class BooksAuthorisationAPI extends BooksAPI {
   function doNothing(params) {}
 
   function start() {
-    logger.debug("Начало авторизации");
+    logger.debug("Start of authorization");
     var token = Application.Properties.getValue(TOKEN);
     if (token.equals("")) {
-      logger.debug("Токен не задан. Требуется авторизация на сервере");
+      logger.debug("Token not set. Server authorization required.");
       var login = Application.Properties.getValue(LOGIN);
       var password = Application.Properties.getValue(PASSWORD);
 
@@ -50,7 +50,7 @@ class BooksAuthorisationAPI extends BooksAPI {
       };
       WebRequest.makeWebRequest(url, params, options, callback);
     } else {
-      logger.debug("Пропущена авторизация. Сохраненный токен: " + token);
+      logger.debug("No authorization required. A stored token was found.");
       finalCallback.invoke(token);
       return;
     }
@@ -60,15 +60,15 @@ class BooksAuthorisationAPI extends BooksAPI {
     if (code == 200) {
       var token = data["user"]["accessToken"];
       if (token == null or token.equals("")) {
-        logger.debug("В ответе отсутствует ключ accessToken. Получаем ключ token");
+        logger.info(
+          "The response does not contain the accessToken key. Token will be used"
+        );
         token = data["user"]["token"];
       }
       Application.Properties.setValue(TOKEN, token);
       finalCallback.invoke(token);
     } else if (code == -402) {
-      logger.debug(
-        "Слишком большой ответ. Пробуем авторизоваться через прокси"
-      );
+      logger.warning("Too big answer. Let's try to log in via proxy");
       var url = books_proxy_url + "/audiobookshelf/login";
       var callback = self.method(:onProxyLogin);
       var login = Application.Properties.getValue(LOGIN);
@@ -102,7 +102,9 @@ class BooksAuthorisationAPI extends BooksAPI {
       if (data instanceof Lang.Dictionary) {
         token = data["accessToken"];
         if (token == null or token.equals("")) {
-          logger.debug("В ответе отсутствуе ключ accessToken. Получаем ключ token");
+          logger.info(
+            "The response does not contain the accessToken key. Token will be used"
+          );
           token = data["token"];
         }
         Application.Properties.setValue(TOKEN, token);

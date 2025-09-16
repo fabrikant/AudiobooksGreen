@@ -6,13 +6,6 @@ import Toybox.Time;
 import Toybox.Application;
 
 class AbooksSyncDelegate extends Communications.SyncDelegate {
-  enum {
-    // По этому ключу в Storage пишется
-    // текущее состояние синхронизации
-    // это массив [ЗавершеноБулево, UnixTimeМоментаПоследнихДанных]
-    SYNC_STATUS = "sync_stat",
-  }
-
   // **************************************************************************
   function initialize() {
     SyncDelegate.initialize();
@@ -29,6 +22,7 @@ class AbooksSyncDelegate extends Communications.SyncDelegate {
     if (folderId == null) {
       var message = Application.loadResource(Rez.Strings.syncFolderNotSelected);
       logger.error(message);
+      logger.finalizeLogging();
       Communications.cancelAllRequests();
       Communications.notifySyncComplete(message);
       return;
@@ -89,7 +83,7 @@ class AbooksSyncDelegate extends Communications.SyncDelegate {
       );
       bookLoader.start();
     } else {
-      logger.debug("Получены списки файлов по всем книгам");
+      logger.debug("Lists of files for all books were received");
       // Загружаем закладки
       var progress = new ProgressAPI(
         self.method(:onProgressSync),
@@ -117,12 +111,21 @@ class AbooksSyncDelegate extends Communications.SyncDelegate {
   // **************************************************************************
   // Called by the system to determine if the app needs to be synced.
   function isSyncNeeded() as Boolean {
-    return true;
+    var result = false;
+    if (
+      getApp().manualSyncStarted or
+      Application.Properties.getValue("autosyncWhileCharging")
+    ) {
+      result = true;
+    }
+    getApp().manualSyncStarted = false;
+    return result;
   }
 
   // Called when the user chooses to cancel an active sync.
   function onStopSync() as Void {
     Communications.cancelAllRequests();
     Communications.notifySyncComplete(null);
+    logger.finalizeLogging();
   }
 }

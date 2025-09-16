@@ -22,7 +22,9 @@ class BooksPlaylistAPI extends BooksAPI {
 
   //***************************************************************************
   function start() {
-    logger.debug("Начало получения списка книг плейлиста: " + playlistId);
+    logger.info(
+      "Start getting a list of books from a playlist with ID: " + playlistId
+    );
     var authorisationProcessor = new BooksAuthorisationAPI(
       self.method(:onAuthorisation)
     );
@@ -44,7 +46,7 @@ class BooksPlaylistAPI extends BooksAPI {
       return;
     }
 
-    logger.debug("Получение списка книг для плейлиста: " + playlistId);
+    logger.info("Start getting the list of books directly from the server");
     // Пробуем получить список книг без прокси
     var url = api_url + "/playlists/" + playlistId;
     var callback = self.method(:onNativePlaylist);
@@ -84,10 +86,11 @@ class BooksPlaylistAPI extends BooksAPI {
       }
 
       finalCallback.invoke(result);
+      logger.info("The list of books was received directly from the server.");
       return;
     } else if (code == -402) {
       //слишком большой ответ нужен запрос через прокси
-      logger.debug("Слишком большой ответ. Получаем список книг через прокси.");
+      logger.info("Too big answer. Getting the list of books via proxy.");
       var url = books_proxy_url + "/audiobookshelf/playlist";
       var callback = self.method(:onProxyPlaylist);
       var params = {
@@ -124,6 +127,7 @@ class BooksPlaylistAPI extends BooksAPI {
         });
       }
     }
+    logger.info("The list of books was received via proxy");
     finalCallback.invoke(result);
   }
 }

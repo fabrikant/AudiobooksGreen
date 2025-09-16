@@ -64,9 +64,14 @@
     <!-- Properties -->
     <string id="extraSettings">Настройки</string>
     <string id="autosyncProgress">Синхр. прогресс при паузе</string>
+    <string id="autosyncWhileCharging">Авт. синхр. при зарядке</string>
     <string id="translitComplications">Транслит. complications</string>
     <string id="lenghtComplications">Макс. длина сomplications</string>
     <string id="defaultPlayerColors">Системные цвета плеера</string>
+
+    <string id="logLevel">Уровень логирования</string>
+    <string id="telegramDebug">Отладка через telegram</string>
+    <string id="telegramChatId">Ваш ID в telegram</string>
 
     <!-- Licence -->
     <string id="notAvailableMessage">Недоступно в бесплатной версии</string>

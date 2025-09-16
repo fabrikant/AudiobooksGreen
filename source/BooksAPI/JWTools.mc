@@ -7,7 +7,7 @@ module JWTools {
     //для того чтобы инициализировать логин
     if (loginIsSet()) {
       Application.Properties.setValue(TOKEN, "");
-      logger.debug("Очищен токен для иницализации новой аутентификации");
+      logger.debug("Cleared token to initialize new authentication");
     }
   }
 

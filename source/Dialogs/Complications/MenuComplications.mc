@@ -11,7 +11,8 @@ class MenuComplications extends WatchUi.Menu2 {
     addItem(
       new PropertiesBooleanItem(
         Rez.Strings.translitComplications,
-        "translitComplications"
+        "translitComplications",
+        null
       )
     );
     addItem(

@@ -66,9 +66,15 @@
     <!-- Properties -->
     <string id="extraSettings">Settings</string>
     <string id="autosyncProgress">Sync progress when paused</string>
+    <string id="autosyncWhileCharging">Sync while charging</string>
     <string id="translitComplications">Translit complications</string>
     <string id="lenghtComplications">Complications max lenght</string>
     <string id="defaultPlayerColors">System colors of the player</string>
+
+    <string id="logLevel">Log level</string>
+    <string id="telegramDebug">Debugging via telegram</string>
+    <string id="telegramChatId">Your telegram ID</string>
+    
 
     <!-- Licence -->
     <string id="notAvailableMessage">Not available in free version</string>

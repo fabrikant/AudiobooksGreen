@@ -30,7 +30,7 @@ class BookCoversDownloaderAPI extends BooksAPI {
     for (var i = 0; i < keys.size(); i++) {
       var coverKey = booksStorage.getCoverKey(keys[i]);
       if (Application.Storage.getValue(coverKey) == null) {
-        logger.debug("Добавлена книга: " + keys[i] + " для загрузки обложки");
+        logger.debug("Added book: " + keys[i] + " for downloading cover");
         bookKeys.add(keys[i]);
       }
     }
@@ -74,7 +74,11 @@ class BookCoversDownloaderAPI extends BooksAPI {
         booksStorage.getCoverKey(bookKeys[keyIndex]),
         data
       );
-      logger.info("Записана обложка: " + bookInfo[BooksStore.BOOK_TITLE]);
+      logger.info(
+        "The cover of the book: " +
+          bookInfo[BooksStore.BOOK_TITLE] +
+          " has been downloaded"
+      );
     }
     // Запускаем загрузку следующего файла
     keyIndex += 1;

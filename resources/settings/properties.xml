@@ -5,7 +5,12 @@
 	<property id="server" type="string"></property>
 	<property id="token" type="string"></property>
 
+	<property id="logLevel" type="number">4</property>
+	<property id="telegramDebug" type="boolean">false</property>
+	<property id="telegramChatId" type="string"></property>
+
 	<property id="autosyncProgress" type="boolean">false</property>
+	<property id="autosyncWhileCharging" type="boolean">true</property>
 	<property id="translitComplications" type="boolean">true</property>
 	<property id="lenghtComplications" type="number">20</property>
 	<property id="defaultPlayerColors" type="boolean">false</property>

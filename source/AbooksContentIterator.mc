@@ -32,7 +32,7 @@ class AbooksContentIterator extends Media.ContentIterator {
     books = booksStorage.booksOnDevice;
     files = booksStorage.getPlaylistFiles();
 
-    logger.debug("В плейлисте файлов: " + files.size());
+    logger.debug("There are " + files.size() + " files in the playlist");
     //В этом есть смысл, если плейлист не пустой
     if (!(files instanceof Lang.Array) or files.size() == 0) {
       return;
@@ -75,10 +75,7 @@ class AbooksContentIterator extends Media.ContentIterator {
       ) {
         currenInd = i;
         logger.debug(
-          "Установлен текущий индекс: " +
-            currenInd +
-            " для книги с id: " +
-            bookIdForResume
+          "Curren index set: " + currenInd + ". The book id: " + bookIdForResume
         );
         break;
       }
@@ -107,9 +104,9 @@ class AbooksContentIterator extends Media.ContentIterator {
 
   // **************************************************************************
   function getContent(ind, position) {
-    logger.debug("Поиск контента по индексу: " + ind);
+    logger.debug("Start searching for content by index: " + ind);
     if (ind >= files.size() or ind < 0) {
-      logger.debug("Недопустимое значение индекса");
+      logger.debug("Invalid index value");
       return null;
     }
     var file = files[ind];
@@ -134,7 +131,7 @@ class AbooksContentIterator extends Media.ContentIterator {
       mediaContent = new Media.ActiveContent(contRef, metadata, position);
     }
 
-    logger.debug("Обнаружен контент: " + metadata.album + " " + metadata.title);
+    logger.debug("Content detected: " + metadata.album + " " + metadata.title);
     return mediaContent;
   }
 
@@ -222,7 +219,7 @@ class AbooksContentIterator extends Media.ContentIterator {
         Complications.updateComplication(2, { :value => chapter });
         Complications.updateComplication(3, { :value => chapterTitle });
       } catch (ex) {
-        logger.warning("1. " + ex.getErrorMessage());
+        logger.debug("1. " + ex.getErrorMessage());
       }
     } else {
       try {
@@ -232,14 +229,14 @@ class AbooksContentIterator extends Media.ContentIterator {
         Complications.updateComplication(2, { :value => null });
         Complications.updateComplication(3, { :value => null });
       } catch (ex) {
-        logger.warning("2. " + ex.getErrorMessage());
+        logger.debug("2. " + ex.getErrorMessage());
       }
     }
   }
 
   // **************************************************************************
   function createPlayerBookmark(playbackPosition) {
-    if (currenInd == null or currenInd >= files.size()){
+    if (currenInd == null or currenInd >= files.size()) {
       return;
     }
     // Фиксируем закладку

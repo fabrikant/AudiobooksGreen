@@ -7,18 +7,20 @@ import Toybox.Time;
 import Toybox.System;
 
 var tgApiKey = null;
+var tgBotURL = null;
 
 class AbooksApp extends Application.AudioContentProviderApp {
   const version = "2025.09.04.01";
+  var manualSyncStarted = false;
 
-  var SyncWasStartedOnThisChargeCycle = false;
-  
-
-  function initialize() { AudioContentProviderApp.initialize(); }
+  function initialize() {
+    Local.setSettings();
+    logger.reloadSettings(null, null);
+    AudioContentProviderApp.initialize();
+  }
 
   // onStart() is called on application start up
   function onStart(state as Dictionary?) {
-    Local.setSettings();
   }
 
   // onStop() is called when your application is exiting
@@ -32,13 +34,13 @@ class AbooksApp extends Application.AudioContentProviderApp {
 
   // Get a delegate that communicates sync status to the system for syncing
   // media content to the device
-  function getSyncDelegate() as Communications.SyncDelegate ? {
+  function getSyncDelegate() as Communications.SyncDelegate? {
     return new AbooksSyncDelegate();
   }
 
   // Get the initial view for configuring playback
   function getPlaybackConfigurationView() {
-    return [ new MenuMain(), new SimpleMenuDelegate() ];
+    return [new MenuMain(), new SimpleMenuDelegate()];
   }
 
   // Get the initial view for configuring sync
@@ -47,15 +49,19 @@ class AbooksApp extends Application.AudioContentProviderApp {
     // и для настройки плейбэка.
     // Такое ощущение, что в реальной жизни getSyncConfigurationView()
     // не вызывается
-    return [ new MenuMain(), new SimpleMenuDelegate() ];
+    return [new MenuMain(), new SimpleMenuDelegate()];
     // return [new AbooksConfigureSyncView(), new SimpleMenuDelegate()];
   }
 
   function getProviderIconInfo() {
     return new Toybox.Media.ProviderIconInfo(
-        // Rez.Drawables.logo10,
-        Rez.Drawables.logoComplications, Toybox.Graphics.COLOR_DK_BLUE);
+      // Rez.Drawables.logo10,
+      Rez.Drawables.logoComplications,
+      Toybox.Graphics.COLOR_DK_BLUE
+    );
   }
 }
 
-function getApp() as AbooksApp { return Application.getApp() as AbooksApp; }
+function getApp() as AbooksApp {
+  return Application.getApp() as AbooksApp;
+}

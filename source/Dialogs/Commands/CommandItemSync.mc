@@ -20,6 +20,7 @@ class CommandItemSync extends CommandItemAbstract {
       return;
     }
 
+    getApp().manualSyncStarted = true;
     if (Communications has :startSync2) {
       Communications.startSync2({
         :message => Application.Properties.getValue(SERVER),

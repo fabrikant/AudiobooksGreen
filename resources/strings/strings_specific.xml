@@ -20,4 +20,11 @@
     <string id="chapterTitleLongLabel">Chapter+tittle</string>
     <string id="chapterTitleShortLabel">ch.+title</string>
     <string id="chapterTitleDefaultText">Сhapter + title of the book</string>
+
+    <string id="SILENCE">SILENCE</string>
+    <string id="ERROR">ERROR</string>
+    <string id="WARNING">WARNING</string>
+    <string id="INFO">INFO</string>
+    <string id="DEBUG">DEBUG</string>
+
 </strings>

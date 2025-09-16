@@ -12,13 +12,14 @@ class MenuStyle extends WatchUi.Menu2 {
     addItem(
       new PropertiesBooleanItem(
         Rez.Strings.defaultPlayerColors,
-        "defaultPlayerColors"
+        "defaultPlayerColors",
+        null
       )
     );
 
     var devSettings = System.getDeviceSettings();
-    if (devSettings.requiresBurnInProtection){
-      addItem(new CommandItemMenuTheme());  
+    if (devSettings.requiresBurnInProtection) {
+      addItem(new CommandItemMenuTheme());
     }
 
     addItem(new ItemPropertyColor("textColor", Rez.Strings.textColor));

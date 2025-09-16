@@ -18,10 +18,12 @@ class ProgressAPI extends BooksAPI {
 
   //***************************************************************************
   function start() {
-    logger.debug("Начало синхронизации прогресса");
+    logger.info("Start synchronizing playback progress");
     bookKeys = booksStorage.booksOnDevice.keys();
     if (bookKeys.size() == 0) {
-      logger.debug("Нет книг на устройстве. Пропуск синхронизации закладок");
+      logger.info(
+        "No books on device. Skipping playback progress synchronization"
+      );
       finalCallback.invoke(booksStorage);
       return;
     }
@@ -39,7 +41,7 @@ class ProgressAPI extends BooksAPI {
         Application.loadResource(Rez.Strings.notSet) +
         " " +
         Application.loadResource(Rez.Strings.token);
-      logger.error(message + ". Пропущена синхронизация прогресса");
+      logger.error(message + ". Playback progress sync missed");
       finalCallback.invoke(booksStorage);
       return;
     }
@@ -52,7 +54,7 @@ class ProgressAPI extends BooksAPI {
   function getBookProgressFromServer(keyIndex) {
     if (keyIndex < bookKeys.size()) {
       var bookId = bookKeys[keyIndex];
-      logger.debug("Запрос прогресса для книги: " + bookId);
+      logger.info("Start playback progress query for the book: " + bookId);
       var url = api_url + "/me/progress/" + bookId;
       WebRequest.makeWebRequest(
         url,
@@ -69,7 +71,7 @@ class ProgressAPI extends BooksAPI {
         self.method(:onGetBookProgressFromServer)
       );
     } else {
-      logger.debug("Заверешено получение прогресса с сервера");
+      logger.info("Completed receiving playback progress from server");
       bookmarksProcessing();
     }
   }
@@ -87,8 +89,8 @@ class ProgressAPI extends BooksAPI {
       );
 
       if (serverBookmark instanceof Lang.Array) {
-        logger.debug(
-          "Получен прогресс для книги: " +
+        logger.info(
+          "Playback progress received for the book: " +
             bookId +
             " progress " +
             serverBookmark
@@ -96,7 +98,7 @@ class ProgressAPI extends BooksAPI {
         serverBookmarks[bookId] = serverBookmark;
       }
     } else {
-      logger.debug("Не удалось получить прогресс для книги: " + bookId);
+      logger.info("Unable to get progress for the book: " + bookId);
     }
     keyIndex += 1;
     getBookProgressFromServer(keyIndex);
@@ -138,9 +140,9 @@ class ProgressAPI extends BooksAPI {
             )
           );
           logger.debug(
-            "Добавлен прогресс по книге для выгрузки на сервер: " +
+            "Added playback progress for the book id: " +
               bookId +
-              " " +
+              " for uploading to the server:" +
               deviceBookmark
           );
         } else if (momentServer.greaterThan(momentDevice)) {
@@ -165,9 +167,9 @@ class ProgressAPI extends BooksAPI {
             )
           );
           logger.debug(
-            "Добавлен прогресс по книге для выгрузки на сервер: " +
+            "Added playback progress for the book id: " +
               bookId +
-              " " +
+              " for uploading to the server:" +
               deviceBookmark
           );
         }
@@ -177,7 +179,7 @@ class ProgressAPI extends BooksAPI {
     if (bookmarksToUpload.size() > 0) {
       sendBookmarks(bookmarksToUpload);
     } else {
-      logger.debug("Нет данных о прогрессе для выгрузки на сервер");
+      logger.info("No playback progress information to upload to server");
       finalCallback.invoke(booksStorage);
       return;
     }
@@ -185,7 +187,7 @@ class ProgressAPI extends BooksAPI {
 
   //***************************************************************************
   function sendBookmarks(bookmarksToUpload) {
-    logger.debug("Начало выгрузки прогресса по книгам на сервер");
+    logger.info("Start uploading playback progress by books to the server");
     var url = books_proxy_url + "/audiobookshelf/set_progress";
 
     var data = {
@@ -215,7 +217,7 @@ class ProgressAPI extends BooksAPI {
   // **************************************************************************
   function onSendBookmarks(code, data, context) {
     logger.debug(
-      "Результат выгрузки прогресса. code: " + code + " data" + data
+      "Result of uploading playback progress. code: " + code + " data" + data
     );
   }
 

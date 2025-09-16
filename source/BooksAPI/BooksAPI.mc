@@ -101,7 +101,7 @@ class BooksAPI {
 
   // **************************************************************************
   function getErrorMessage(code, data, description) {
-    var msg = ["Код: " + code];
+    var msg = ["Code: " + code];
     if (!description.equals("")) {
       msg.add(description);
     }
