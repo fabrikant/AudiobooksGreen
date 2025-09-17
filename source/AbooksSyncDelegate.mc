@@ -82,15 +82,10 @@ class AbooksSyncDelegate extends Communications.SyncDelegate {
         index
       );
       bookLoader.start();
-    } else {
-      logger.debug("Lists of files for all books were received");
-      // Загружаем закладки
-      var progress = new ProgressAPI(
-        self.method(:onProgressSync),
-        booksStorage
-      );
-      progress.start();
+      return;
     }
+    logger.debug("Lists of files for all books were received");
+    startProgressSync(booksStorage);
   }
 
   // **************************************************************************
@@ -98,6 +93,14 @@ class AbooksSyncDelegate extends Communications.SyncDelegate {
   function onLoadFileList(booksStorage, idsToDownload, index) {
     index += 1;
     startLoadingFileList(booksStorage, idsToDownload, index);
+  }
+
+  // **************************************************************************
+  // Получили информацию обо всех книгах
+  function startProgressSync(booksStorage) {
+    // Загружаем прогресс по книгам
+    var progress = new ProgressAPI(self.method(:onProgressSync), booksStorage);
+    progress.start();
   }
 
   // **************************************************************************
