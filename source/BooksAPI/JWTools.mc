@@ -22,4 +22,15 @@ module JWTools {
     var password = Application.Properties.getValue(PASSWORD);
     return !login.equals("") and !password.equals("");
   }
+
+  function getToken() {
+    var res = Application.Properties.getValue(TOKEN);
+    if (res.equals("")) {
+      res = null;
+    }else{
+      logger.debug("No authorization required. A stored token was found.");
+    }
+    return res;
+  }
+
 }

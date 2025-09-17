@@ -63,10 +63,16 @@ class BookFilesDownloaderAPI extends BooksAPI {
   // **************************************************************************
   function start() {
     logger.debug("Start downloading media files");
-    var authorisationProcessor = new BooksAuthorisationAPI(
-      self.method(:onAuthorisation)
-    );
-    authorisationProcessor.start();
+    
+    var savedToken = JWTools.getToken();
+    if (savedToken == null) {
+      var authorisationProcessor = new BooksAuthorisationAPI(
+        self.method(:onAuthorisation)
+      );
+      authorisationProcessor.start();
+    } else {
+      onAuthorisation(savedToken);
+    }
   }
 
   // **************************************************************************

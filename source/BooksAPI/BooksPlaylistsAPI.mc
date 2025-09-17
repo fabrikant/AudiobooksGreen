@@ -21,10 +21,16 @@ class BooksPlaylistsAPI extends BooksAPI {
   //***************************************************************************
   function start() {
     logger.info("Start getting the list of playlists");
-    var authorisationProcessor = new BooksAuthorisationAPI(
-      self.method(:onAuthorisation)
-    );
-    authorisationProcessor.start();
+   
+    var savedToken = JWTools.getToken();
+    if (savedToken == null) {
+      var authorisationProcessor = new BooksAuthorisationAPI(
+        self.method(:onAuthorisation)
+      );
+      authorisationProcessor.start();
+    } else {
+      onAuthorisation(savedToken);
+    }
   }
 
   //***************************************************************************
@@ -75,7 +81,7 @@ class BooksPlaylistsAPI extends BooksAPI {
       return;
     } else if (code == -402) {
       //слишком большой ответ нужен запрос через прокси
-      logger.info(
+      logger.warning(
         "Too big answer. Start getting the list of playlists via proxy"
       );
       var url = books_proxy_url + "/audiobookshelf/playlists";

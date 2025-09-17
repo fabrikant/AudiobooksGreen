@@ -27,11 +27,16 @@ class ProgressAPI extends BooksAPI {
       finalCallback.invoke(booksStorage);
       return;
     }
-
-    var authorisationProcessor = new BooksAuthorisationAPI(
-      self.method(:onAuthorisation)
-    );
-    authorisationProcessor.start();
+    
+    var savedToken = JWTools.getToken();
+    if (savedToken == null) {
+      var authorisationProcessor = new BooksAuthorisationAPI(
+        self.method(:onAuthorisation)
+      );
+      authorisationProcessor.start();
+    } else {
+      onAuthorisation(savedToken);
+    }
   }
 
   //***************************************************************************
