@@ -36,7 +36,7 @@ class BookFileListAPI extends BooksAPI {
   // **************************************************************************
   // Сначала пробуем получить список файлов непосредственно
   function start() {
-    // Проверяем. Возможно списко файлов по данной книге уже загружен
+    // Проверяем. Возможно список файлов по данной книге уже загружен
 
     var storeFileList = Application.Storage.getValue(bookId);
     if (storeFileList instanceof Lang.Array) {
