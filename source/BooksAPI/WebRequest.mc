@@ -13,7 +13,7 @@ class WebRequestWrapper {
   function start(url, params, options, callback) {
     self.finalCallback = callback;
     self.url = url;
-    logger.warning(httpMethodString(options) + " url: " + url);
+    logger.info(httpMethodString(options) + " url: " + url);
     Communications.makeWebRequest(
       url,
       params,
@@ -23,6 +23,7 @@ class WebRequestWrapper {
   }
 
   function makeImageRequest(url, params, options, callback) {
+    logger.info("GET image url: " + url);
     self.finalCallback = callback;
     self.url = url;
     Communications.makeImageRequest(

@@ -23,6 +23,8 @@ class Logger extends Lang.Object {
   private var tgMessages = "";
   private var lastTgMessagesTime = 0;
 
+  private var runningTelegramRequests = 0;
+
   function initialize(logLevel) {
     self.logLevel = logLevel;
   }
@@ -43,23 +45,6 @@ class Logger extends Lang.Object {
 
   private function formatLogMsg(msg, msgLevel) {
     var timeInfo = Time.Gregorian.info(Time.now(), Time.FORMAT_SHORT);
-
-    var isWebRequest = false;
-
-    // Если последнее сообщение начинается с GET, DELETE, PUT или POST,
-    // не отправляем сообщение в телеграм. Часы плохо реагируют, если
-    // активны сразу 2 web запроса
-    if (
-      tgDebug and
-      msg instanceof Lang.String and
-      (msg.substring(0, 3).equals("GET") or
-        msg.substring(0, 4).equals("POST") or
-        msg.substring(0, 3).equals("PUT") or
-        msg.substring(0, 6).equals("DELETE"))
-    ) {
-      isWebRequest = true;
-    }
-
     var frmtMsg = Lang.format("$1$.$2$.$3$ $4$:$5$:$6$ - $7$ - $8$", [
       timeInfo.day.format("%02d"),
       timeInfo.month.format("%02d"),
@@ -71,11 +56,12 @@ class Logger extends Lang.Object {
       msg,
     ]);
 
-    return { :msg => frmtMsg, :isWebRequest => isWebRequest };
+    return frmtMsg;
   }
 
   private function sendToTelegram() {
-    System.println("Отправка в телеграм");
+    // System.println("Отправка в телеграм");
+    runningTelegramRequests += 1;
     Communications.makeWebRequest(
       "https://api.telegram.org/bot" + tgApiKey + "/sendMessage",
       { "chat_id" => chatId, "text" => tgMessages },
@@ -89,10 +75,13 @@ class Logger extends Lang.Object {
     tgMessages = "";
   }
 
-  function onSendTelegram(code, data) {}
+  function onSendTelegram(code, data) {
+    runningTelegramRequests -= 1;
+    // System.println("Ответ от телеграм: " + code);
+  }
 
-  private function processMessage(msgDict) {
-    System.println(msgDict[:msg]);
+  private function processMessage(msg) {
+    System.println(msg);
 
     if (
       tgDebug and
@@ -101,18 +90,17 @@ class Logger extends Lang.Object {
       !chatId.equals("")
     ) {
       // Добавляем текущее сообщение к порции сообщений для отправки
-      tgMessages = tgMessages + "\n" + msgDict[:msg];
+      tgMessages = tgMessages + "\n" + msg;
 
-      // Проверяем не пора ли отправить сообщения в телеграм:
-      // Отправляем не чаще чем 1 раз в 20 секунд
-      if (!msgDict[:isWebRequest]) {
+      if (runningTelegramRequests < 1) {
+        // Проверяем не пора ли отправить сообщения в телеграм:
+        // Отправляем не чаще чем 1 раз в 20 секунд, или если длниа
+        //  строки больше 2000 символов
         var now = Time.now().value();
-        if (lastTgMessagesTime + 20 <= now) {
+        if (lastTgMessagesTime + 20 <= now or tgMessages.length() > 2000) {
           sendToTelegram();
           lastTgMessagesTime = now;
         }
-      } else {
-        System.println("Пропущена отправка");
       }
     }
   }
