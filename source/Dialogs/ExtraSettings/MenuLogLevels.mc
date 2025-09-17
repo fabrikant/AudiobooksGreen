@@ -35,7 +35,6 @@ class MenuLogLevelDelegate extends WatchUi.Menu2InputDelegate {
   }
 
   function onSelect(item) {
-    System.println(item.getId());
     Application.Properties.setValue("logLevel", item.getId());
     logger.reloadSettings(null, null);
     WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);

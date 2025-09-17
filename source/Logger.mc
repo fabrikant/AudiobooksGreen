@@ -43,8 +43,7 @@ class Logger extends Lang.Object {
     var timeInfo = Time.Gregorian.info(Time.now(), Time.FORMAT_SHORT);
 
     var isWebRequest = false;
-    // Проверяем не пора ли отправить сообщения в телеграм:
-    // Отправляем не чаще чем 1 раз в 20 секунд
+
     // Если последнее сообщение начинается с GET, DELETE, PUT или POST,
     // не отправляем сообщение в телеграм. Часы плохо реагируют, если
     // активны сразу 2 web запроса
@@ -99,12 +98,16 @@ class Logger extends Lang.Object {
       // Добавляем текущее сообщение к порции сообщений для отправки
       tgMessages = tgMessages + "\n" + msgDict[:msg];
 
+      // Проверяем не пора ли отправить сообщения в телеграм:
+      // Отправляем не чаще чем 1 раз в 20 секунд
       if (!msgDict[:isWebRequest]) {
         var now = Time.now().value();
         if (lastTgMessagesTime + 20 <= now) {
           sendToTelegram();
           lastTgMessagesTime = now;
         }
+      } else {
+        System.println("Пропущено сообщение");
       }
     }
   }
