@@ -34,18 +34,22 @@ class BookFileListAPI extends BooksAPI {
   }
 
   // **************************************************************************
-  // Сначала пробуем получить список файлов непосредственно
-  function start() {
-    // Проверяем. Возможно список файлов по данной книге уже загружен
-
+  // Проверяем. Возможно список файлов по данной книге уже загружен
+  function fileListRecieved() {
+    var result = false;
     var storeFileList = Application.Storage.getValue(bookId);
     if (storeFileList instanceof Lang.Array) {
       logger.debug(
         "The list of files by book: " + bookId + " has already been downloaded"
       );
-      finalCallback.invoke(booksStorage, arrayBooksId, currenIndexBooks);
-      return;
+      result = true;
     }
+    return result;
+  }
+
+  // **************************************************************************
+  // Сначала пробуем получить список файлов непосредственно
+  function start() {
 
     logger.info(
       "Start getting the list of files of the book: " +

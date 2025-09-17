@@ -73,7 +73,8 @@ class AbooksSyncDelegate extends Communications.SyncDelegate {
   // Начинаем грузить очередную книгу
   // Получаем информацию о файлах
   function startLoadingFileList(booksStorage, idsToDownload, index) {
-    if (index < idsToDownload.size()) {
+
+    while (index < idsToDownload.size()) {
       var finalCallback = self.method(:onLoadFileList);
       var bookLoader = new BookFileListAPI(
         finalCallback,
@@ -81,8 +82,13 @@ class AbooksSyncDelegate extends Communications.SyncDelegate {
         idsToDownload,
         index
       );
-      bookLoader.start();
-      return;
+      //Пытаемся избежать лишней рукурсии. Если много книг, вылетает Error: Stack Overflow Error
+      if (bookLoader.fileListRecieved()){
+        index +=1;
+      }else{
+        bookLoader.start();
+        return;
+      }
     }
     logger.debug("Lists of files for all books were received");
     startProgressSync(booksStorage);
