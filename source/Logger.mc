@@ -4,6 +4,8 @@ import Toybox.Lang;
 import Toybox.Application;
 import Toybox.Communications;
 
+var tgApiKey = null;
+var tgBotURL = null;
 var logger = new Logger(Logger.SILENCE);
 
 class Logger extends Lang.Object {
@@ -73,6 +75,7 @@ class Logger extends Lang.Object {
   }
 
   private function sendToTelegram() {
+    System.println("Отправка в телеграм");
     Communications.makeWebRequest(
       "https://api.telegram.org/bot" + tgApiKey + "/sendMessage",
       { "chat_id" => chatId, "text" => tgMessages },
@@ -81,10 +84,12 @@ class Logger extends Lang.Object {
         :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON,
         :headers => {},
       },
-      null
+      self.method(:onSendTelegram)
     );
     tgMessages = "";
   }
+
+  function onSendTelegram(code, data) {}
 
   private function processMessage(msgDict) {
     System.println(msgDict[:msg]);
@@ -107,7 +112,7 @@ class Logger extends Lang.Object {
           lastTgMessagesTime = now;
         }
       } else {
-        System.println("Пропущено сообщение");
+        System.println("Пропущена отправка");
       }
     }
   }

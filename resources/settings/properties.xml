@@ -5,7 +5,7 @@
 	<property id="server" type="string"></property>
 	<property id="token" type="string"></property>
 
-	<property id="logLevel" type="number">4</property>
+	<property id="logLevel" type="number">2</property>
 	<property id="telegramDebug" type="boolean">false</property>
 	<property id="telegramChatId" type="string"></property>
 
