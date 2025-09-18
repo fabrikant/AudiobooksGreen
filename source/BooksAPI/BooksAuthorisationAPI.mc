@@ -16,7 +16,7 @@ class BooksAuthorisationAPI extends BooksAPI {
   function doNothing(params) {}
 
   function start() {
-    logger.debug("Start of authorization");
+    logger.debug("Start authorization");
     var token = Application.Properties.getValue(TOKEN);
     if (token.equals("")) {
       logger.debug("Token not set. Server authorization required.");
@@ -68,7 +68,7 @@ class BooksAuthorisationAPI extends BooksAPI {
       Application.Properties.setValue(TOKEN, token);
       finalCallback.invoke(token);
     } else if (code == -402) {
-      logger.warning("Too big answer. Let's try to log in via proxy");
+      logger.warning("Too big answer. Let's try to login via proxy");
       var url = books_proxy_url + "/audiobookshelf/login";
       var callback = self.method(:onProxyLogin);
       var login = Application.Properties.getValue(LOGIN);

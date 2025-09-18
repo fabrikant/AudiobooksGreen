@@ -44,9 +44,9 @@ class WebRequestWrapper {
       }
 
       if (data instanceof Lang.String) {
-        errorMsg += "\n " + data;
+        errorMsg += " " + data;
       } else if (data instanceof Lang.Dictionary) {
-        errorMsg += "\n " + data.toString();
+        errorMsg += " " + data.toString();
       }
 
       if (code == -402) {
