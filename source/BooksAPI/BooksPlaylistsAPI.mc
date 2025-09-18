@@ -21,7 +21,7 @@ class BooksPlaylistsAPI extends BooksAPI {
   //***************************************************************************
   function start() {
     logger.info("Start getting the list of playlists");
-   
+
     var savedToken = JWTools.getToken();
     if (savedToken == null) {
       var authorisationProcessor = new BooksAuthorisationAPI(
@@ -41,7 +41,7 @@ class BooksPlaylistsAPI extends BooksAPI {
         Application.loadResource(Rez.Strings.notSet) +
           " " +
           Application.loadResource(Rez.Strings.token) +
-          "\n" +
+          " " +
           Application.loadResource(Rez.Strings.skipListPlaylists)
       );
       finalCallback.invoke([]);

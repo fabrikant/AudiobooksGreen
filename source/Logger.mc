@@ -37,7 +37,8 @@ class Logger extends Lang.Object {
       propName != null and
       propValue != null and
       propName.equals("telegramDebug") and
-      propValue
+      propValue and
+      self.chatId.equals("")
     ) {
       Communications.openWebPage(tgBotURL, null, null);
     }

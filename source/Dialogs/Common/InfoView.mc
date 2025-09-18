@@ -18,6 +18,7 @@ class InfoView extends WatchUi.View {
 
     colors = new AbooksColors();
     View.initialize();
+    logger.finalizeLogging();
   }
 
   function onShow() {
