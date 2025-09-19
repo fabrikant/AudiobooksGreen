@@ -53,7 +53,7 @@ class BooksStore {
   // **************************************************************************
   // Возвращает массив словарей c id книг, и ФАЙЛОВ которые нужно грузить
   function getFilesToDownload() {
-    logger.debug("Starting to create a list of files to upload");
+    logger.debug("Starting to create a list of files to download");
     var result = [];
     var bookIds = getIdsToDownload();
     for (var i = 0; i < bookIds.size(); i++) {

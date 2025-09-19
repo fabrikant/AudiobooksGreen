@@ -1,1 +1,2 @@
+2025.09.19.01 - Added support for working with application logs
 2025.08.27.01 - Support for JWT authentication of new versions of audiobookshelf. It is recommended to specify login and password as credentials, not API key

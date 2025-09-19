@@ -12,7 +12,6 @@ I do not save any information about users, devices and servers using the interme
 If you do not agree with this, do not use this application.
 
 Getting started:
-
 1. On your audiobookshelf server, you need to create a playlist and fill it with books.
 2. On your Garmin device (or Сonnect IQ), enter the server address in the authorization menu (the address must begin with https://)
 3. On your Garmin device (or Сonnect IQ), select one of the following options:
@@ -21,3 +20,11 @@ Getting started:
 4. On your Garmin device, use the "Servers playlist" menu item to select the playlist you created in step 1.
 5. Perform a full synchronization
 6. Add books to the playlist on your Garmin device and start listening
+
+Troubleshooting:
+You can use the logging system to troubleshoot problems. To do this, select the desired logging level (other than SILENCE) in the settings menu.
+Logs can be obtained in two ways.
+1. From a text file on your device. To do this, create a text file on your device as described at https://developer.garmin.com/connect-iq/core-topics/debugging/ in the Basic Debugging section.
+2. Receive logs via Telegram from the AbookFunnyHelper bot (https://t.me/AbookFunnyHelperBot). To do this, enable debugging via Telegram in the settings menu. Get your ID from the AbookFunnyHelper bot (/start command). Enter your ID in the settings menu.
+
+Remember that the bot cannot initiate messages with users. If you want to receive messages from the bot, you need to send it a message (the /start command works). If you have blocked a bot, you will need to message it to use it again.
