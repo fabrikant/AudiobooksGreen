@@ -18,7 +18,10 @@ enum {
 
   URL = "url",
   FILE_INDEX = "file_index",
+  BOOKS_PROXY_URLS = ["https://fv.n-drive.cf", "https://fv1.n-drive.cf"],
 }
+
+var books_proxy_url = BOOKS_PROXY_URLS[0];
 
 // **************************************************************************
 function getAuthorizationProprtiesError() {
@@ -49,8 +52,6 @@ function getAuthorizationProprtiesError() {
 class BooksAPI {
   var server_url = null;
   var api_url = null;
-  // const books_proxy_url = "https://fv.n-drive.cf";
-  const books_proxy_url = "https://cdn.nextdriver.ru";
 
   function initialize() {
     server_url = Application.Properties.getValue(SERVER);
@@ -65,6 +66,61 @@ class BooksAPI {
     } else {
       api_url += "/api";
     }
+  }
+
+  // **************************************************************************
+  function chooseBestProxy(finalCallback) {
+    if (BOOKS_PROXY_URLS.size() > 1) {
+      logger.info("Getting started choosing the best proxy server");
+      var context = {
+        :callback => finalCallback,
+        :ind => 0,
+        :indexBest => 0,
+        :durationBest => 9999999,
+        :startTime => Time.now(),
+      };
+      startChooseProxy(context);
+    } else {
+      books_proxy_url = BOOKS_PROXY_URLS[0];
+      logger.info("Proxy server selected: " + books_proxy_url);
+    }
+  }
+
+  // **************************************************************************
+  function startChooseProxy(context) {
+    if (context[:ind] >= BOOKS_PROXY_URLS.size()) {
+      books_proxy_url = BOOKS_PROXY_URLS[context[:indexBest]];
+      logger.info("Proxy server selected: " + books_proxy_url);
+      context[:callback].invoke();
+      return;
+    }
+
+    var url = BOOKS_PROXY_URLS[context[:ind]] + "/";
+
+    context[URL] = url;
+    context[:startTime] = Time.now();
+    var options = {
+      :method => Communications.HTTP_REQUEST_METHOD_GET,
+      :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON,
+      :context => context,
+    };
+
+    WebRequest.makeWebRequest(url, {}, options, self.method(:onGettingProxy));
+  }
+
+  // **************************************************************************
+  function onGettingProxy(code, data, context) {
+    if (code == 200) {
+      var duration = Time.now().subtract(context[:startTime]).value();
+      logger.info("Current delay: "+duration);
+      if (duration < context[:durationBest]){
+        context[:durationBest] = duration;
+        context[:indexBest] = context[:ind];
+      }
+    }
+    context[:ind] += 1;
+    context[:startTime] = Time.now();
+    startChooseProxy(context);
   }
 
   // **************************************************************************

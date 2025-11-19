@@ -13,6 +13,13 @@ class FolderSelectionMenu extends WatchUi.Menu2 {
       :theme => Style.getMenuTheme(),
     });
 
+    //Выбрираем лучший прокси
+    var booksApi = new BooksAPI();
+    booksApi.chooseBestProxy(self.method(:onChooseBestProxy));
+  }
+
+  //После выбора прокси начинаем получение папок
+  function onChooseBestProxy() {
     JWTools.beforeAuthentication();
     var getter = new BooksPlaylistsAPI(self.method(:onGetBooksFolders));
     getter.start();

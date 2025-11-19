@@ -31,12 +31,20 @@ class CommandItemSyncBoomarks extends CommandItemAbstract {
       WatchUi.SLIDE_IMMEDIATE
     );
 
+    //Выбрираем лучший прокси
+    var booksApi = new BooksAPI();
+    booksApi.chooseBestProxy(self.method(:onChooseBestProxy));
+  }
+
+  //После выбора прокси начинаем синхронизацию закладок
+  function onChooseBestProxy() {
     var booksStorage = new BooksStore();
     JWTools.beforeAuthentication();
     var syncAgent = new ProgressAPI(self.method(:onSync), booksStorage);
     syncAgent.start();
   }
 
+  //Полсе выбора прокси начинаем синхронизацию закладок
   function onSync(booksStorage) {
     //Закрываем прогрессбар
     WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);

@@ -27,7 +27,17 @@ class AbooksSyncDelegate extends Communications.SyncDelegate {
       Communications.notifySyncComplete(message);
       return;
     }
+    
+    //Выбрираем лучший прокси
+    var booksApi = new BooksAPI();
+    booksApi.chooseBestProxy(self.method(:onChooseBestProxy));
+  }
 
+  // **************************************************************************
+  //После выбора лучшего прокси
+  function onChooseBestProxy() {
+    var folderInfo = Application.Storage.getValue(BOOKS_FOLDER);
+    var folderId = folderInfo[BOOKS_FOLDER_ID];
     JWTools.beforeAuthentication();
     var folderGetter = new BooksPlaylistAPI(
       self.method(:onGettingFolder),
@@ -73,7 +83,6 @@ class AbooksSyncDelegate extends Communications.SyncDelegate {
   // Начинаем грузить очередную книгу
   // Получаем информацию о файлах
   function startLoadingFileList(booksStorage, idsToDownload, index) {
-
     while (index < idsToDownload.size()) {
       var finalCallback = self.method(:onLoadFileList);
       var bookLoader = new BookFileListAPI(
@@ -83,9 +92,9 @@ class AbooksSyncDelegate extends Communications.SyncDelegate {
         index
       );
       //Пытаемся избежать лишней рукурсии. Если много книг, вылетает Error: Stack Overflow Error
-      if (bookLoader.fileListRecieved()){
-        index +=1;
-      }else{
+      if (bookLoader.fileListRecieved()) {
+        index += 1;
+      } else {
         bookLoader.start();
         return;
       }
@@ -133,8 +142,8 @@ class AbooksSyncDelegate extends Communications.SyncDelegate {
 
   // Called when the user chooses to cancel an active sync.
   function onStopSync() as Void {
+    logger.finalizeLogging();
     Communications.cancelAllRequests();
     Communications.notifySyncComplete(null);
-    logger.finalizeLogging();
   }
 }
