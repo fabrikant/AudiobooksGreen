@@ -50,13 +50,14 @@ class BookItem extends WatchUi.CustomMenuItem {
 
   // **************************************************************************
   function setServerStatus(value) {
-    var status = value == true ? "" : "НЕ";
+    var status = value == true ? "Not on" : "On";
+
     logger.debug(
-      "Установлен статус [" +
+      "The new status of the book [" +
         getId() +
-        "] КНИГА " +
+        "] is set to `" +
         status +
-        " В СПИСКЕ на сервере"
+        " the Server`"
     );
     self.representOnServer = value;
   }
