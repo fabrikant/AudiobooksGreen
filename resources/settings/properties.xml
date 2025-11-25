@@ -3,6 +3,7 @@
 	<property id="login" type="string"></property>
 	<property id="password" type="string"></property>
 	<property id="server" type="string"></property>
+	<property id="proxy" type="string"></property>
 	<property id="token" type="string"></property>
 
 	<property id="logLevel" type="number">4</property>

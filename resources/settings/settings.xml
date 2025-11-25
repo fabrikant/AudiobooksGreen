@@ -12,6 +12,10 @@
 		<settingConfig type="alphaNumeric" />
 	</setting>
 	
+	<setting propertyKey="@Properties.proxy" title="@Strings.proxy">
+		<settingConfig type="alphaNumeric" />
+	</setting>
+
 	<setting propertyKey="@Properties.token" title="@Strings.token">
 		<settingConfig type="alphaNumeric" />
 	</setting>

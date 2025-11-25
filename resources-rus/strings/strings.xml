@@ -4,6 +4,7 @@
     <string id="login">Логин</string>
     <string id="password">Пароль</string>
     <string id="server">Сервер</string>
+    <string id="proxy">Ваш прокси (не обязательно)</string>
     <string id="notSet">Не задан</string>
     <string id="token">API token</string>
     <string id="booksFolder">Плейлист на сервере</string>

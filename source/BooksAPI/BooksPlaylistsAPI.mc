@@ -84,7 +84,7 @@ class BooksPlaylistsAPI extends BooksAPI {
       logger.warning(
         "Too big answer. Start getting the list of playlists via proxy"
       );
-      var url = books_proxy_url + "/audiobookshelf/playlists";
+      var url = getProxyUrl() + "/audiobookshelf/playlists";
       var callback = self.method(:onProxyPlaylists);
       var params = { "server" => server_url, "token" => token };
       var headers = {

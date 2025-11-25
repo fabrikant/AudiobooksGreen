@@ -69,7 +69,7 @@ class BooksAuthorisationAPI extends BooksAPI {
       finalCallback.invoke(token);
     } else if (code == -402) {
       logger.warning("Too big answer. Let's try to login via proxy");
-      var url = books_proxy_url + "/audiobookshelf/login";
+      var url = getProxyUrl() + "/audiobookshelf/login";
       var callback = self.method(:onProxyLogin);
       var login = Application.Properties.getValue(LOGIN);
       var password = Application.Properties.getValue(PASSWORD);

@@ -18,24 +18,26 @@ class MenuExtraSettings extends WatchUi.Menu2 {
         null
       )
     );
+    
+    if (tgApiKey != null and !tgApiKey.equals("")) {
+      addItem(
+        new PropertiesBooleanItem(
+          Rez.Strings.telegramDebug,
+          "telegramDebug",
+          logger.method(:reloadSettings)
+        )
+      );
 
-    addItem(
-      new PropertiesBooleanItem(
-        Rez.Strings.telegramDebug,
-        "telegramDebug",
-        logger.method(:reloadSettings)
-      )
-    );
+      addItem(
+        new PickerItem(
+          Rez.Strings.telegramChatId,
+          Application.Properties.getValue("telegramChatId"),
+          "telegramChatId",
+          logger.method(:reloadSettings)
+        )
+      );
 
-    addItem(
-      new PickerItem(
-        Rez.Strings.telegramChatId,
-        Application.Properties.getValue("telegramChatId"),
-        "telegramChatId",
-        logger.method(:reloadSettings)
-      )
-    );
-
-    addItem(new LogLevelPicker());
+      addItem(new LogLevelPicker());
+    }
   }
 }

@@ -4,6 +4,7 @@
     <string id="login">login</string>
     <string id="password">password</string>
     <string id="server">server</string>
+    <string id="proxy">Your proxy (optional)</string>
     <string id="notSet">Not set</string>
     <string id="token">API token</string>
     <string id="booksFolder">Servers playlist</string>

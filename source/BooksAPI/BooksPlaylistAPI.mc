@@ -97,7 +97,7 @@ class BooksPlaylistAPI extends BooksAPI {
     } else if (code == -402) {
       //слишком большой ответ нужен запрос через прокси
       logger.warning("Too big answer. Getting the list of books via proxy.");
-      var url = books_proxy_url + "/audiobookshelf/playlist";
+      var url = getProxyUrl() + "/audiobookshelf/playlist";
       var callback = self.method(:onProxyPlaylist);
       var params = {
         "server" => server_url,

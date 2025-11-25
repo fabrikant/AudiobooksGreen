@@ -193,7 +193,7 @@ class ProgressAPI extends BooksAPI {
   //***************************************************************************
   function sendBookmarks(bookmarksToUpload) {
     logger.info("Start uploading playback progress by books to the server");
-    var url = books_proxy_url + "/audiobookshelf/set_progress";
+    var url = getProxyUrl() + "/audiobookshelf/set_progress";
 
     var data = {
       "server" => server_url,

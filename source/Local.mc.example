@@ -1,0 +1,44 @@
+
+//************REQUIRED****************
+
+//One of the options is required (an empty array or an array containing proxy server addresses). 
+//If the array is empty, the user must set their own proxy in the application settings..
+const BUILT_IN_PROXYS = [];
+//const BUILT_IN_PROXYS = ["https://your.proxy1.org", "https://your.proxy1.org"];
+
+//************END REQUIRED************
+module Local {
+
+  (:release)
+  function setSettings() {
+    //OPTIONAL
+    //This data will be set ONLY when building the app for devices
+
+    // tgApiKey = "8156854684:AKQnA.......";
+    // tgBotURL = "https://t.me/YourBotName";
+  }
+
+  (:debug)
+  function setSettings() {
+    // OPTIONAL
+    // This data will be set ONLY when debugging in the emulator
+
+    // tgApiKey = "8156854684:AKQnA.......";
+    // tgBotURL = "https://t.me/YourBotName";
+
+    // Toybox.Application.Properties.setValue("telegramChatId", "your-tg-id");
+    // Toybox.Application.Properties.setValue("logLevel", 0);
+    // Toybox.Application.Properties.setValue("telegramDebug", false);
+
+    // Toybox.Application.Properties.setValue(SERVER, "https://audiobookshelf.server.org");
+    // Toybox.Application.Properties.setValue(PROXY, "https://your.proxy3.org");
+
+
+    // Toybox.Application.Properties.setValue(LOGIN, "username");
+    // Toybox.Application.Properties.setValue(PASSWORD, "userpassword");
+
+    // You can also set a Token. In this case, DO NOT set a username or password.
+    //Toybox.Application.Properties.setValue(TOKEN, "YOUR_LONG_AUDIOBOOKSHELF_TOKEN_dawdadwwdawd...");
+
+  }
+}

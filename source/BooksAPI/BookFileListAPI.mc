@@ -119,7 +119,7 @@ class BookFileListAPI extends BooksAPI {
   // Запрашиваем порцию файлов черех прокси
   function startProxyRequest(skip) {
     var limit = 30;
-    var url = books_proxy_url + "/audiobookshelf/book";
+    var url = getProxyUrl() + "/audiobookshelf/book";
     var callback = self.method(:onGetProxy);
     var headers = {
       "Authorization" => "Bearer " + token,
