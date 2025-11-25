@@ -24,7 +24,7 @@
 
     <string id="playlist">Playlist</string>
     <string id="content">Fully downloaded books</string>
-    <string id="allBooks">Books on the server</string>
+    <string id="allBooks">All books</string>
     <string id="fileList">List of files</string>
     <string id="syncFolderNotSelected">Sync playlist\nnot selected</string>
 
@@ -55,7 +55,7 @@
     <string id="seconds">s</string>
 
 
-    <string id="progressMessageWhileOpenFolders">Processing...</string>
+    <string id="progressMessageProcessing">Processing</string>
     <string id="progressMessageSyncBookmarks">Sync the progress</string>
 
     <string id="cacheSize">Cache size</string>

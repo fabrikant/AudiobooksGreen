@@ -1,0 +1,15 @@
+<drawables>
+
+    <bitmap id="cloud_done" filename="./google-svg/cloud_done.svg" scaleX="10%" scaleY="10%" scaleRelativeTo="screen">
+        <palette disableTransparency="false">
+            <color>005500</color>
+        </palette>
+    </bitmap>
+
+    <bitmap id="cloud_off" filename="./google-svg/cloud_off.svg" scaleX="10%" scaleY="10%" scaleRelativeTo="screen">
+        <palette disableTransparency="false">
+            <color>550000</color>
+        </palette>
+    </bitmap>
+
+</drawables>

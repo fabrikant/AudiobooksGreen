@@ -16,6 +16,8 @@ class BookItem extends WatchUi.CustomMenuItem {
   var titleHeight = null;
   var colors = null;
 
+  private var representOnServer = null;
+
   // **************************************************************************
   function initialize(id, ownerMenuWeak, bookInfo, filesDescription, fonts) {
     self.fonts = fonts;
@@ -46,6 +48,18 @@ class BookItem extends WatchUi.CustomMenuItem {
     CustomMenuItem.initialize(id, { :drawable => bookTitle });
   }
 
+  // **************************************************************************
+  function setServerStatus(value) {
+    var status = value == true ? "" : "НЕ";
+    logger.debug(
+      "Установлен статус [" +
+        getId() +
+        "] КНИГА " +
+        status +
+        " В СПИСКЕ на сервере"
+    );
+    self.representOnServer = value;
+  }
   // **************************************************************************
   function draw(dc) {
     dc.setColor(colors.menuItemBackgroundColor, colors.menuItemBackgroundColor);
@@ -88,6 +102,20 @@ class BookItem extends WatchUi.CustomMenuItem {
       filesDescription,
       Graphics.TEXT_JUSTIFY_LEFT
     );
+
+    //Информация о наличии на сервере
+    if (representOnServer != null) {
+      var rez =
+        representOnServer == true
+          ? Rez.Drawables.cloud_done
+          : Rez.Drawables.cloud_off;
+      var statusBitmap = WatchUi.loadResource(rez);
+      dc.drawBitmap(
+        dc.getWidth() - statusBitmap.getWidth() - statusBitmap.getWidth() / 2,
+        dc.getHeight() - statusBitmap.getHeight(),
+        statusBitmap
+      );
+    }
 
     // Рамка
     dc.setColor(colors.highlightFillColor, colors.highlightFillColor);

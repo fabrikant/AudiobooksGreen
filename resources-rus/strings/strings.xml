@@ -23,7 +23,7 @@
 
     <string id="playlist">Плейлист</string>
     <string id="content">Скачанные книги</string>
-    <string id="allBooks">Книги на сервере</string>
+    <string id="allBooks">Все книги</string>
     <string id="fileList">Список файлов</string>
     <string id="syncFolderNotSelected">Плейлист для синхр.\nне выбран</string>
 
@@ -53,7 +53,7 @@
     <string id="seconds">с</string>
 
 
-    <string id="progressMessageWhileOpenFolders">Обработка...</string>
+    <string id="progressMessageProcessing">Обработка</string>
     <string id="progressMessageSyncBookmarks">Синхронизация прогресса\nвоспроизведения</string>
 
     <string id="cacheSize">Размер кэша</string>

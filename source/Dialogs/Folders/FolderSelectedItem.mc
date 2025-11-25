@@ -37,7 +37,7 @@ class FolderSelectedItem extends WatchUi.IconMenuItem {
     // не так скучно ждать авторизацию и получение папок
     WatchUi.pushView(
       new WatchUi.ProgressBar(
-        Application.loadResource(Rez.Strings.progressMessageWhileOpenFolders),
+        Application.loadResource(Rez.Strings.progressMessageProcessing),
         null
       ),
       null,
