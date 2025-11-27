@@ -24,5 +24,6 @@ class FolderToSelectItem extends WatchUi.MenuItem {
       BOOKS_FOLDER_ID => getId(),
     });
     WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
+    logger.finalizeLogging();
   }
 }

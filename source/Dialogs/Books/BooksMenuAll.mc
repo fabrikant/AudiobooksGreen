@@ -79,6 +79,7 @@ class BooksMenuAll extends BooksMenuAbstract {
 
     if (booksStorage.booksOnDevice.keys().size() == 0) {
       //Список пустой, ничего не делаем
+      logger.finalizeLogging();
       return;
     }
 
@@ -124,6 +125,7 @@ class BooksMenuAll extends BooksMenuAbstract {
         item.setServerStatus(boookRepresentsOnServer(book_id, booksOnServer));
       }
     }
+    logger.finalizeLogging();
   }
 
   // **************************************************************************
