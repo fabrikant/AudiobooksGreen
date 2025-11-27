@@ -37,7 +37,7 @@ module Local {
     // Toybox.Application.Properties.setValue(LOGIN, "username");
     // Toybox.Application.Properties.setValue(PASSWORD, "userpassword");
 
-    // You can also set a Token. In this case, DO NOT set a username or password.
+    // You can also set a Token. In this case, DO NOT set a username and password.
     //Toybox.Application.Properties.setValue(TOKEN, "YOUR_LONG_AUDIOBOOKSHELF_TOKEN_dawdadwwdawd...");
 
   }
