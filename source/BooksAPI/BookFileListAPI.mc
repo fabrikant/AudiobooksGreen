@@ -122,12 +122,12 @@ class BookFileListAPI extends BooksAPI {
     var url = getProxyUrl() + "/audiobookshelf/book";
     var callback = self.method(:onGetProxy);
     var headers = {
+      "Content-Type" => Communications.REQUEST_CONTENT_TYPE_URL_ENCODED,
       "Authorization" => "Bearer " + token,
     };
     var params = {
       "server" => server_url,
       "book_id" => bookId,
-      "token" => token,
       "skip" => skip,
       "limit" => limit,
     };

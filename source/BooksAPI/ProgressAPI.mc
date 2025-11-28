@@ -27,7 +27,7 @@ class ProgressAPI extends BooksAPI {
       finalCallback.invoke(booksStorage);
       return;
     }
-    
+
     var savedToken = JWTools.getToken();
     if (savedToken == null) {
       var authorisationProcessor = new BooksAuthorisationAPI(
@@ -205,6 +205,7 @@ class ProgressAPI extends BooksAPI {
       :method => Communications.HTTP_REQUEST_METHOD_POST,
       :headers => {
         "Content-Type" => Communications.REQUEST_CONTENT_TYPE_JSON,
+        "Authorization" => "Bearer " + token,
       },
       :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_TEXT_PLAIN,
     };

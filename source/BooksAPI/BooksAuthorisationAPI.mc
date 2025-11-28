@@ -80,11 +80,11 @@ class BooksAuthorisationAPI extends BooksAPI {
       };
 
       var headers = {
-        "Content-Type" => Communications.REQUEST_CONTENT_TYPE_URL_ENCODED,
+        "Content-Type" => Communications.REQUEST_CONTENT_TYPE_JSON,
       };
 
       var options = {
-        :method => Communications.HTTP_REQUEST_METHOD_GET,
+        :method => Communications.HTTP_REQUEST_METHOD_POST,
         :headers => headers,
         :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON,
         :context => { URL => url },

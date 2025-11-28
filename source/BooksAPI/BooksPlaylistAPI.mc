@@ -25,7 +25,7 @@ class BooksPlaylistAPI extends BooksAPI {
     logger.info(
       "Start getting a list of books from a playlist with ID: " + playlistId
     );
-    
+
     var savedToken = JWTools.getToken();
     if (savedToken == null) {
       var authorisationProcessor = new BooksAuthorisationAPI(
@@ -101,11 +101,11 @@ class BooksPlaylistAPI extends BooksAPI {
       var callback = self.method(:onProxyPlaylist);
       var params = {
         "server" => server_url,
-        "token" => token,
         "playlist_id" => playlistId,
       };
       var headers = {
         "Content-Type" => Communications.REQUEST_CONTENT_TYPE_URL_ENCODED,
+        "Authorization" => "Bearer " + token,
       };
       var options = {
         :method => Communications.HTTP_REQUEST_METHOD_GET,
