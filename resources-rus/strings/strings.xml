@@ -25,6 +25,7 @@
     <string id="playlist">Плейлист</string>
     <string id="content">Скачанные книги</string>
     <string id="allBooks">Все книги</string>
+    <string id="allBooksProcessing">Загрузка</string>
     <string id="fileList">Список файлов</string>
     <string id="syncFolderNotSelected">Плейлист для синхр.\nне выбран</string>
 

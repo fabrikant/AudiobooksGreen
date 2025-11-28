@@ -26,6 +26,7 @@
     <string id="playlist">Playlist</string>
     <string id="content">Fully downloaded books</string>
     <string id="allBooks">All books</string>
+    <string id="allBooksProcessing">Downloading</string>
     <string id="fileList">List of files</string>
     <string id="syncFolderNotSelected">Sync playlist\nnot selected</string>
 

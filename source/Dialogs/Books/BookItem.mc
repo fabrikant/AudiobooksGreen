@@ -50,7 +50,7 @@ class BookItem extends WatchUi.CustomMenuItem {
 
   // **************************************************************************
   function setServerStatus(value) {
-    var status = value == true ? "Not on" : "On";
+    var status = value == true ? "On" : "Not on";
 
     logger.debug(
       "The new status of the book [" +

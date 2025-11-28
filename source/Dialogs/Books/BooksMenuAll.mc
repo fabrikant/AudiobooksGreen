@@ -28,7 +28,7 @@ class BooksMenuAll extends BooksMenuAbstract {
       return;
     }
 
-    setTitle(new CustomMenuTitle(Rez.Strings.progressMessageProcessing));
+    setTitle(new CustomMenuTitle(Rez.Strings.allBooksProcessing));
 
     //Выбрираем лучший прокси
     var booksApi = new BooksAPI();
