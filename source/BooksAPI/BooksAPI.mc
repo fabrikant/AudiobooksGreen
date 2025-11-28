@@ -2,6 +2,7 @@ import Toybox.System;
 import Toybox.Communications;
 import Toybox.Application;
 import Toybox.Lang;
+import Toybox.Math;
 
 enum {
   BOOKS_FOLDER = "folder",
@@ -77,15 +78,22 @@ class BooksAPI {
       finalCallback.invoke();
     } else {
       if (BUILT_IN_PROXYS.size() > 1) {
-        logger.info("Getting started choosing the best proxy server");
-        var context = {
+        // Если задано несколько прокси, нужно случайным образом перемешать массив
+        // и выбрать первый попавшийся живой прокси.
+        // Проверять скорость отклика до каждого смысла нет, так как
+        // 1. Продолжительность проверки съедает все плюсы
+        // 2. Точность замеров времени - 1 секунда
+
+        logger.info("Getting started choosing the proxy server");
+
+        var shuffledArray = [];
+        shuffledArray.addAll(BUILT_IN_PROXYS);
+        shuffledArray = shuffleArray(shuffledArray);
+        startCheckProxy({
+          :proxyNames => shuffledArray,
+          :index => 0,
           :callback => finalCallback,
-          :ind => 0,
-          :indexBest => 0,
-          :durationBest => 9999999,
-          :startTime => Time.now(),
-        };
-        startChooseProxy(context);
+        });
       } else if (BUILT_IN_PROXYS.size() > 0) {
         books_proxy_url = BUILT_IN_PROXYS[0];
         logger.info("Proxy server [" + books_proxy_url + "] selected");
@@ -101,42 +109,57 @@ class BooksAPI {
   }
 
   // **************************************************************************
-  function startChooseProxy(context) {
-    if (context[:ind] >= BUILT_IN_PROXYS.size()) {
-      books_proxy_url = BUILT_IN_PROXYS[context[:indexBest]];
-      logger.info("Proxy server [" + books_proxy_url + "] selected");
-      context[:callback].invoke();
-      return;
+  function shuffleArray(arr) {
+    var n = arr.size();
+    Math.srand(System.getTimer());
+    for (var i = n - 1; i > 0; i--) {
+      // Выбираем случайный индекс от 0 до i включительно
+      var j = Math.rand() % (i + 1);
+
+      // Меняем местами arr[i] и arr[j]
+      var temp = arr[i];
+      arr[i] = arr[j];
+      arr[j] = temp;
     }
-
-    var url = BUILT_IN_PROXYS[context[:ind]] + "/";
-
-    context[URL] = url;
-    context[:startTime] = Time.now();
-    var options = {
-      :method => Communications.HTTP_REQUEST_METHOD_GET,
-      :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON,
-      :context => context,
-    };
-
-    WebRequest.makeWebRequest(url, {}, options, self.method(:onGettingProxy));
+    logger.debug("shufled proxies: " + arr);
+    return arr;
   }
 
   // **************************************************************************
-  function onGettingProxy(code, data, context) {
-    if (code == 200) {
-      var duration = Time.now()
-        .subtract(context[:startTime])
-        .value();
-      logger.info("Current delay: " + duration);
-      if (duration < context[:durationBest]) {
-        context[:durationBest] = duration;
-        context[:indexBest] = context[:ind];
-      }
+  function startCheckProxy(context) {
+    if (context[:index] <= context[:proxyNames].size()) {
+      var url = context[:proxyNames][context[:index]] + "/";
+      var options = {
+        :method => Communications.HTTP_REQUEST_METHOD_GET,
+        :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON,
+        :context => context,
+      };
+
+      WebRequest.makeWebRequest(url, {}, options, self.method(:onCheckProxy));
+    } else {
+      //Серверы кончились, нчего не выбрали. Это ошибка
+      var msg = "No working proxies found";
+      logger.error(msg);
+      logger.finalizeLogging();
+      WatchUi.pushView(new InfoView(msg), null, WatchUi.SLIDE_IMMEDIATE);
     }
-    context[:ind] += 1;
-    context[:startTime] = Time.now();
-    startChooseProxy(context);
+  }
+
+  // **************************************************************************
+  function onCheckProxy(code, data, context) {
+    if (code == 200) {
+      // Cервер ответил. Берем его
+      books_proxy_url = context[:proxyNames][context[:index]];
+      logger.info("Proxy server [" + books_proxy_url + "] selected");
+      context[:callback].invoke();
+    } else {
+      // Ошибка. Проверяем следующий сервер
+      logger.error(
+        "Proxy check failed [" + context[:proxyNames][context[:index]] + "]"
+      );
+      context[:index] += 1;
+      startCheckProxy(context);
+    }
   }
 
   // **************************************************************************
@@ -152,6 +175,7 @@ class BooksAPI {
         // отправляем её в runtime
         var msg = "Proxy url not specified. Unable to work.";
         logger.error(msg);
+        logger.finalizeLogging();
         WatchUi.pushView(new InfoView(msg), null, WatchUi.SLIDE_IMMEDIATE);
       }
     }
