@@ -125,6 +125,7 @@ class BooksMenuAll extends BooksMenuAbstract {
         item.setServerStatus(boookRepresentsOnServer(book_id, booksOnServer));
       }
     }
+    WatchUi.requestUpdate();
     logger.finalizeLogging();
   }
 
