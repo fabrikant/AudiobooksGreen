@@ -59,25 +59,25 @@ class AbooksColors extends Media.PlayerColors {
   }
 
   function setDefaultColors() {
-    var backgroundColor = 0x000055;
+    var backgroundColor = 0x000000;
     Application.Properties.setValue("backgroundColor", backgroundColor);
     Application.Properties.setValue(
       "highlightFillColor",
-      Graphics.COLOR_GREEN
+      0x00AA00
     );
-    Application.Properties.setValue("textColor", Graphics.COLOR_WHITE);
-    Application.Properties.setValue("foregroundColor", Graphics.COLOR_GREEN);
+    Application.Properties.setValue("textColor", 0xFFFFFF);
+    Application.Properties.setValue("foregroundColor", 0x00AA00);
     Application.Properties.setValue(
       "highlightBorderColor",
-      Graphics.COLOR_GREEN
+      0x00AA00
     );
     Application.Properties.setValue(
       "progressBarBackgroundColor",
-      Graphics.COLOR_WHITE
+      0xFFFFFF
     );
     Application.Properties.setValue(
       "progressBarForegroundColor",
-      Graphics.COLOR_GREEN
+      0xFFFFFF
     );
     Application.Properties.setValue("menuItemBackgroundColor", backgroundColor);
     Application.Properties.setValue("menuBackgroundColor", backgroundColor);
