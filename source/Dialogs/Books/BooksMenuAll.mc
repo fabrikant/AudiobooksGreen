@@ -79,6 +79,7 @@ class BooksMenuAll extends BooksMenuAbstract {
 
     if (booksStorage.booksOnDevice.keys().size() == 0) {
       //Список пустой, ничего не делаем
+      WatchUi.requestUpdate();
       logger.finalizeLogging();
       return;
     }
