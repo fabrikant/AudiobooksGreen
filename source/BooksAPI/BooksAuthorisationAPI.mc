@@ -103,7 +103,7 @@ class BooksAuthorisationAPI extends BooksAPI {
       startProxyLogin();
     } else {
       logger.error(Application.loadResource(Rez.Strings.filedLogin));
-      finalCallback.invoke(null);
+      filedLoginMessage(code, data);
     }
   }
 
@@ -120,9 +120,29 @@ class BooksAuthorisationAPI extends BooksAPI {
         }
         Application.Properties.setValue(TOKEN, token);
       }
+      finalCallback.invoke(token);
     } else {
       logger.error(Application.loadResource(Rez.Strings.filedLogin));
+      filedLoginMessage(code, data);
     }
-    finalCallback.invoke(token);
+  }
+
+  function filedLoginMessage(code, data) {
+    var msg = [];
+    if (code == 401) {
+      msg.add(Application.loadResource(Rez.Strings.invalidLoginOrPassword));
+    } else if (code < 0) {
+      msg.add("code " + code);
+      msg.add(WebRequest.getErrorDescription(code));
+    } else {
+      msg.add("code " + code);
+      if (data != null and !data.equals("")) {
+        msg.add(data.toString());
+      } else {
+        msg.add(Application.loadResource(Rez.Strings.filedLogin));
+      }
+    }
+
+    WatchUi.switchToView(new InfoView(msg), null, WatchUi.SLIDE_IMMEDIATE);
   }
 }

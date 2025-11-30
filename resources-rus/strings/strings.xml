@@ -62,6 +62,7 @@
     <string id="removeCacheQuestion">Удалить все книги\nс устройства?</string>
     <string id="playFileQuestion">Начать воспроизведение с этого файла?</string>
 
+    <string id="invalidLoginOrPassword">Неверное имя пользователя или пароль</string>
 
     <!-- Properties -->
     <string id="menuSettings">Настройки</string>

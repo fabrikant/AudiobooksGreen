@@ -64,6 +64,7 @@
     <string id="removeCacheQuestion">Remove all books?\nIt's irreversible</string>
     <string id="playFileQuestion">Start listening from this file?</string>
 
+    <string id="invalidLoginOrPassword">Invalid username or password</string>
 
     <!-- Properties -->
     <string id="menuSettings">Settings</string>
@@ -78,7 +79,7 @@
     <string id="logLevel">Log level</string>
     <string id="telegramDebug">Debugging via telegram</string>
     <string id="telegramChatId">Your telegram ID</string>
-    
+
 
     <!-- Licence -->
     <string id="notAvailableMessage">Not available in free version</string>
