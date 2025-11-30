@@ -1,10 +1,19 @@
+//FORMAT FOR ALL URLS
+// https://hostaname.domain[:port]
+//
+// https://  - On real devices, the https protocol is required. 
+//  The HTTP protocol will not be installed. This is Garmin's security policy. 
+//  The HTTP protocol is only allowed in the emulator when accessing localhost.
+//
+// port - optional. Default value = 443
+
 
 //************REQUIRED****************
 
 //One of the options is required (an empty array or an array containing proxy server addresses). 
 //If the array is empty, the user must set their own proxy in the application settings..
 const BUILT_IN_PROXYS = [];
-//const BUILT_IN_PROXYS = ["https://your.proxy1.org", "https://your.proxy1.org"];
+//const BUILT_IN_PROXYS = ["https://your.proxy1.org:8081", "https://your.proxy2.org"];
 
 //************END REQUIRED************
 module Local {
@@ -30,7 +39,7 @@ module Local {
     // Toybox.Application.Properties.setValue("logLevel", 0);
     // Toybox.Application.Properties.setValue("telegramDebug", false);
 
-    // Toybox.Application.Properties.setValue(SERVER, "https://audiobookshelf.server.org");
+    // Toybox.Application.Properties.setValue(SERVER, "https://abs.your.server.url[:port_default_443]");
     // Toybox.Application.Properties.setValue(PROXY, "https://your.proxy3.org");
 
 

@@ -56,22 +56,25 @@ class BooksAPI {
 
   function initialize() {
     server_url = Application.Properties.getValue(SERVER);
-    api_url = server_url;
-    var lastSymb = server_url.substring(
-      server_url.length() - 1,
-      server_url.length()
-    );
-    if (lastSymb.equals("/")) {
-      api_url += "api";
-      server_url = server_url.substring(0, server_url.length() - 1);
-    } else {
-      api_url += "/api";
+    server_url = sanitazeServerName(server_url);
+    api_url = server_url + "/api";
+  }
+
+  // **************************************************************************
+  function sanitazeServerName(name) {
+    if (name == null or name.equals("")) {
+      return "";
     }
+    var lastSymb = name.substring(name.length() - 1, name.length());
+    if (lastSymb.equals("/")) {
+      return name.substring(0, name.length() - 1);
+    }
+    return name;
   }
 
   // **************************************************************************
   function chooseBestProxy(finalCallback) {
-    var extraProxy = Application.Properties.getValue(PROXY);
+    var extraProxy = sanitazeServerName(Application.Properties.getValue(PROXY));
     if (!extraProxy.equals("")) {
       books_proxy_url = extraProxy;
       logger.info("The user's own proxy [" + extraProxy + "] is selected");
@@ -87,7 +90,10 @@ class BooksAPI {
         logger.info("Getting started choosing the proxy server");
 
         var shuffledArray = [];
-        shuffledArray.addAll(BUILT_IN_PROXYS);
+        for (var i = 0; i < BUILT_IN_PROXYS.size(); i++) {
+          shuffledArray.add(sanitazeServerName(BUILT_IN_PROXYS[i]));
+        }
+
         shuffledArray = shuffleArray(shuffledArray);
         startCheckProxy({
           :proxyNames => shuffledArray,
@@ -95,7 +101,7 @@ class BooksAPI {
           :callback => finalCallback,
         });
       } else if (BUILT_IN_PROXYS.size() > 0) {
-        books_proxy_url = BUILT_IN_PROXYS[0];
+        books_proxy_url = sanitazeServerName(BUILT_IN_PROXYS[0]);
         logger.info("Proxy server [" + books_proxy_url + "] selected");
         finalCallback.invoke();
       } else {
