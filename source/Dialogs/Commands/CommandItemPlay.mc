@@ -4,8 +4,13 @@ import Toybox.Application;
 
 class CommandItemPlay extends CommandItemAbstract {
   function initialize(ownerItemWeak) {
-    CommandItemAbstract.initialize(Rez.Strings.play, null, null,
-                                   Rez.Drawables.play, ownerItemWeak);
+    CommandItemAbstract.initialize(
+      Rez.Strings.play,
+      null,
+      null,
+      Rez.Drawables.play,
+      ownerItemWeak
+    );
   }
 
   function command() {
@@ -21,7 +26,7 @@ class CommandItemPlay extends CommandItemAbstract {
       // Запуск книги сначала
       // Предварительно нужно добавить книгу в плейлист
       BooksStore.addToPlaylist(bookId);
-      Media.startPlayback([ bookId, false ]);
+      Media.startPlayback([bookId, false]);
     }
     WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
   }
