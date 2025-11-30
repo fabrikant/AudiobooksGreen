@@ -18,9 +18,6 @@ class BooksPlaylistAPI extends BooksAPI {
   }
 
   //***************************************************************************
-  function doNothing(params) {}
-
-  //***************************************************************************
   function start() {
     logger.info(
       "Start getting a list of books from a playlist with ID: " + playlistId
@@ -52,10 +49,19 @@ class BooksPlaylistAPI extends BooksAPI {
       return;
     }
 
+    if (preferProxy()) {
+      startProxy();
+    } else {
+      startDirectly();
+    }
+  }
+
+  //***************************************************************************
+  function startDirectly() {
     logger.info("Start getting the list of books directly from the server");
     // Пробуем получить список книг без прокси
     var url = api_url + "/playlists/" + playlistId;
-    var callback = self.method(:onNativePlaylist);
+    var callback = self.method(:onDirectlyPlaylist);
     var headers = {
       "Authorization" => "Bearer " + token,
     };
@@ -70,7 +76,29 @@ class BooksPlaylistAPI extends BooksAPI {
   }
 
   //***************************************************************************
-  function onNativePlaylist(code, data, context) {
+  function startProxy() {
+    logger.info("Start getting the list of books via proxy from the server");
+    var url = getProxyUrl() + "/audiobookshelf/playlist";
+    var callback = self.method(:onProxyPlaylist);
+    var params = {
+      "server" => server_url,
+      "playlist_id" => playlistId,
+    };
+    var headers = {
+      "Content-Type" => Communications.REQUEST_CONTENT_TYPE_URL_ENCODED,
+      "Authorization" => "Bearer " + token,
+    };
+    var options = {
+      :method => Communications.HTTP_REQUEST_METHOD_GET,
+      :headers => headers,
+      :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON,
+      :context => { URL => url },
+    };
+    WebRequest.makeWebRequest(url, params, options, callback);
+  }
+
+  //***************************************************************************
+  function onDirectlyPlaylist(code, data, context) {
     if (code == 200) {
       var result = [];
       var books = data["items"];
@@ -97,23 +125,7 @@ class BooksPlaylistAPI extends BooksAPI {
     } else if (code == -402) {
       //слишком большой ответ нужен запрос через прокси
       logger.warning("Too big answer. Getting the list of books via proxy.");
-      var url = getProxyUrl() + "/audiobookshelf/playlist";
-      var callback = self.method(:onProxyPlaylist);
-      var params = {
-        "server" => server_url,
-        "playlist_id" => playlistId,
-      };
-      var headers = {
-        "Content-Type" => Communications.REQUEST_CONTENT_TYPE_URL_ENCODED,
-        "Authorization" => "Bearer " + token,
-      };
-      var options = {
-        :method => Communications.HTTP_REQUEST_METHOD_GET,
-        :headers => headers,
-        :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON,
-        :context => { URL => url },
-      };
-      WebRequest.makeWebRequest(url, params, options, callback);
+      startProxy();
       return;
     }
     finalCallback.invoke([]);

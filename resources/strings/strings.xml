@@ -69,6 +69,7 @@
     <string id="extraSettings">Settings</string>
     <string id="autosyncProgress">Sync progress when paused</string>
     <string id="autosyncWhileCharging">Sync while charging</string>
+    <string id="preferProxyRequests">Prefer requests via proxy server</string>
     <string id="translitComplications">Translit complications</string>
     <string id="lenghtComplications">Complications max lenght</string>
     <string id="defaultPlayerColors">System colors of the player</string>

@@ -12,6 +12,7 @@
 
 	<property id="autosyncProgress" type="boolean">false</property>
 	<property id="autosyncWhileCharging" type="boolean">true</property>
+	<property id="preferProxyRequests" type="boolean">false</property>
 	<property id="translitComplications" type="boolean">true</property>
 	<property id="lenghtComplications" type="number">20</property>
 	<property id="defaultPlayerColors" type="boolean">false</property>

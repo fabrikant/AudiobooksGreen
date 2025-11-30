@@ -19,6 +19,14 @@ class MenuExtraSettings extends WatchUi.Menu2 {
       )
     );
     
+    addItem(
+      new PropertiesBooleanItem(
+        Rez.Strings.preferProxyRequests,
+        "preferProxyRequests",
+        null
+      )
+    );
+
     if (tgApiKey != null and !tgApiKey.equals("")) {
       addItem(
         new PropertiesBooleanItem(

@@ -50,12 +50,20 @@ class BookFileListAPI extends BooksAPI {
   // **************************************************************************
   // Сначала пробуем получить список файлов непосредственно
   function start() {
-
     logger.info(
       "Start getting the list of files of the book: " +
         bookInfo[BooksStore.BOOK_TITLE]
     );
 
+    if (preferProxy()) {
+      startProxyRequest(0);
+    } else {
+      startDirectly();
+    }
+  }
+
+  // **************************************************************************
+  function startDirectly() {
     var url = api_url + "/items/" + bookId;
     var callback = self.method(:onGetNative);
     var headers = {

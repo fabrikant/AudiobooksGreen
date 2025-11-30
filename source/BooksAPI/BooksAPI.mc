@@ -215,6 +215,14 @@ class BooksAPI {
   }
 
   // **************************************************************************
+  function preferProxy() {
+    return Application.Properties.getValue("preferProxyRequests");
+  }
+
+  //***************************************************************************
+  function doNothing(params) {}
+
+  // **************************************************************************
   // Обработка ошибок
   function onError(msgArray) {
     WatchUi.pushView(new InfoView(msgArray), null, WatchUi.SLIDE_IMMEDIATE);

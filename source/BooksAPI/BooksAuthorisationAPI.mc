@@ -13,10 +13,16 @@ class BooksAuthorisationAPI extends BooksAPI {
     BooksAPI.initialize();
   }
 
-  function doNothing(params) {}
-
   function start() {
-    logger.debug("Start authorization");
+    if (preferProxy()) {
+      startProxyLogin();
+    } else {
+      startDirectlyLogin();
+    }
+  }
+
+  function startDirectlyLogin() {
+    logger.debug("Start directly authorization");
     var token = Application.Properties.getValue(TOKEN);
     if (token.equals("")) {
       logger.debug("Token not set. Server authorization required.");
@@ -35,7 +41,7 @@ class BooksAuthorisationAPI extends BooksAPI {
       }
 
       var url = server_url + "/login";
-      var callback = self.method(:onNativeLogin);
+      var callback = self.method(:onDirectlyLogin);
       var params = { "username" => login, "password" => password };
 
       var headers = {
@@ -56,7 +62,32 @@ class BooksAuthorisationAPI extends BooksAPI {
     }
   }
 
-  function onNativeLogin(code, data, context) {
+  function startProxyLogin() {
+    logger.debug("Start proxy authorization");
+    var url = getProxyUrl() + "/audiobookshelf/login";
+    var callback = self.method(:onProxyLogin);
+    var login = Application.Properties.getValue(LOGIN);
+    var password = Application.Properties.getValue(PASSWORD);
+    var params = {
+      "server" => server_url,
+      "login" => login,
+      "password" => password,
+    };
+
+    var headers = {
+      "Content-Type" => Communications.REQUEST_CONTENT_TYPE_JSON,
+    };
+
+    var options = {
+      :method => Communications.HTTP_REQUEST_METHOD_POST,
+      :headers => headers,
+      :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON,
+      :context => { URL => url },
+    };
+    WebRequest.makeWebRequest(url, params, options, callback);
+  }
+
+  function onDirectlyLogin(code, data, context) {
     if (code == 200) {
       var token = data["user"]["accessToken"];
       if (token == null or token.equals("")) {
@@ -69,27 +100,7 @@ class BooksAuthorisationAPI extends BooksAPI {
       finalCallback.invoke(token);
     } else if (code == -402) {
       logger.warning("Too big answer. Let's try to login via proxy");
-      var url = getProxyUrl() + "/audiobookshelf/login";
-      var callback = self.method(:onProxyLogin);
-      var login = Application.Properties.getValue(LOGIN);
-      var password = Application.Properties.getValue(PASSWORD);
-      var params = {
-        "server" => server_url,
-        "login" => login,
-        "password" => password,
-      };
-
-      var headers = {
-        "Content-Type" => Communications.REQUEST_CONTENT_TYPE_JSON,
-      };
-
-      var options = {
-        :method => Communications.HTTP_REQUEST_METHOD_POST,
-        :headers => headers,
-        :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON,
-        :context => { URL => url },
-      };
-      WebRequest.makeWebRequest(url, params, options, callback);
+      startProxyLogin();
     } else {
       logger.error(Application.loadResource(Rez.Strings.filedLogin));
       finalCallback.invoke(null);
