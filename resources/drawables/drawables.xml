@@ -134,6 +134,12 @@
         </palette>
     </bitmap>
 
+    <bitmap id="bug" filename="./google-svg/bug.svg" scaleX="16%" scaleY="16%" scaleRelativeTo="screen">
+        <palette disableTransparency="false">
+            <color>00AA00</color>
+        </palette>
+    </bitmap>
+
     <!-- файлы на сервере -->
     <bitmap id="loaded_file" filename="./google-svg/loaded_track.svg" scaleX="16%" scaleY="16%" scaleRelativeTo="screen">
         <palette disableTransparency="false">

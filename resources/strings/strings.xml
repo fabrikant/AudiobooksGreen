@@ -1,6 +1,6 @@
 <strings>
 
-    <string id="settings">Settings</string>
+    <string id="menuMain">Main menu</string>
     <string id="login">login</string>
     <string id="password">password</string>
     <string id="server">server</string>
@@ -66,7 +66,8 @@
 
 
     <!-- Properties -->
-    <string id="extraSettings">Settings</string>
+    <string id="menuSettings">Settings</string>
+    <string id="menuDebug">Debug</string>
     <string id="autosyncProgress">Sync progress when paused</string>
     <string id="autosyncWhileCharging">Sync while charging</string>
     <string id="preferProxyRequests">Prefer requests via proxy server</string>

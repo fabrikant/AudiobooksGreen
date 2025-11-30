@@ -2,20 +2,20 @@ import Toybox.WatchUi;
 import Toybox.Communications;
 import Toybox.Application;
 
-class CommandMenuExtraSettings extends CommandItemAbstract {
+class CommandMenuDebug extends CommandItemAbstract {
   function initialize() {
     CommandItemAbstract.initialize(
-      Rez.Strings.extraSettings,
+      Rez.Strings.menuDebug,
       null,
       null,
-      Rez.Drawables.settings,
+      Rez.Drawables.bug,
       null
     );
   }
 
   function command() {
     WatchUi.pushView(
-      new MenuExtraSettings(),
+      new MenuDebug(),
       new SimpleMenuDelegate(),
       WatchUi.SLIDE_IMMEDIATE
     );

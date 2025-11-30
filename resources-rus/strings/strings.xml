@@ -1,6 +1,6 @@
 <strings>
 
-    <string id="settings">Настройки</string>
+    <string id="menuMain">Меню</string>
     <string id="login">Логин</string>
     <string id="password">Пароль</string>
     <string id="server">Сервер</string>
@@ -64,7 +64,8 @@
 
 
     <!-- Properties -->
-    <string id="extraSettings">Настройки</string>
+    <string id="menuSettings">Настройки</string>
+    <string id="menuDebug">Отладка</string>
     <string id="autosyncProgress">Синхр. прогресс при паузе</string>
     <string id="autosyncWhileCharging">Авт. синхр. при зарядке</string>
     <string id="preferProxyRequests">Предпочитать запросы через прокси</string>

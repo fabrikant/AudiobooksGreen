@@ -1,8 +1,15 @@
 import Toybox.Graphics;
 import Toybox.WatchUi;
 
-class MenuExtraSettings extends WatchUi.Menu2 {
+class MenuSettings extends WatchUi.Menu2 {
   function initialize() {
+    Menu2.initialize({
+      :title => Rez.Strings.menuSettings,
+      :theme => Style.getMenuTheme(),
+    });
+
+    addItem(new CommandItemMenuAuthorisation());
+
     addItem(
       new PropertiesBooleanItem(
         Rez.Strings.autosyncWhileCharging,
@@ -18,7 +25,7 @@ class MenuExtraSettings extends WatchUi.Menu2 {
         null
       )
     );
-    
+
     addItem(
       new PropertiesBooleanItem(
         Rez.Strings.preferProxyRequests,
@@ -28,24 +35,15 @@ class MenuExtraSettings extends WatchUi.Menu2 {
     );
 
     if (tgApiKey != null and !tgApiKey.equals("")) {
-      addItem(
-        new PropertiesBooleanItem(
-          Rez.Strings.telegramDebug,
-          "telegramDebug",
-          logger.method(:reloadSettings)
-        )
-      );
+      addItem(new CommandMenuDebug());
+    }
 
-      addItem(
-        new PickerItem(
-          Rez.Strings.telegramChatId,
-          Application.Properties.getValue("telegramChatId"),
-          "telegramChatId",
-          logger.method(:reloadSettings)
-        )
-      );
-
-      addItem(new LogLevelPicker());
+    // Прочие настройки
+    if (Toybox.Graphics has :createBufferedBitmap) {
+      addItem(new CommandItemMenuColors());
+    }
+    if (Toybox has :Complications) {
+      addItem(new CommandItemMenuComplications());
     }
   }
 }

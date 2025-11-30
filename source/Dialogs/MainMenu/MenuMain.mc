@@ -8,7 +8,7 @@ class MenuMain extends WatchUi.Menu2 {
     var booksStorage = new BooksStore();
     booksStorage.checkBooksDownloadComplete();
     Menu2.initialize({
-      :title => Rez.Strings.settings,
+      :title => Rez.Strings.menuMain,
       :theme => Style.getMenuTheme(),
     });
 
@@ -29,17 +29,8 @@ class MenuMain extends WatchUi.Menu2 {
       addFolderItem();
     }
 
-    // Прочие настройки
-    if (Toybox.Graphics has :createBufferedBitmap) {
-      addItem(new CommandItemMenuColors());
-    }
-    if (Toybox has :Complications) {
-      addItem(new CommandItemMenuComplications());
-    }
-    addItem(new CommandItemMenuAuthorisation());
-
     // Дополнительные функции
-    addItem(new CommandMenuExtraSettings());
+    addItem(new CommandMenuSettings());
 
     // О программе
     addItem(new CommandItemShowAboutView());
