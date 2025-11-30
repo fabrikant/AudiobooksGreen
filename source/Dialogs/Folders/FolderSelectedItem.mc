@@ -27,20 +27,35 @@ class FolderSelectedItem extends WatchUi.IconMenuItem {
       return;
     }
 
-    WatchUi.pushView(
-      new FolderSelectionMenu(self.method(:onChangeBooksFolder)),
-      new SimpleMenuDelegate(),
-      WatchUi.SLIDE_IMMEDIATE
-    );
-
     // Показываем прогрессбар, чтобы пользователю было
     // не так скучно ждать авторизацию и получение папок
     WatchUi.pushView(
-      new WatchUi.ProgressBar(
+      new ProgressBarWithCallback(
         Application.loadResource(Rez.Strings.progressMessageProcessing),
-        null
+        null,
+        self.method(:startGettingFolders)
       ),
       null,
+      WatchUi.SLIDE_IMMEDIATE
+    );
+  }
+
+  function startGettingFolders() {
+    //Выбрираем лучший прокси
+    var booksApi = new BooksAPI();
+    booksApi.chooseBestProxy(self.method(:onChooseBestProxy));
+  }
+  //После выбора прокси начинаем получение папок
+  function onChooseBestProxy() {
+    JWTools.beforeAuthentication();
+    var getter = new BooksPlaylistsAPI(self.method(:onGetBooksFolders));
+    getter.start();
+  }
+
+  function onGetBooksFolders(folderList) {
+    WatchUi.switchToView(
+      new FolderSelectionMenu(self.method(:onChangeBooksFolder), folderList),
+      new SimpleMenuDelegate(),
       WatchUi.SLIDE_IMMEDIATE
     );
   }
