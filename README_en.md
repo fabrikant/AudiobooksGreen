@@ -14,7 +14,7 @@ Garmin devices have a very limited network stack with numerous constraints that 
 
 1.  **HTTPS Only:** Only secure (HTTPS) connections are supported. Establishing a standard HTTP connection on a real device (not an emulator) is impossible.
 1.  **Image Proxy:** All images are downloaded through Garmin's proxy server. This behavior cannot be changed.
-1.  **Data Format & Size:** Watches can only receive data (response body) in JSON and plain/text formats. The maximum response size a watch can handle is 8kB. If the response exceeds this limit, an error code -402 (negative 402) will be returned.
+1.  **Data Format & Size:** Watches can only receive data (response body) in JSON and plain/text formats. The maximum response size a watch can handle is 8kB. If the response exceeds this limit, an error code -402 (minus 402) will be returned.
 1.  **No Incoming Headers:** Access to incoming headers is completely absent, meaning there's no way to receive cookies.
 1.  **Limited Outgoing Headers:** Capabilities for setting outgoing headers are extremely limited.
 1.  **HTTP Methods:** Only GET, POST, DELETE, and PUT methods are implemented. Methods like PATCH or UPDATE are entirely missing.
@@ -32,7 +32,7 @@ From the previous section, the following directly arise:
 
         What I mean is: For example, I request a list of playlists on the server and naturally expect to receive JSON with `name` and `id` arrays. In reality, I receive a JSON file almost 3MB in size (remember Garmin's 8KB limit?). This JSON contains not only a list of all playlists with all their attributes but also a list of all books within those playlists with all their attributes, and each book contains a list of all media files with all their attributes. And there's no way to change this behavior. This is precisely why a proxy is needed – to receive this massive response, discard the junk, and transmit the data to the watch.
 
-    I inquired on the audiobookshelf GitHub page about plans to optimize the API, but I didn't receive a clear answer. In any case, Audiobooks Green always makes a direct request to your audiobookshelf server first, and only upon receiving a -402 error (Serialized response was too large), it repeats the request through the proxy.
+    In any case, Audiobooks Green by default makes a direct request to your audiobookshelf server first, and only upon receiving a -402 error (Serialized response was too large), it repeats the request through the proxy.
 
     If your audiobookshelf instance contains only one book, consisting of a single file and added to a single playlist, most requests will likely be executed directly, without the proxy. This excludes saving progress, of course.
 
@@ -47,9 +47,11 @@ In return, I've received some shaming from the audiobookshelf community (quite f
 Emphasis has been placed on the proxy's existence as the primary source of threat, for some reason. I don't understand why. Nothing prevents me from stealing your login credentials directly from the [Audiobooks Green](https://apps.garmin.com/en-EN/apps/0fbb79e9-1b2b-41e6-96a2-32679b484db4) app, right?
 Similarly, I don't understand the fundamental difference between my application and any other installed from the store or from a package not built by you. Who can guarantee that a package compiled by someone else doesn't contain backdoors?
 
-In any case, it's true that if you use a program from the [store](https://apps.garmin.com/en-EN/apps/0fbb79e9-1b2b-41e6-96a2-32679b484db4) and/or my proxy, your audiobookshelf instance is at risk. If I wanted to, I could easily steal your credentials and listen to your Terry Pratchett for free.
+Any way, it's true that if you use a program from the [store](https://apps.garmin.com/en-EN/apps/0fbb79e9-1b2b-41e6-96a2-32679b484db4) and/or my proxy, your audiobookshelf instance is at risk. If I wanted to, I could easily steal your credentials and listen to your Terry Pratchett for free.
 
-Don't want to take this **terrible risk**, but want to listen to books from your watch? I have **great news** for you!!!
+Don't want to take this **terrible risk**, but want to listen to books from your watch? I have 
+
+## **Great News** For You!!!
 
 You can now independently check ~7000 lines for any hidden backdoors, build the application yourself, and install it on your watch.
 
