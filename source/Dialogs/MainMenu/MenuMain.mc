@@ -54,4 +54,9 @@ class MenuMain extends WatchUi.Menu2 {
       )
     );
   }
+
+  function onShow() {
+    // Попросим сделать отзыв о программе
+    Review.getTokenIfItsOk();
+  }
 }
