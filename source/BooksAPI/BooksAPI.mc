@@ -163,8 +163,16 @@ class BooksAPI {
       logger.error(
         "Proxy check failed [" + context[:proxyNames][context[:index]] + "]"
       );
-      context[:index] += 1;
-      startCheckProxy(context);
+
+      //Если есть сервера в запасе, проверяем следующий
+      if (context[:proxyNames].size() - 1 > context[:index]) {
+        context[:index] += 1;
+        startCheckProxy(context);
+      } else {
+        var msg = "Unable to connect to any proxy";
+        logger.error(msg);
+        WatchUi.switchToView(new InfoView(msg), null, WatchUi.SLIDE_IMMEDIATE);
+      }
     }
   }
 
