@@ -4,35 +4,47 @@ import Toybox.Application;
 import Toybox.Graphics;
 import Toybox.Lang;
 
-class BooksMenuAll extends BooksMenuAbstract {
-  var booksOnServer = null;
+module AllBooks {
+  var booksOnServer = [];
   var folderId = null;
 
-  // **************************************************************************
-  function initialize() {
-    BooksMenuAbstract.initialize(Rez.Strings.allBooks);
-    //Запускаем запрос к серверу
-    booksOnServer = [];
-    checkBooksOnServer();
-  }
-
-  // **************************************************************************
-  function checkBooksOnServer() {
+  function createAllBooksMenu() {
     var folderInfo = Application.Storage.getValue(BOOKS_FOLDER);
     if (folderInfo == null) {
+      WatchUi.pushView(
+        new BooksMenuAll([]),
+        new SimpleMenuDelegate(),
+        WatchUi.SLIDE_IMMEDIATE
+      );
       return;
     }
 
     folderId = folderInfo[BOOKS_FOLDER_ID];
     if (folderId == null) {
+      WatchUi.pushView(
+        new BooksMenuAll([]),
+        new SimpleMenuDelegate(),
+        WatchUi.SLIDE_IMMEDIATE
+      );
       return;
     }
 
-    setTitle(new CustomMenuTitle(Rez.Strings.allBooksProcessing));
+    // Показываем прогрессбар, чтобы пользователю было
+    // не так скучно ждать
+    var displayString =
+      Application.loadResource(Rez.Strings.allBooksProcessing) +
+      " " +
+      folderInfo[BOOKS_FOLDER_NAME];
+
+    WatchUi.pushView(
+      new WatchUi.ProgressBar(displayString, null),
+      null,
+      WatchUi.SLIDE_IMMEDIATE
+    );
 
     //Выбрираем лучший прокси
     var booksApi = new BooksAPI();
-    booksApi.chooseBestProxy(self.method(:onChooseBestProxy));
+    booksApi.chooseBestProxy(new Lang.Method(AllBooks, :onChooseBestProxy));
   }
 
   // **************************************************************************
@@ -40,7 +52,7 @@ class BooksMenuAll extends BooksMenuAbstract {
   function onChooseBestProxy() {
     logger.debug("Start receiving books information");
     var folderGetter = new BooksPlaylistAPI(
-      self.method(:onGettingFolder),
+      new Lang.Method(AllBooks, :onGettingFolder),
       folderId
     );
     folderGetter.start();
@@ -66,7 +78,7 @@ class BooksMenuAll extends BooksMenuAbstract {
     logger.debug("Start receiving covers");
     // Старт загрузки обложек
     var coverDownloader = new BookCoversDownloaderAPI(
-      self.method(:onCoversDownload),
+      new Lang.Method(AllBooks, :onCoversDownload),
       booksStorage
     );
     coverDownloader.start();
@@ -75,58 +87,64 @@ class BooksMenuAll extends BooksMenuAbstract {
   // **************************************************************************
   function onCoversDownload(booksStorage) {
     logger.debug("Covers has been retrieved");
-    setTitle(new CustomMenuTitle(Rez.Strings.allBooks));
+    WatchUi.switchToView(
+      new BooksMenuAll(booksOnServer),
+      new SimpleMenuDelegate(),
+      WatchUi.SLIDE_IMMEDIATE
+    );
+  }
+}
 
-    if (booksStorage.booksOnDevice.keys().size() == 0) {
-      //Список пустой, ничего не делаем
-      WatchUi.requestUpdate();
-      logger.finalizeLogging();
-      return;
-    }
-
-    //В списке что-то есть. Нужно найти и удалить
-    //Пустой элемент списка, прежде чем добавлять нормальные элементы
-    var findedItemIndex = findItemById(:empty);
-    if (findedItemIndex >= 0) {
-      logger.debug("Removing an empty list element");
-      deleteItem(findedItemIndex);
-    }
-
-    //Получили список книг. В нем содержатся все книги,
-    //которые есть на устройстве и книги, которые есть на сервере
-    //Нужно добавить в меню недостающие пункты с книгами и
-    //отметить их статус относительно устройства и сервера
-
+class BooksMenuAll extends BooksMenuAbstract {
+  // **************************************************************************
+  function initialize(booksOnServer) {
+    BooksMenuAbstract.initialize(Rez.Strings.allBooks);
+    var booksStorage = new BooksStore();
     var booksOnDevice = booksStorage.booksOnDevice;
-    var booksKeys = booksOnDevice.keys();
 
-    for (var i = 0; i < booksKeys.size(); i++) {
-      var book_id = booksKeys[i];
-      findedItemIndex = findItemById(book_id);
-      if (findedItemIndex < 0) {
-        var filesDescription = getFilesDescription(book_id, booksStorage);
-        var item = new BookItem(
-          book_id,
-          weak(),
-          booksOnDevice[book_id],
-          filesDescription,
-          fonts
-        );
-        addItem(item);
-        logger.debug(
-          "The book [" +
-            book_id +
-            "] " +
-            booksOnDevice[book_id][BooksStore.BOOK_TITLE] +
-            " has been added to the list. "
-        );
-        item.setServerStatus(boookRepresentsOnServer(book_id, booksOnServer));
-      } else {
-        var item = getItem(findedItemIndex);
-        item.setServerStatus(boookRepresentsOnServer(book_id, booksOnServer));
+    if (booksStorage.booksOnDevice.keys().size() > 0) {
+      //В списке что-то есть. Нужно найти и удалить
+      //Пустой элемент списка, прежде чем добавлять нормальные элементы
+      var findedItemIndex = findItemById(:empty);
+      if (findedItemIndex >= 0) {
+        logger.debug("Removing an empty list element");
+        deleteItem(findedItemIndex);
+      }
+
+      //Получили список книг. В нем содержатся все книги,
+      //которые есть на устройстве и книги, которые есть на сервере
+      //Нужно добавить в меню недостающие пункты с книгами и
+      //отметить их статус относительно устройства и сервера
+
+      var booksKeys = booksOnDevice.keys();
+
+      for (var i = 0; i < booksKeys.size(); i++) {
+        var book_id = booksKeys[i];
+        findedItemIndex = findItemById(book_id);
+        if (findedItemIndex < 0) {
+          var filesDescription = getFilesDescription(book_id, booksStorage);
+          var item = new BookItem(
+            book_id,
+            weak(),
+            booksOnDevice[book_id],
+            filesDescription,
+            fonts
+          );
+          addItem(item);
+          logger.debug(
+            "The book [" +
+              book_id +
+              "] " +
+              booksOnDevice[book_id][BooksStore.BOOK_TITLE] +
+              " has been added to the list. "
+          );
+          item.setServerStatus(boookRepresentsOnServer(book_id, booksOnServer));
+        } else {
+          var item = getItem(findedItemIndex);
+          item.setServerStatus(boookRepresentsOnServer(book_id, booksOnServer));
+        }
       }
     }
-    WatchUi.requestUpdate();
     logger.finalizeLogging();
   }
 

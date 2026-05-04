@@ -13,10 +13,6 @@ class ItemMainMenuAllBooks extends WatchUi.IconMenuItem {
   }
 
   function onSelectItem() {
-    WatchUi.pushView(
-      new BooksMenuAll(),
-      new SimpleMenuDelegate(),
-      WatchUi.SLIDE_IMMEDIATE
-    );
+    AllBooks.createAllBooksMenu();
   }
 }
