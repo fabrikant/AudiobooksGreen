@@ -20,6 +20,7 @@ class Logger extends Lang.Object {
   private var chatId = "";
   private var logLevel = null;
   private var tgDebug = false;
+  private var useProxyForTelegram = false;
   private var tgMessages = "";
   private var lastTgMessagesTime = 0;
 
@@ -33,6 +34,9 @@ class Logger extends Lang.Object {
     self.logLevel = Application.Properties.getValue("logLevel");
     self.tgDebug = Application.Properties.getValue("telegramDebug");
     self.chatId = Application.Properties.getValue("telegramChatId");
+    self.useProxyForTelegram = Application.Properties.getValue(
+      "useProxyForTelegram"
+    );
     if (
       propName != null and
       propValue != null and
@@ -60,9 +64,23 @@ class Logger extends Lang.Object {
     return frmtMsg;
   }
 
-  private function sendToTelegram() {
-    // System.println("Отправка в телеграм");
-    runningTelegramRequests += 1;
+  private function sendToTelegramDirect(tgMessages) {
+    // Максимальная длина сообщения 4000 символов
+    // если у нас сформировалась строка длинее,
+    // значит она быстро наполнилась какой-то однообразной информацией
+    // Для того чтобы избежать ошибки телеграма, отбросим середину сообщения
+    var maxLenght = 4000;
+    var msgLenght = tgMessages.length();
+    if (msgLenght > maxLenght) {
+      var diff = msgLenght - maxLenght + 100;
+      var position = ((msgLenght - diff) / 2).toNumber();
+      tgMessages =
+        tgMessages.substring(0, position) +
+        "\n\n<<MISSING " +
+        diff +
+        " CHARACTERS>>\n\n" +
+        tgMessages.substring(position + diff, msgLenght);
+    }
     Communications.makeWebRequest(
       "https://api.telegram.org/bot" + tgApiKey + "/sendMessage",
       { "chat_id" => chatId, "text" => tgMessages },
@@ -73,12 +91,47 @@ class Logger extends Lang.Object {
       },
       self.method(:onSendTelegram)
     );
+  }
+
+  private function sendToTelegramProxy(tgMessages) {
+    //Отправлять через прокси можно сообщение любой длины
+    //разбивка на куски происходит на стороне прокси
+    //Но нужно обязательно преобразовать текст в Base64
+    //для того чтобы переданный json был принять без ошибок
+    Communications.makeWebRequest(
+      books_proxy_url + "/send_telegram_message",
+      {
+        "token" => tgApiKey,
+        "chat_id" => chatId.toLong(),
+        "message" => Toybox.StringUtil.encodeBase64(tgMessages),
+      },
+      {
+        :method => Communications.HTTP_REQUEST_METHOD_POST,
+        :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON,
+        :headers => {
+          "Content-Type" => Communications.REQUEST_CONTENT_TYPE_JSON,
+        },
+      },
+      self.method(:onSendTelegram)
+    );
+  }
+
+  private function sendToTelegram() {
+    // System.println("Отправка в телеграм");
+
+    runningTelegramRequests += 1;
+    if (useProxyForTelegram) {
+      sendToTelegramProxy(tgMessages);
+    } else {
+      sendToTelegramDirect(tgMessages);
+    }
     tgMessages = "";
   }
 
   function onSendTelegram(code, data) {
     runningTelegramRequests -= 1;
     // System.println("Ответ от телеграм: " + code);
+    // System.println(data);
   }
 
   private function processMessage(msg) {

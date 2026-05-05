@@ -127,6 +127,7 @@ module ContentProcessor {
 
   // **************************************************************************
   function removeAllBooks() {
+    Media.stopPlayback();
     var booksStorage = new BooksStore();
     var keys = booksStorage.booksOnDevice.keys();
     for (var i = 0; i < keys.size(); i++) {

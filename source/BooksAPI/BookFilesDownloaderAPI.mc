@@ -14,15 +14,118 @@ class BookFilesDownloaderAPI extends BooksAPI {
   var downloadedNumbers = null;
   var token = null;
 
+  var lastMomentMeasurement = null;
+  var lastBytesRecieve = null;
+  var totalBytesRecieve = 0;
+
   // **************************************************************************
   function initialize(booksStorage, filesList) {
     self.booksStorage = booksStorage;
     self.filesList = filesList;
+    self.totalBytesRecieve = 0.toLong();
     BooksAPI.initialize();
   }
 
   // **************************************************************************
+  function calculateDownloadingSpeed(seconds, bytes) {
+    if (seconds <= 0) {
+      return (
+        "0 " +
+        Application.loadResource(Rez.Strings.downloadUnitB) +
+        "/" +
+        Application.loadResource(Rez.Strings.seconds)
+      );
+    }
+
+    var speed = bytes.toFloat() / seconds;
+    var format, resId;
+
+    if (speed >= 1048576.0) {
+      speed /= 1048576.0;
+      format = "%.2f";
+      resId = Rez.Strings.downloadUnitMB;
+    } else if (speed >= 1024.0) {
+      speed /= 1024.0;
+      format = "%.1f";
+      resId = Rez.Strings.downloadUnitKB;
+    } else {
+      format = "%d";
+      resId = Rez.Strings.downloadUnitB;
+    }
+
+    return (
+      speed.format(format) +
+      " " +
+      Application.loadResource(resId) +
+      "/" +
+      Application.loadResource(Rez.Strings.seconds)
+    );
+  }
+
+  // **************************************************************************
+  function calculateTotalDownload(bytesRecieve) {
+    // В Monkey C используем Float для точности при делении
+    totalBytesRecieve += bytesRecieve;
+    var total = totalBytesRecieve.toFloat();
+    var resId = null;
+
+    if (total >= 1073741824) {
+      // 1024 * 1024 * 1024
+      total = total / 1073741824.0;
+      resId = Rez.Strings.downloadUnitGB;
+    } else if (total >= 1048576) {
+      // 1024 * 1024
+      total = total / 1048576.0;
+      resId = Rez.Strings.downloadUnitMB;
+    } else if (total >= 1024) {
+      total = total / 1024.0;
+      resId = Rez.Strings.downloadUnitKB;
+    } else {
+      resId = Rez.Strings.downloadUnitB;
+    }
+
+    // .format("%.2f") ограничивает вывод двумя знаками после запятой
+    return total.format("%.2f") + " " + Application.loadResource(resId);
+  }
+
+  // **************************************************************************
+  function downloadReport(bytesRecieve) {
+    if (bytesRecieve == null) {
+      return;
+    }
+    if (lastMomentMeasurement == null) {
+      lastMomentMeasurement = Time.now();
+      lastBytesRecieve = bytesRecieve;
+    } else {
+      var now = Time.now();
+      var seconds = now.subtract(lastMomentMeasurement).value();
+      if (seconds >= 30) {
+        var bytes = bytesRecieve - lastBytesRecieve;
+        if (bytes < 0) {
+          bytes = bytesRecieve;
+        }
+        var captionSpeed =
+          Application.loadResource(Rez.Strings.downloadSpeed) + ": ";
+        var captionTotal =
+          Application.loadResource(Rez.Strings.downloadTotal) + ": ";
+
+        logger.info(
+          captionSpeed +
+            calculateDownloadingSpeed(seconds, bytes) +
+            "   " +
+            captionTotal +
+            calculateTotalDownload(bytesRecieve)
+        );
+        lastMomentMeasurement = now;
+        lastBytesRecieve = bytesRecieve;
+      }
+    }
+  }
+
+  // **************************************************************************
   function notifySyncProgress(bytesRecieve, byteSize) {
+    downloadReport(bytesRecieve);
+
     if (filesList == null or filesList.size() == 0) {
       return;
     }
@@ -63,7 +166,7 @@ class BookFilesDownloaderAPI extends BooksAPI {
   // **************************************************************************
   function start() {
     logger.debug("Start downloading media files");
-    
+
     var savedToken = JWTools.getToken();
     if (savedToken == null) {
       var authorisationProcessor = new BooksAuthorisationAPI(

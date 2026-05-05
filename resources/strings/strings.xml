@@ -79,7 +79,7 @@
     <string id="logLevel">Log level</string>
     <string id="telegramDebug">Debugging via telegram</string>
     <string id="telegramChatId">Your telegram ID</string>
-
+    <string id="telegramBlocked">Telegram is blocked in my country.</string>    
 
     <!-- Licence -->
     <string id="notAvailableMessage">Not available in free version</string>
@@ -112,4 +112,11 @@
     <string id="MENU_THEME_PURPLE">Purple</string>
     <string id="MENU_THEME_GREEN_YELLOW">Yellow</string>
 
+    <!-- Загузка данных-->
+    <string id="downloadSpeed">Download speed</string>
+    <string id="downloadTotal">Total downloaded</string> 
+    <string id="downloadUnitB">B</string> 
+    <string id="downloadUnitKB">KB</string> 
+    <string id="downloadUnitMB">MB</string> 
+    <string id="downloadUnitGB">GB</string>     
 </strings>

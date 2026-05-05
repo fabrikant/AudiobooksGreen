@@ -25,8 +25,7 @@ class CommandItemShowFiles extends CommandItemAbstract {
     if (bookId != null) {
       var files = Application.Storage.getValue(bookId);
       if (files instanceof Lang.Array and files.size() > 0) {
-        WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
-        WatchUi.pushView(
+        WatchUi.switchToView(
           new FilesMenu(ownerItemWeak),
           new SimpleMenuDelegate(),
           WatchUi.SLIDE_IMMEDIATE

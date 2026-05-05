@@ -77,6 +77,7 @@
     <string id="logLevel">Уровень логирования</string>
     <string id="telegramDebug">Отладка через telegram</string>
     <string id="telegramChatId">Ваш ID в telegram</string>
+    <string id="telegramBlocked">Телеграм заблокирован в моей стране</string>
 
     <!-- Licence -->
     <string id="notAvailableMessage">Недоступно в бесплатной версии</string>
@@ -108,5 +109,12 @@
     <string id="MENU_THEME_PINK">Розовая</string>
     <string id="MENU_THEME_PURPLE">Пурпурная</string>
     <string id="MENU_THEME_GREEN_YELLOW">Желтая</string>
-
+    
+    <!-- Загузка данных-->
+    <string id="downloadSpeed">Скорость загрузки</string>
+    <string id="downloadTotal">Всего загружено</string> 
+    <string id="downloadUnitB">Б</string> 
+    <string id="downloadUnitKB">КБ</string> 
+    <string id="downloadUnitMB">МБ</string> 
+    <string id="downloadUnitGB">ГБ</string> 
 </strings>
