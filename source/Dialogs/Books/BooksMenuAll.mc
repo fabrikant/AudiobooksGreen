@@ -9,10 +9,11 @@ module AllBooks {
   var folderId = null;
 
   function createAllBooksMenu() {
+    booksOnServer = [];
     var folderInfo = Application.Storage.getValue(BOOKS_FOLDER);
     if (folderInfo == null) {
       WatchUi.pushView(
-        new BooksMenuAll([]),
+        new BooksMenuAll(booksOnServer),
         new SimpleMenuDelegate(),
         WatchUi.SLIDE_IMMEDIATE
       );
@@ -22,7 +23,7 @@ module AllBooks {
     folderId = folderInfo[BOOKS_FOLDER_ID];
     if (folderId == null) {
       WatchUi.pushView(
-        new BooksMenuAll([]),
+        new BooksMenuAll(booksOnServer),
         new SimpleMenuDelegate(),
         WatchUi.SLIDE_IMMEDIATE
       );
