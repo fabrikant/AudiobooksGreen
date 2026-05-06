@@ -17,8 +17,8 @@ class MenuDebug extends WatchUi.Menu2 {
     );
 
     addItem(
-      new PropertiesBooleanItem(
-        Rez.Strings.telegramBlocked,
+      new PropertiesBooleanTelegramBypassItem(
+        Rez.Strings.useProxyForTelegram,
         "useProxyForTelegram",
         logger.method(:reloadSettings)
       )

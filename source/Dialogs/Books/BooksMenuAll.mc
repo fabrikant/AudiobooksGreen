@@ -34,7 +34,7 @@ module AllBooks {
     // не так скучно ждать
     var displayString =
       Application.loadResource(Rez.Strings.allBooksProcessing) +
-      " " +
+      "\n" +
       folderInfo[BOOKS_FOLDER_NAME];
 
     WatchUi.pushView(

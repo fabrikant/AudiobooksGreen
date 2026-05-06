@@ -77,7 +77,9 @@
     <string id="logLevel">Уровень логирования</string>
     <string id="telegramDebug">Отладка через telegram</string>
     <string id="telegramChatId">Ваш ID в telegram</string>
-    <string id="telegramBlocked">Телеграм заблокирован в моей стране</string>
+    <string id="useProxyForTelegram">telegram подключен</string>
+    <string id="useProxyForTelegramTrue">через прокси</string>
+    <string id="useProxyForTelegramFalse">напрямую</string>
 
     <!-- Licence -->
     <string id="notAvailableMessage">Недоступно в бесплатной версии</string>

@@ -79,7 +79,9 @@
     <string id="logLevel">Log level</string>
     <string id="telegramDebug">Debugging via telegram</string>
     <string id="telegramChatId">Your telegram ID</string>
-    <string id="telegramBlocked">Telegram is blocked in my country.</string>    
+    <string id="useProxyForTelegram">telegram connect</string>
+    <string id="useProxyForTelegramTrue">proxy</string>
+    <string id="useProxyForTelegramFalse">direct</string>
 
     <!-- Licence -->
     <string id="notAvailableMessage">Not available in free version</string>
