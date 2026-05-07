@@ -69,7 +69,7 @@
     <string id="menuDebug">Отладка</string>
     <string id="autosyncProgress">Синхр. прогресс при паузе</string>
     <string id="autosyncWhileCharging">Авт. синхр. при зарядке</string>
-    <string id="preferProxyRequests">Предпочитать запросы через прокси</string>
+    <string id="preferProxyRequests">Прокси в приоритете</string>
     <string id="translitComplications">Транслит. complications</string>
     <string id="lenghtComplications">Макс. длина сomplications</string>
     <string id="defaultPlayerColors">Системные цвета плеера</string>
