@@ -9,7 +9,7 @@ module Review {
   function getTokenIfItsOk() {
     if (itsOk()) {
       logger.info(
-        "All conditions are met. Request a token to request a review."
+        "Request a token to request a review."
       );
       WatchUi.makeReviewTokenRequest(new Lang.Method(Review, :onGettingToken));
     }
@@ -43,9 +43,7 @@ module Review {
       return false;
     }
 
-    logger.debug(
-      "Starting to check the ability to request a review from a user"
-    );
+    // logger.debug("Начало проверки возможности запросить отзыв у пользователя");
 
     //Если это первый запуск приложения, запоминаем время
     //Не нужно просить отзыв в день установки.
@@ -54,25 +52,23 @@ module Review {
 
     var dateFirstStart = Application.Storage.getValue("dateTimeFirstStart");
     if (dateFirstStart == null) {
-      logger.debug("Skipping the review request. First-time app launch");
+      // logger.debug("Отзыв не запрашиваем. Первый запуск приложения");
       Application.Storage.setValue("dateTimeFirstStart", nowUnixTime);
       return;
     } else if (
       nowUnixTime <
       dateFirstStart + Time.Gregorian.SECONDS_PER_DAY * 4
     ) {
-      logger.debug(
-        "Skipping the review request. Less than 4 days have passed since I started using the app"
-      );
+      // logger.debug(
+      //   "Отзыв не запрашиваем. Прошло меньше 4 дней после начала использования"
+      // );
       return;
     }
 
     //Если в плейлисте нет книг, возвможно у него что-то не так
     var booksKeys = Application.Storage.getValue(BooksStore.PLAYLIST);
     if (!(booksKeys instanceof Lang.Array) or booksKeys.size() == 0) {
-      logger.debug(
-        "Skipping the review request. There are no books in the playlist"
-      );
+      // logger.debug("Отзыв не запрашиваем. Нет книг в плейлисте");
       return false;
     }
 
@@ -85,9 +81,7 @@ module Review {
         nowUnixTime <
         lastReviewRequestTime + Time.Gregorian.SECONDS_PER_DAY * 20
       ) {
-        logger.debug(
-          "Skipping the review request. Review requested less than 20 days ago"
-        );
+        // logger.debug("Отзыв не запрашиваем. Спрашивали недавно");
         return false;
       }
     }
@@ -100,11 +94,9 @@ module Review {
       currentVersion instanceof Lang.String and
       lastReviewVersion.equals(currentVersion)
     ) {
-      logger.debug(
-        "Skipping the review request. A review version " +
-          currentVersion +
-          " has already been requested"
-      );
+      // logger.debug(
+      //   "Отзыв не запрашиваем. Спрашивали про верисю " + currentVersion
+      // );
       return false;
     }
 
