@@ -51,6 +51,18 @@ class BooksStore {
   }
 
   // **************************************************************************
+  function numberDownloadedBooks() {
+    var keys = booksOnDevice.keys();
+    var result = 0;
+    for (var i = 0; i < keys.size(); i++) {
+      if (booksOnDevice[keys[i]][BOOK_DOWNLOADED]) {
+        result += 1;
+      }
+    }
+    return result;
+  }
+
+  // **************************************************************************
   // Возвращает массив словарей c id книг, и ФАЙЛОВ которые нужно грузить
   function getFilesToDownload() {
     logger.debug("Starting to create a list of files to download");
@@ -58,12 +70,7 @@ class BooksStore {
     var bookIds = getIdsToDownload();
     for (var i = 0; i < bookIds.size(); i++) {
       var currentFileList = Application.Storage.getValue(bookIds[i]);
-      // Добавляем в список файлов информацию о том, с какого url качать
-      // Подписка или басплатный (купленный контент)
-      var subscr = booksOnDevice[bookIds[i]][URL_SUBSCRIPTION];
-      if (subscr == null) {
-        subscr = true;
-      }
+
       if (currentFileList != null) {
         for (var j = 0; j < currentFileList.size(); j++) {
           if (currentFileList[j][FILE_CONTENT_ID] == null) {
@@ -71,7 +78,7 @@ class BooksStore {
               BOOK_ID => bookIds[i],
               FILE_ID => currentFileList[j][FILE_ID],
               FILE_NAME => currentFileList[j][FILE_NAME],
-              URL_SUBSCRIPTION => subscr,
+              DURATION => currentFileList[j][DURATION],
             };
             result.add(item);
             logger.debug("File added for download: " + item);

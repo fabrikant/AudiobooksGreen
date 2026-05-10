@@ -3,27 +3,40 @@ import Toybox.Communications;
 import Toybox.Application;
 import Toybox.Lang;
 import Toybox.Media;
+import Toybox.Time;
 
 //*****************************************************************************
 // Получение информации о книге
 // и загрузка файлов
 class BookFilesDownloaderAPI extends BooksAPI {
+  var token = null;
   var booksStorage = null;
 
   var filesList = null;
-  var downloadedNumbers = null;
-  var token = null;
 
   var lastMomentMeasurement = null;
   var lastBytesRecieve = null;
-  var totalBytesRecieve = 0;
+  var totalBytesRecieve = null;
+
+  var totalDuration = null;
+  var downloadedDuration = null;
+  var currentDuration = null;
 
   // **************************************************************************
   function initialize(booksStorage, filesList) {
+    BooksAPI.initialize();
+
     self.booksStorage = booksStorage;
     self.filesList = filesList;
-    self.totalBytesRecieve = 0.toLong();
-    BooksAPI.initialize();
+    totalBytesRecieve = (0).toLong();
+
+    totalDuration = (0).toDouble();
+    downloadedDuration = (0).toDouble();
+    currentDuration = (0).toDouble();
+
+    for (var i = 0; i < filesList.size(); i++) {
+      totalDuration += filesList[i][BooksStore.DURATION];
+    }
   }
 
   // **************************************************************************
@@ -123,44 +136,67 @@ class BookFilesDownloaderAPI extends BooksAPI {
   }
 
   // **************************************************************************
-  function notifySyncProgress(bytesRecieve, byteSize) {
+  function notifySyncProgress(bytesRecieve, bytesSize) {
     downloadReport(bytesRecieve);
 
-    if (filesList == null or filesList.size() == 0) {
+    if (bytesRecieve == null or bytesSize == null) {
       return;
     }
 
-    var percentPerFile = 100.0 / filesList.size();
-    var percentageOfDownloadedFiles = percentPerFile * downloadedNumbers;
-
-    var percentageOfCurrentFile = 0;
     if (
-      bytesRecieve instanceof Lang.Number and
-      byteSize instanceof Lang.Number and
-      byteSize > 0 and
-      bytesRecieve > 0
+      !(
+        totalDuration != null and
+        totalDuration > 0 and
+        currentDuration != null and
+        currentDuration > 0
+      )
     ) {
-      var partOfCurrentFule = bytesRecieve.toDouble() / byteSize;
-      percentageOfCurrentFile = partOfCurrentFule * percentPerFile;
+      return;
     }
 
-    var percents = (
-      percentageOfDownloadedFiles + percentageOfCurrentFile
-    ).toNumber();
-    var percetnsOfFullDownloadedFiles = (
-      percentPerFile *
-      (downloadedNumbers + 1)
-    ).toNumber();
-    if (percents > percetnsOfFullDownloadedFiles) {
-      percents = percetnsOfFullDownloadedFiles;
-    }
+    //такая доля шкалы приходится на текущий файл
+    var partOfFile = bytesRecieve.toDouble() / bytesSize;
+    var percentageOfFile = currentDuration.toDouble() / totalDuration;
+    var percentageOfPartOfFile = partOfFile * percentageOfFile;
+    var percentageOfDownloaded = downloadedDuration / totalDuration;
+
+    var percents = (percentageOfDownloaded + percentageOfPartOfFile) * 100;
+
+    // logger.debug(
+    //   "Загружено байт: " +
+    //     bytesRecieve +
+    //     "/" +
+    //     bytesSize +
+    //     " Длительность загружаемого файла сек: " +
+    //     currentDuration +
+    //     "/" +
+    //     totalDuration
+    // );
+    // logger.debug("*************************************************");
+    // logger.debug(
+    //   "Загружаемый файл (целиком) от всей шкалы: " + percentageOfFile
+    // );
+    // logger.debug("Доля загрузки файла: " + partOfFile);
+    // logger.debug("Текущая доля файла от всей шкалы: " + percentageOfPartOfFile);
+    // logger.debug(
+    //   "Доля полностью загруженных файлов от всей шкалы: " +
+    //     percentageOfDownloaded
+    // );
+    // logger.debug(
+    //   "Закрыто от всей шкалы : " +
+    //     (percentageOfDownloaded + percentageOfPartOfFile)
+    // );
+    // logger.debug("percents: " + percents);
+
+    percents = Toybox.Math.round(percents);
+
     if (percents < 0) {
       percents = 0;
     }
     if (percents >= 100) {
       percents = 100;
     }
-    Communications.notifySyncProgress(percents);
+    Communications.notifySyncProgress(percents.toNumber());
   }
 
   // **************************************************************************
@@ -181,7 +217,7 @@ class BookFilesDownloaderAPI extends BooksAPI {
   // **************************************************************************
   function onAuthorisation(token) {
     self.token = token;
-    if (token == null or token.equals("")) {
+    if (self.token == null or self.token.equals("")) {
       var message =
         Application.loadResource(Rez.Strings.notSet) +
         " " +
@@ -192,7 +228,6 @@ class BookFilesDownloaderAPI extends BooksAPI {
     }
 
     if (filesList.size() > 0) {
-      downloadedNumbers = 0;
       startLoadingFile(0);
     } else {
       booksStorage.checkBooksDownloadComplete();
@@ -203,6 +238,7 @@ class BookFilesDownloaderAPI extends BooksAPI {
 
   // **************************************************************************
   function startLoadingFile(fileIndex) {
+    currentDuration = filesList[fileIndex][BooksStore.DURATION];
     var url = getFileUrl(fileIndex);
     var context = { URL => url, FILE_INDEX => fileIndex };
     var headers = { "Authorization" => "Bearer " + token };
@@ -227,15 +263,16 @@ class BookFilesDownloaderAPI extends BooksAPI {
       booksStorage.onFileDownload(filesList[fileIndex], data.getId());
     }
 
-    downloadedNumbers += 1;
-
     // Независимо от результата загрузки текущего файла,
+    //считаем, что обработали эту длительность
+    downloadedDuration += filesList[fileIndex][BooksStore.DURATION];
+
     // Пробуем грузить следующий.
     var newIndex = fileIndex + 1;
     if (newIndex < filesList.size()) {
       startLoadingFile(newIndex);
     } else {
-      // Все файлы загружены
+      // Все файлы обработаны
       booksStorage.checkBooksDownloadComplete();
       logger.finalizeLogging();
       Communications.notifySyncComplete(null);
@@ -245,7 +282,7 @@ class BookFilesDownloaderAPI extends BooksAPI {
   // **************************************************************************
   function getEncoding(fileIndex) {
     // По умолчанию думаем, что это mp3
-    var encoding = Toybox.Media.ENCODING_MP3;
+    var encoding = Media.ENCODING_MP3;
     var filename = filesList[fileIndex][BooksStore.FILE_NAME];
     var filnameLenght = filename.length();
     var fileExtension = filename.substring(filnameLenght - 3, filnameLenght);

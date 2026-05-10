@@ -10,10 +10,39 @@ class WebRequestWrapper {
     self.context = context;
   }
 
+  (:debug)
+  function urlCaption(url) {
+    return url;
+  }
+
+  (:release)
+  function urlCaption(url) {
+    return stringReplace(url, books_proxy_url, "[proxy-host]");
+  }
+
+  function stringReplace(str, find, replace) {
+    var res = "";
+    var ind = str.find(find);
+    var len = find.length();
+    var first;
+    while (ind != null) {
+      if (ind == 0) {
+        first = "";
+      } else {
+        first = str.substring(0, ind);
+      }
+      res = res + first + replace;
+      str = str.substring(ind + len, str.length());
+      ind = str.find(find);
+    }
+    res = res + str;
+    return res;
+  }
+
   function start(url, params, options, callback) {
     self.finalCallback = callback;
     self.url = url;
-    logger.info(httpMethodString(options) + " url: " + url);
+     logger.info(httpMethodString(options) +" url: " + urlCaption(url));
     Communications.makeWebRequest(
       url,
       params,
@@ -23,7 +52,7 @@ class WebRequestWrapper {
   }
 
   function makeImageRequest(url, params, options, callback) {
-    logger.info("GET image url: " + url);
+    logger.info("GET image url: " + urlCaption(url));
     self.finalCallback = callback;
     self.url = url;
     Communications.makeImageRequest(
@@ -36,7 +65,7 @@ class WebRequestWrapper {
 
   function onWebResponse(code, data) {
     if (code < 200 or code > 299) {
-      var errorMsg = "url: " + url + " response code: " + code;
+      var errorMsg = "url: " + urlCaption(url) + " response code: " + code;
       var codeDescription = WebRequest.getErrorDescription(code);
 
       if (!codeDescription.equals("")) {
@@ -54,13 +83,28 @@ class WebRequestWrapper {
       } else {
         logger.error(errorMsg);
       }
+
+      if (code > 399) {
+        if (data == null) {
+          logger.debug("response data is null");
+        } else if (data instanceof Lang.Object) {
+          logger.debug("response data: " + data.toString());
+        } else {
+          logger.debug("response data is of unknown type but not null");
+        }
+      }
     } else {
-      logger.info("url: " + url + " response code: " + code);
+      logger.info("url: " + urlCaption(url) + " response code: " + code);
     }
 
     if (finalCallback instanceof Lang.Method) {
       if (context == :IMAGE_REQUEST) {
         finalCallback.invoke(code, data);
+      } else if (
+        context instanceof Lang.Dictionary and
+        context[:IMAGE_REQUEST]
+      ) {
+        finalCallback.invoke(code, data, context[:originalContext]);
       } else {
         finalCallback.invoke(code, data, context);
       }
@@ -104,6 +148,26 @@ module WebRequest {
     request.makeImageRequest(url, params, options, callback);
   }
 
+  function makeImageRequestWithContext(url, params, options, callback) {
+    var originalContext = null;
+    // создаем новые опции, чтобы не испортить старые
+    // возможно они будут использованы повторно
+    var newOptions = {};
+    var keys = options.keys();
+    for (var i = 0; i < keys.size(); i++) {
+      if (keys[i] == :context) {
+        originalContext = options[keys[i]];
+      } else {
+        newOptions[keys[i]] = options[keys[i]];
+      }
+    }
+
+    var request = new WebRequestWrapper({
+      :IMAGE_REQUEST => true,
+      :originalContext => originalContext,
+    });
+    request.makeImageRequest(url, params, options, callback);
+  }
   // **************************************************************************
   function getErrorDescription(code) {
     if (code == 0) {

@@ -55,13 +55,15 @@ module ContentProcessor {
     var progress = 0;
     var duration = 0;
 
-    for (var i = 0; i < files.size(); i++) {
-      if (i < fileIndex) {
-        progress += files[i][BooksStore.DURATION];
-      } else if (i == fileIndex) {
-        progress += position;
+    if (files instanceof Lang.Array) {
+      for (var i = 0; i < files.size(); i++) {
+        if (i < fileIndex) {
+          progress += files[i][BooksStore.DURATION];
+        } else if (i == fileIndex) {
+          progress += position;
+        }
+        duration += files[i][BooksStore.DURATION];
       }
-      duration += files[i][BooksStore.DURATION];
     }
 
     if (progress > 0 and duration > 0) {
