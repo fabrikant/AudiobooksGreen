@@ -127,7 +127,7 @@ class BooksAPI {
       arr[i] = arr[j];
       arr[j] = temp;
     }
-    logger.debug("shufled proxies: " + arr);
+    logger.debug("shufled proxies: ");
     return arr;
   }
 
@@ -156,7 +156,7 @@ class BooksAPI {
     if (code == 200) {
       // Cервер ответил. Берем его
       books_proxy_url = context[:proxyNames][context[:index]];
-      logger.info("Proxy server [" + books_proxy_url + "] selected");
+      logger.info("Proxy server selected");
       context[:callback].invoke();
     } else {
       // Ошибка. Проверяем следующий сервер
