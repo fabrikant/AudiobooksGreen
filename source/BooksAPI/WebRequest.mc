@@ -10,21 +10,16 @@ class WebRequestWrapper {
     self.context = context;
   }
 
-  (:debug)
   function urlCaption(url) {
     return url;
-  }
-
-  (:release)
-  function urlCaption(url) {
-    if (
-      url instanceof Toybox.Lang.String and
-      books_proxy_url instanceof Toybox.Lang.String
-    ) {
-      return stringReplace(url, books_proxy_url, "[proxy-host]");
-    } else {
-      return "[some-url]";
-    }
+    //   if (
+    //     url instanceof Toybox.Lang.String and
+    //     books_proxy_url instanceof Toybox.Lang.String
+    //   ) {
+    //     return stringReplace(url, books_proxy_url, "[proxy-host]");
+    //   } else {
+    //     return "[some-url]";
+    //   }
   }
 
   function stringReplace(str, find, replace) {
@@ -49,7 +44,7 @@ class WebRequestWrapper {
   function start(url, params, options, callback) {
     self.finalCallback = callback;
     self.url = url;
-    logger.info(httpMethodString(options) + " url: " + urlCaption(url));
+    logger.info(httpMethodString(options) +" url: " + urlCaption(url));
     Communications.makeWebRequest(
       url,
       params,
