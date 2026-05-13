@@ -139,26 +139,37 @@ class BookFilesDownloaderAPI extends BooksAPI {
   function notifySyncProgress(bytesRecieve, bytesSize) {
     downloadReport(bytesRecieve);
 
-    if (bytesRecieve == null or bytesSize == null) {
-      return;
-    }
-
+    var percentageOfDownloaded = 0.0;
     if (
-      !(
-        totalDuration != null and
-        totalDuration > 0 and
-        currentDuration != null and
-        currentDuration > 0
-      )
+      totalDuration != null and
+      totalDuration > 0 and
+      currentDuration != null and
+      currentDuration > 0
     ) {
-      return;
+      percentageOfDownloaded = downloadedDuration / totalDuration;
     }
 
+    var percentageOfPartOfFile = 0.0;
     //такая доля шкалы приходится на текущий файл
-    var partOfFile = bytesRecieve.toDouble() / bytesSize;
-    var percentageOfFile = currentDuration.toDouble() / totalDuration;
-    var percentageOfPartOfFile = partOfFile * percentageOfFile;
-    var percentageOfDownloaded = downloadedDuration / totalDuration;
+    if (bytesRecieve != null and bytesSize != null) {
+      if (bytesRecieve > 0 and bytesSize > 0) {
+        try {
+          var partOfFile = bytesRecieve.toDouble() / bytesSize;
+          var percentageOfFile = 0.0;
+          if (totalDuration > 0) {
+            percentageOfFile = currentDuration.toDouble() / totalDuration;
+          }
+          percentageOfPartOfFile = partOfFile * percentageOfFile;
+        } catch (ex instanceof Toybox.Lang.InvalidValueException) {
+          logger.error(
+            "catch Invalid value (all values must be number: bytesRecieve=" +
+              bytesRecieve +
+              "; bytesSize=" +
+              bytesSize
+          );
+        }
+      }
+    }
 
     var percents = (percentageOfDownloaded + percentageOfPartOfFile) * 100;
 
