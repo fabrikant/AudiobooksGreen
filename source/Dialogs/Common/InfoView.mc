@@ -30,7 +30,8 @@ class InfoView extends WatchUi.View {
     myTextArea = new WatchUi.TextArea({
       :text => text,
       :color => colors.textColor,
-      :font => [Graphics.FONT_SMALL, Graphics.FONT_SYSTEM_SMALL],
+      // TextArea takes the first font the text fits in: long errors (url + code) shrink
+      :font => [Graphics.FONT_SMALL, Graphics.FONT_TINY, Graphics.FONT_XTINY],
       :locX => WatchUi.LAYOUT_HALIGN_CENTER,
       :locY => WatchUi.LAYOUT_VALIGN_CENTER,
       :width => width,

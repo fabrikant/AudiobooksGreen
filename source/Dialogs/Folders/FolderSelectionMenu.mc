@@ -12,19 +12,8 @@ class FolderSelectionMenu extends WatchUi.Menu2 {
       :title => Rez.Strings.selectListMenuTitle,
       :theme => Style.getMenuTheme(),
     });
- if (folderList.size() == 0) {
-      // Закрываем текущее меню
-      WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
-      //  Выводим окно с ошибкой
-      WatchUi.pushView(
-        new InfoView(Application.loadResource(Rez.Strings.noFoldersFound)),
-        null,
-        WatchUi.SLIDE_IMMEDIATE
-      );
-    } else {
-      for (var i = 0; i < folderList.size(); i++) {
-        addItem(new FolderToSelectItem(finalCallback, folderList[i]));
-      }
+    for (var i = 0; i < folderList.size(); i++) {
+      addItem(new FolderToSelectItem(finalCallback, folderList[i]));
     }
   }
 

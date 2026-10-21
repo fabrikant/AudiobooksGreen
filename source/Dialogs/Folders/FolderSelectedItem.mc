@@ -53,6 +53,16 @@ class FolderSelectedItem extends WatchUi.IconMenuItem {
   }
 
   function onGetBooksFolders(folderList) {
+    // The error replaces the progress bar here: pushed from the menu's constructor, it was
+    // covered at once by the switchToView below
+    if (folderList.size() == 0) {
+      var msg = playlistsError;
+      if (msg == null) {
+        msg = Application.loadResource(Rez.Strings.noFoldersFound);
+      }
+      WatchUi.switchToView(new InfoView(msg), null, WatchUi.SLIDE_IMMEDIATE);
+      return;
+    }
     WatchUi.switchToView(
       new FolderSelectionMenu(self.method(:onChangeBooksFolder), folderList),
       new SimpleMenuDelegate(),

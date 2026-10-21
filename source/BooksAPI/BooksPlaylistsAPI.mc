@@ -1,6 +1,9 @@
 import Toybox.Communications;
 import Toybox.Application;
 
+// Why the last fetch returned no playlists, shown instead of "No folders found"
+var playlistsError = null;
+
 class BooksPlaylistsAPI extends BooksAPI {
   var finalCallback = null;
   var token = null;
@@ -18,6 +21,7 @@ class BooksPlaylistsAPI extends BooksAPI {
   //***************************************************************************
   function start() {
     logger.info("Start getting the list of playlists");
+    playlistsError = null;
 
     var savedToken = JWTools.getToken();
     if (savedToken == null) {
@@ -34,13 +38,14 @@ class BooksPlaylistsAPI extends BooksAPI {
   function onAuthorisation(token) {
     self.token = token;
     if (token == null or token.equals("")) {
-      logger.error(
+      var msg =
         Application.loadResource(Rez.Strings.notSet) +
-          " " +
-          Application.loadResource(Rez.Strings.token) +
-          " " +
-          Application.loadResource(Rez.Strings.skipListPlaylists)
-      );
+        " " +
+        Application.loadResource(Rez.Strings.token) +
+        " " +
+        Application.loadResource(Rez.Strings.skipListPlaylists);
+      logger.error(msg);
+      playlistsError = msg;
       finalCallback.invoke([]);
       return;
     }
@@ -115,6 +120,7 @@ class BooksPlaylistsAPI extends BooksAPI {
       return;
     }
     logger.error("Failed to get the list of playlists from the server.");
+    playlistsError = getErrorMessage(code, data, "Server: " + server_url);
     finalCallback.invoke([]);
   }
 
@@ -132,6 +138,7 @@ class BooksPlaylistsAPI extends BooksAPI {
       logger.info("The list of playlists was retrieved via proxy.");
     } else {
       logger.error("Failed to get the list of playlists via proxy.");
+      playlistsError = getErrorMessage(code, data, "Proxy: " + getProxyUrl());
     }
 
     logger.finalizeLogging();

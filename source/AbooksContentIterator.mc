@@ -9,6 +9,9 @@ class AbooksContentIterator extends Media.ContentIterator {
   var currenInd = null;
   var resumePosition = null;
   var bookmartUnixTime = null;
+  // bookId -> bookmark this session last read or wrote. If storage holds
+  // something else, a progress sync replaced it during playback.
+  var knownBookmarks = null;
 
   // **************************************************************************
   // В качестве праметров может прийти
@@ -27,6 +30,7 @@ class AbooksContentIterator extends Media.ContentIterator {
 
     resumePosition = null;
     currenInd = 0;
+    knownBookmarks = {};
 
     var booksStorage = new BooksStore();
     books = booksStorage.booksOnDevice;
@@ -80,6 +84,11 @@ class AbooksContentIterator extends Media.ContentIterator {
         break;
       }
     }
+
+    knownBookmarks.put(
+      bookIdForResume,
+      booksStorage.getBookmark(bookIdForResume)
+    );
 
     // Мы на первом файле нужной книги
     // Проверяем нужно ли переходить на закладку
@@ -236,14 +245,46 @@ class AbooksContentIterator extends Media.ContentIterator {
 
   // **************************************************************************
   function createPlayerBookmark(playbackPosition) {
-    if (currenInd == null or currenInd >= files.size() - 1) {
+    // "size() - 1" skipped the last file of the playlist.
+    if (currenInd == null or currenInd >= files.size()) {
       return;
     }
+    var bookId = files[currenInd][BooksStore.BOOK_ID];
+    var stored = Application.Storage.getValue(BooksStore.BOOKMARK + bookId);
+
+    // A sync wrote a newer position while this session kept playing the old
+    // one. Overwriting it here would stamp the stale position with "now",
+    // which then wins every newest-timestamp comparison and is pushed back
+    // to the server. Leave it; the next session resumes from the synced one.
+    if (
+      knownBookmarks.hasKey(bookId) and
+      !sameBookmark(stored, knownBookmarks[bookId])
+    ) {
+      logger.info(
+        "The bookmark for the book " +
+          bookId +
+          " was updated by a sync during playback. Not overwriting it."
+      );
+      return;
+    }
+
     // Фиксируем закладку
     BooksStore.createPlayerBookmark(files[currenInd], playbackPosition);
+    knownBookmarks.put(
+      bookId,
+      Application.Storage.getValue(BooksStore.BOOKMARK + bookId)
+    );
     // Фиксируем id текущей воспроизводимой книги, чтобы
     // продолжить воспроизведение с неё
-    BooksStore.updateCurrentBook(files[currenInd][BooksStore.BOOK_ID]);
+    BooksStore.updateCurrentBook(bookId);
+  }
+
+  // **************************************************************************
+  function sameBookmark(a, b) {
+    if (a == null or b == null) {
+      return a == null and b == null;
+    }
+    return a[0] == b[0] and a[1] == b[1] and a[2] == b[2];
   }
 
   // **************************************************************************
