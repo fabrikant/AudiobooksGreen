@@ -148,7 +148,7 @@ class Logger extends Lang.Object {
 
       if (runningTelegramRequests < 1) {
         // Проверяем не пора ли отправить сообщения в телеграм:
-        // Отправляем не чаще чем 1 раз в 20 секунд, или если длниа
+        // Отправляем не чаще чем 1 раз в 20 секунд, или если длиниа
         //  строки больше 2000 символов
         var now = Time.now().value();
         if (lastTgMessagesTime + 20 <= now or tgMessages.length() > 2000) {

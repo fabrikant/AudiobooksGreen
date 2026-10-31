@@ -3,7 +3,7 @@ import Toybox.Lang;
 import Toybox.Application;
 
 //*****************************************************************************
-//Пункт меню - выбранная папкая (список в классификации литреса)
+//Пункт меню - выбранный плейлист
 //со списком папок с книгами
 class FolderSelectedItem extends WatchUi.IconMenuItem {
   function initialize(label, booksListInfo, id) {
@@ -45,6 +45,7 @@ class FolderSelectedItem extends WatchUi.IconMenuItem {
     var booksApi = new BooksAPI();
     booksApi.chooseBestProxy(self.method(:onChooseBestProxy));
   }
+
   //После выбора прокси начинаем получение папок
   function onChooseBestProxy() {
     JWTools.beforeAuthentication();
@@ -53,11 +54,19 @@ class FolderSelectedItem extends WatchUi.IconMenuItem {
   }
 
   function onGetBooksFolders(folderList) {
-    WatchUi.switchToView(
-      new FolderSelectionMenu(self.method(:onChangeBooksFolder), folderList),
-      new SimpleMenuDelegate(),
-      WatchUi.SLIDE_IMMEDIATE
-    );
+    if (folderList.size() == 0) {
+      WatchUi.switchToView(
+        new InfoView(Application.loadResource(Rez.Strings.noFoldersFound)),
+        null,
+        WatchUi.SLIDE_IMMEDIATE
+      );
+    } else {
+      WatchUi.switchToView(
+        new FolderSelectionMenu(self.method(:onChangeBooksFolder), folderList),
+        new SimpleMenuDelegate(),
+        WatchUi.SLIDE_IMMEDIATE
+      );
+    }
   }
 
   function onChangeBooksFolder(folderInfo) {
